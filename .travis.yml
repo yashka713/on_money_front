@@ -1,0 +1,15 @@
+language: node_js
+node_js:
+  - "stable"
+
+cache:
+  directories:
+      - node_modules
+  yarn
+
+before_script:
+  - yarn build
+
+script:
+  - npm test
+  - npm run build
