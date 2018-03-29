@@ -1,0 +1,18 @@
+.SignUp{
+    width: 30%;
+}
+
+.form-group {
+    clear:both;
+    text-align:right;
+}
+
+.form-group > input{
+    display: inline-block;
+    width: 70%;
+}
+
+.form-group > label{
+    text-align: left;
+    margin-right: 10px;
+}
