@@ -1,8 +1,9 @@
 .header {
-  background-color: #222;
   height: 100px;
-  padding-top: 20px;
-  display: flex;
-  flex-flow: row wrap;
-  justify-content: flex-end;
+  width: 1170px;
+  margin: 0 auto
+}
+
+.navbar{
+  margin: 0 auto 20px;
 }
