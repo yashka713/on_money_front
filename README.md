@@ -47,10 +47,4 @@ and start:
 hivemind
 ```
 
-or
-
-```
-yarn start
-```
-
 Navigate to [http://localhost:3001](http://localhost:3001) or run `curl localhost:3001/status`.

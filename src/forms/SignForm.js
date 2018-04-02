@@ -4,8 +4,6 @@ import FieldGroup from "./FieldGroup";
 // utils
 import UserSessionUtils from "../utils/UserSessionUtils";
 
-import "../styles/Form.css";
-
 class SignForm extends Component {
   constructor(props) {
     super(props);

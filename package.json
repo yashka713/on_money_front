@@ -4,6 +4,7 @@
   "private": true,
   "dependencies": {
     "bootstrap": "3",
+    "node-sass": "^4.8.3",
     "normalize.css": "^7.0.0",
     "react": "^16.2.0",
     "react-bootstrap": "^0.32.1",
@@ -12,6 +13,8 @@
   },
   "scripts": {
     "start": "PORT=3001 react-scripts start",
+    "css": "node-sass src/styles/main.scss src/dest/main.css",
+    "watch:css": "yarn css -w",
     "build": "react-scripts build",
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject",
@@ -26,6 +29,7 @@
     "eslint-plugin-prettier": "^2.3.1",
     "eslint-plugin-react": "^6.9.0",
     "prettier": "^1.7.3",
+    "sass-loader": "^6.0.7",
     "stylelint": "^8.1.1",
     "stylelint-config-standard": "^17.0.0"
   }
