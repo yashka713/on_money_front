@@ -3,8 +3,6 @@ import React, { Component } from "react";
 import SignForm from "../forms/SignForm";
 import { Tabs, Tab } from "react-bootstrap";
 
-import "../styles/FirstPage.css";
-
 class FirstPage extends Component {
   render() {
     return (
