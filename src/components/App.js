@@ -1,11 +1,11 @@
 import React, { Component } from "react";
-import HeaderComponent from "./HeaderComponent";
+import FirstPage from "./FirstPage";
 
 class App extends Component {
   render() {
     return (
       <div className="App">
-        <HeaderComponent />
+        <FirstPage />
       </div>
     );
   }
