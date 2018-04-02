@@ -21,6 +21,10 @@
 .navbar {
   margin: 0 auto 20px; }
 
+.alert {
+  margin-top: 3%;
+  text-align: center; }
+
 body {
   margin: 0;
   padding: 0;

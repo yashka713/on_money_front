@@ -25,16 +25,17 @@ class UserSessionUtils {
     };
     //
     const request = new Request(url, options);
-    fetch(request)
+    return fetch(request)
       .then(responce => {
-        return this.getTokenFromParams(responce);
-      })
-      .then(token => {
-        const storage = new LocalStorageUtils();
-        storage.saveToken(token);
+        if (responce.status >= 200 && responce.status < 300) {
+          const token = this.getTokenFromParams(responce);
+          const storage = new LocalStorageUtils();
+          storage.saveToken(token);
+        }
+        return responce.statusText;
       })
       .catch(error => {
-        console.error(error); // Error: Not Found
+        console.log(error);
       });
   }
 }
