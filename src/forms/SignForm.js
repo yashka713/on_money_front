@@ -25,8 +25,8 @@ class SignForm extends Component {
     event.preventDefault();
     const url = event.target.action;
     const session = new UserSessionUtils();
-    let answer = session.postRequest(url, this.props.auth.auth_data);
-    answer.then(result => this.props.errorAlert(result));
+    session.postRequest(url, this.props.auth.auth_data);
+    this.props.errorAlert();
     return false;
   }
 
@@ -84,10 +84,10 @@ export default connect(
         payload: inputValue
       });
     },
-    errorAlert: status => {
+    errorAlert: () => {
       dispatch({
         type: "SHOW_ALERT",
-        payload: status
+        payload: true
       });
     }
   })

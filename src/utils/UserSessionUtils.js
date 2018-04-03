@@ -32,7 +32,6 @@ class UserSessionUtils {
           const storage = new LocalStorageUtils();
           storage.saveToken(token);
         }
-        return responce.statusText;
       })
       .catch(error => {
         console.log(error);

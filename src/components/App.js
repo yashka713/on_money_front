@@ -21,7 +21,7 @@ class App extends Component {
           onDismiss={this.closeAlert}
           bsClass="alert alert-danger alert-dismissable container"
         >
-          <strong>{`${this.props.state.status}`}</strong>
+          <strong>Something going wrong, please, check the fields.</strong>
         </Alert>
       );
     } else {
@@ -49,7 +49,7 @@ export default connect(
     handleDismiss: status => {
       dispatch({
         type: "SHOW_ALERT",
-        payload: status
+        payload: false
       });
     }
   })
