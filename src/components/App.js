@@ -1,56 +1,39 @@
 import React, { Component } from "react";
-import FirstPage from "./FirstPage";
-import { Alert } from "react-bootstrap";
-import { connect } from "react-redux";
+import MainPage from "./MainPage";
+import SignInPage from "./SignInPage";
+// reducers
+import allReducers from "../reducers";
+// routing
+import { Provider } from "react-redux";
+import { Router } from "react-router-dom";
+import { Route } from "react-router";
+import { createStore } from "redux";
+import { syncHistoryWithStore } from "react-router-redux";
+
+import createHistory from "../utils/history";
+
+const histories = createHistory;
+
+const store = createStore(
+  allReducers,
+  window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()
+);
+
+const history = syncHistoryWithStore(histories, store);
 
 class App extends Component {
-  constructor(props) {
-    super(props);
-    this.showAlert = this.showAlert.bind(this);
-    this.closeAlert = this.closeAlert.bind(this);
-  }
-  closeAlert() {
-    this.props.handleDismiss("");
-  }
-
-  showAlert() {
-    if (this.props.state.show) {
-      return (
-        <Alert
-          bsStyle="danger"
-          onDismiss={this.closeAlert}
-          bsClass="alert alert-danger alert-dismissable container"
-        >
-          <strong>Something going wrong, please, check the fields.</strong>
-        </Alert>
-      );
-    } else {
-      return null;
-    }
-  }
-
   render() {
     return (
-      <div>
-        {this.showAlert()}
-        <div className="App">
-          <FirstPage />
-        </div>
-      </div>
+      <Provider store={store}>
+        <Router history={history}>
+          <div>
+            <Route exact path="/" component={SignInPage} />
+            <Route exact path="/main" component={MainPage} />
+          </div>
+        </Router>
+      </Provider>
     );
   }
 }
 
-export default connect(
-  state => ({
-    state: state.notice
-  }),
-  dispatch => ({
-    handleDismiss: status => {
-      dispatch({
-        type: "SHOW_ALERT",
-        payload: false
-      });
-    }
-  })
-)(App);
+export default App;

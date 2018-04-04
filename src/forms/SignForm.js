@@ -3,7 +3,11 @@ import { Button } from "react-bootstrap";
 import FieldGroup from "./FieldGroup";
 import { connect } from "react-redux";
 // utils
-import UserSessionUtils from "../utils/UserSessionUtils";
+import startSession from "../utils/session";
+import MainPage from "../components/MainPage";
+import SignInPage from "../components/SignInPage";
+
+import { withRouter } from "react-router";
 
 class SignForm extends Component {
   constructor(props) {
@@ -24,9 +28,17 @@ class SignForm extends Component {
   handleSubmit(event) {
     event.preventDefault();
     const url = event.target.action;
-    const session = new UserSessionUtils();
-    session.postRequest(url, this.props.auth.auth_data);
-    this.props.errorAlert();
+    const answer = startSession(url, this.props.auth);
+    answer.then(result => {
+      if (result >= 200 && result < 300) {
+        this.props.errorAlert(false);
+        this.props.setLogin(true);
+        console.log(this.props.history);
+        this.props.history.push("/main");
+      } else {
+        this.props.errorAlert(true);
+      }
+    });
     return false;
   }
 
@@ -35,6 +47,7 @@ class SignForm extends Component {
       <div>
         <br />
         <p className="text-center">example@example.com</p>
+        <p className="text-center">onioni@example.com</p>
         <p className="text-center">password</p>
         <form
           action={this.props.action}
@@ -66,29 +79,37 @@ class SignForm extends Component {
   }
 }
 
-export default connect(
-  state => ({
-    auth: state.auth,
-    notice: state.notice
-  }),
-  dispatch => ({
-    handleChangeEmail: inputValue => {
-      dispatch({
-        type: "CHANGE_EMAIL",
-        payload: inputValue
-      });
-    },
-    handleChangePassword: inputValue => {
-      dispatch({
-        type: "CHANGE_PASSWORD",
-        payload: inputValue
-      });
-    },
-    errorAlert: () => {
-      dispatch({
-        type: "SHOW_ALERT",
-        payload: true
-      });
-    }
-  })
-)(SignForm);
+export default withRouter(
+  connect(
+    state => ({
+      auth: state.auth,
+      notice: state.notice
+    }),
+    dispatch => ({
+      handleChangeEmail: inputValue => {
+        dispatch({
+          type: "CHANGE_EMAIL",
+          payload: inputValue
+        });
+      },
+      handleChangePassword: inputValue => {
+        dispatch({
+          type: "CHANGE_PASSWORD",
+          payload: inputValue
+        });
+      },
+      errorAlert: status => {
+        dispatch({
+          type: "SHOW_ALERT",
+          payload: status
+        });
+      },
+      setLogin: status => {
+        dispatch({
+          type: "SET_LOGIN",
+          payload: status
+        });
+      }
+    })
+  )(SignForm)
+);
