@@ -1,4 +1,4 @@
-export default function getTokenFromParams(responce) {
+export default function getTokenFromPromise(responce) {
   try {
     return {
       client: responce.headers.get("client"),
