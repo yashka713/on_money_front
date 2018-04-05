@@ -9,10 +9,10 @@ class SignTabs extends Component {
       <div className="first-page">
         <Tabs defaultActiveKey={1} id="uncontrolled-tab-example">
           <Tab eventKey={1} title="Sign in">
-            <SignForm id="SignIn" action="http://localhost:3000/auth/sign_in" />
+            <SignForm id="SignIn" action="https://api-on-money.herokuapp.com/auth/sign_in" />
           </Tab>
           <Tab eventKey={2} title="Sign up">
-            <SignForm id="SignUp" action="http://localhost:3000/auth" />
+            <SignForm id="SignUp" action="https://api-on-money.herokuapp.com/auth" />
           </Tab>
         </Tabs>
       </div>

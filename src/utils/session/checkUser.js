@@ -6,7 +6,7 @@ export default function checkUser() {
     let token = Token.getToken();
     if (token !== null && token !== undefined) {
       let xhr = new XMLHttpRequest();
-      xhr.open("get", "http://localhost:3000/authn/checkme", false);
+      xhr.open("get", "https://api-on-money.herokuapp.com/authn/checkme", false);
       xhr.setRequestHeader("Accept", "application/json, text/plain, */*");
       xhr.setRequestHeader("Content-Type", "application/json");
       xhr.setRequestHeader("token-type", token["tokenType"]);
