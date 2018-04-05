@@ -1,15 +1,17 @@
 import checkUser from "../utils/session/checkUser";
 
-function current_user() {
+function user_present() {
   const status = checkUser();
   return status >= 200 && status < 300;
 }
 
+const logged = user_present();
+
 const initialState = {
   email: "",
   password: "",
-  isAuthenticated: current_user(),
-  showSuccessAlert: !current_user()
+  isAuthenticated: logged,
+  showSuccessAlert: !logged
 };
 
 export default function auth(state = initialState, action) {
