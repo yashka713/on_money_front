@@ -2,12 +2,9 @@ import React, { Component } from "react";
 import { Button } from "react-bootstrap";
 import FieldGroup from "./FieldGroup";
 import { connect } from "react-redux";
+import { push } from "react-router-redux";
 // utils
-import startSession from "../utils/session";
-import MainPage from "../components/MainPage";
-import SignInPage from "../components/SignInPage";
-
-import { withRouter } from "react-router";
+import startSession from "../utils/session/startSession";
 
 class SignForm extends Component {
   constructor(props) {
@@ -32,9 +29,7 @@ class SignForm extends Component {
     answer.then(result => {
       if (result >= 200 && result < 300) {
         this.props.errorAlert(false);
-        this.props.setLogin(true);
-        console.log(this.props.history);
-        this.props.history.push("/main");
+        this.props.login();
       } else {
         this.props.errorAlert(true);
       }
@@ -60,6 +55,7 @@ class SignForm extends Component {
             id={`${this.props.id}Email`}
             type="email"
             label="Email address:"
+            required
             placeholder="Enter email"
             onChange={this.handleChangeEmail}
           />
@@ -67,6 +63,7 @@ class SignForm extends Component {
             id={`${this.props.id}Password`}
             label="Password:"
             type="password"
+            required
             placeholder="password"
             onChange={this.handleChangePassword}
           />
@@ -79,37 +76,35 @@ class SignForm extends Component {
   }
 }
 
-export default withRouter(
-  connect(
-    state => ({
-      auth: state.auth,
-      notice: state.notice
-    }),
-    dispatch => ({
-      handleChangeEmail: inputValue => {
-        dispatch({
-          type: "CHANGE_EMAIL",
-          payload: inputValue
-        });
-      },
-      handleChangePassword: inputValue => {
-        dispatch({
-          type: "CHANGE_PASSWORD",
-          payload: inputValue
-        });
-      },
-      errorAlert: status => {
-        dispatch({
-          type: "SHOW_ALERT",
-          payload: status
-        });
-      },
-      setLogin: status => {
-        dispatch({
-          type: "SET_LOGIN",
-          payload: status
-        });
-      }
-    })
-  )(SignForm)
-);
+export default connect(
+  state => ({
+    auth: state.auth,
+    notice: state.notice
+  }),
+  dispatch => ({
+    handleChangeEmail: inputValue => {
+      dispatch({
+        type: "CHANGE_EMAIL",
+        payload: inputValue
+      });
+    },
+    handleChangePassword: inputValue => {
+      dispatch({
+        type: "CHANGE_PASSWORD",
+        payload: inputValue
+      });
+    },
+    errorAlert: status => {
+      dispatch({
+        type: "SHOW_ERROR_ALERT",
+        payload: status
+      });
+    },
+    login: () => {
+      dispatch({
+        type: "AUTH_SUCCESS"
+      });
+      dispatch(push("/"));
+    }
+  })
+)(SignForm);
