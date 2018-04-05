@@ -1,36 +1,37 @@
 import React, { Component } from "react";
 import MainPage from "./MainPage";
 import SignInPage from "./SignInPage";
+import PrivateRoute from "./PrivateRoute";
 // reducers
 import allReducers from "../reducers";
 // routing
 import { Provider } from "react-redux";
-import { Router } from "react-router-dom";
-import { Route } from "react-router";
-import { createStore } from "redux";
-import { syncHistoryWithStore } from "react-router-redux";
+import { Route, Switch } from "react-router";
+import { createStore, applyMiddleware } from "redux";
+import { ConnectedRouter, routerMiddleware } from "react-router-redux";
+import { composeWithDevTools } from "redux-devtools-extension";
+import thunk from "redux-thunk";
 
 import createHistory from "../utils/history";
 
-const histories = createHistory;
+const history = createHistory;
+const middleware = routerMiddleware(history);
 
 const store = createStore(
   allReducers,
-  window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()
+  composeWithDevTools(applyMiddleware(thunk), applyMiddleware(middleware))
 );
-
-const history = syncHistoryWithStore(histories, store);
 
 class App extends Component {
   render() {
     return (
       <Provider store={store}>
-        <Router history={history}>
-          <div>
-            <Route exact path="/" component={SignInPage} />
-            <Route exact path="/main" component={MainPage} />
-          </div>
-        </Router>
+        <ConnectedRouter history={history}>
+          <Switch>
+            <Route exact path="/login" component={SignInPage} />
+            <PrivateRoute exact path="/" component={MainPage} />
+          </Switch>
+        </ConnectedRouter>
       </Provider>
     );
   }
