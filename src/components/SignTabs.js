@@ -3,7 +3,7 @@ import React, { Component } from "react";
 import SignForm from "../forms/SignForm";
 import { Tabs, Tab } from "react-bootstrap";
 
-class FirstPage extends Component {
+class SignTabs extends Component {
   render() {
     return (
       <div className="first-page">
@@ -20,4 +20,4 @@ class FirstPage extends Component {
   }
 }
 
-export default FirstPage;
+export default SignTabs;

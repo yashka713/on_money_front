@@ -2,8 +2,9 @@ import React, { Component } from "react";
 import { Button } from "react-bootstrap";
 import FieldGroup from "./FieldGroup";
 import { connect } from "react-redux";
+import { push } from "react-router-redux";
 // utils
-import UserSessionUtils from "../utils/UserSessionUtils";
+import startSession from "../utils/session/startSession";
 
 class SignForm extends Component {
   constructor(props) {
@@ -24,9 +25,15 @@ class SignForm extends Component {
   handleSubmit(event) {
     event.preventDefault();
     const url = event.target.action;
-    const session = new UserSessionUtils();
-    session.postRequest(url, this.props.auth.auth_data);
-    this.props.errorAlert();
+    const answer = startSession(url, this.props.auth);
+    answer.then(result => {
+      if (result >= 200 && result < 300) {
+        this.props.errorAlert(false);
+        this.props.login();
+      } else {
+        this.props.errorAlert(true);
+      }
+    });
     return false;
   }
 
@@ -35,6 +42,7 @@ class SignForm extends Component {
       <div>
         <br />
         <p className="text-center">example@example.com</p>
+        <p className="text-center">onioni@example.com</p>
         <p className="text-center">password</p>
         <form
           action={this.props.action}
@@ -47,6 +55,7 @@ class SignForm extends Component {
             id={`${this.props.id}Email`}
             type="email"
             label="Email address:"
+            required
             placeholder="Enter email"
             onChange={this.handleChangeEmail}
           />
@@ -54,6 +63,7 @@ class SignForm extends Component {
             id={`${this.props.id}Password`}
             label="Password:"
             type="password"
+            required
             placeholder="password"
             onChange={this.handleChangePassword}
           />
@@ -84,11 +94,17 @@ export default connect(
         payload: inputValue
       });
     },
-    errorAlert: () => {
+    errorAlert: status => {
       dispatch({
-        type: "SHOW_ALERT",
-        payload: true
+        type: "SHOW_ERROR_ALERT",
+        payload: status
       });
+    },
+    login: () => {
+      dispatch({
+        type: "AUTH_SUCCESS"
+      });
+      dispatch(push("/"));
     }
   })
 )(SignForm);
