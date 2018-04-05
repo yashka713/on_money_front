@@ -3,14 +3,44 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "bootstrap": "3",
+    "history": "^4.7.2",
+    "node-sass": "^4.8.3",
+    "normalize.css": "^7.0.0",
     "react": "^16.2.0",
+    "react-bootstrap": "^0.32.1",
     "react-dom": "^16.2.0",
-    "react-scripts": "1.1.1"
+    "react-redux": "^5.0.7",
+    "react-router": "^4.2.0",
+    "react-router-dom": "^4.2.2",
+    "react-router-redux": "^5.0.0-alpha.9",
+    "react-scripts": "1.1.1",
+    "redux": "^3.5.2",
+    "redux-devtools-extension": "^2.13.2",
+    "redux-logger": "^2.6.1",
+    "redux-promise": "^0.5.3",
+    "redux-thunk": "^2.1.0"
   },
   "scripts": {
     "start": "PORT=3001 react-scripts start",
+    "css": "node-sass src/styles/main.scss src/dest/main.css",
+    "watch:css": "yarn css -w",
     "build": "react-scripts build",
     "test": "react-scripts test --env=jsdom",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "lint": "eslint src"
+  },
+  "devDependencies": {
+    "babel-eslint": "^8.0.1",
+    "eslint": "^3.19.0",
+    "eslint-config-prettier": "^2.6.0",
+    "eslint-plugin-import": "^2.2.0",
+    "eslint-plugin-jsx-a11y": "^3.0.2 || ^4.0.0",
+    "eslint-plugin-prettier": "^2.3.1",
+    "eslint-plugin-react": "^6.9.0",
+    "prettier": "^1.7.3",
+    "sass-loader": "^6.0.7",
+    "stylelint": "^8.1.1",
+    "stylelint-config-standard": "^17.0.0"
   }
 }

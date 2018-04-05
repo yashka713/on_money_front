@@ -1,0 +1,13 @@
+version: "3"
+services:
+  client:
+    container_name: client
+    build: .
+    ports:
+      - "3001:3001"
+    environment:
+      - PORT=3001
+      - HOST=0.0.0.0
+    command: yarn start
+    volumes:
+      - .:/usr/src/app
