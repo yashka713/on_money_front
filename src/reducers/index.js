@@ -5,7 +5,7 @@ import notice from "./notice";
 import { routerReducer } from "react-router-redux";
 
 const allReducers = combineReducers({
-  routing: routerReducer,
+  router: routerReducer,
   auth,
   notice
 });

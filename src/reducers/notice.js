@@ -1,12 +1,12 @@
 const initialState = {
-  show: false
+  showSignInAlert: false
 };
 
 export default function notice(state = initialState, action) {
-  if (action.type === "SHOW_ALERT") {
+  if (action.type === "SHOW_ERROR_ALERT") {
     return {
       ...state,
-      show: action.payload
+      showSignInAlert: action.payload
     };
   }
   return state;
