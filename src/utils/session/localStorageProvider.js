@@ -5,16 +5,23 @@ export default {
     try {
       localStorage.removeItem(STORAGE_NAME);
       localStorage.setItem(STORAGE_NAME, JSON.stringify(token));
-      console.log("saved");
     } catch (error) {
       console.error(error);
+      localStorage.clear();
     }
   },
   getToken() {
     try {
-      return JSON.parse(localStorage.getItem(STORAGE_NAME));
+      const data = localStorage.getItem(STORAGE_NAME);
+      if (data !== null && data !== undefined) {
+        return JSON.parse(data);
+      } else {
+        return null;
+      }
     } catch (error) {
       console.error(error);
+      localStorage.clear();
+      return null;
     }
   }
 };
