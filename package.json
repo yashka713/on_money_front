@@ -22,7 +22,7 @@
     "redux-thunk": "^2.1.0"
   },
   "scripts": {
-    "start": "PORT=3001 react-scripts start",
+    "start": "react-scripts start",
     "css": "node-sass src/styles/main.scss src/dest/main.css",
     "watch:css": "yarn css -w",
     "build": "react-scripts build",
