@@ -1,6 +1,6 @@
 import React, { Component } from "react";
-import MainPage from "./MainPage";
-import SignInPage from "./SignInPage";
+import MainPage from "./mainPage/MainPage";
+import SignInPage from "./loginPage/SignInPage";
 import PrivateRoute from "./PrivateRoute";
 // reducers
 import allReducers from "../reducers/index";

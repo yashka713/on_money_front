@@ -37,7 +37,7 @@ export default function auth(state = initialState, action) {
       isAuthenticated: true,
       showSuccessAlert: true
     };
-  } else if (action.type === "AUTH_FAIL") {
+  } else if (action.type === "LOGOUT") {
     return {
       ...state,
       email: state.email,

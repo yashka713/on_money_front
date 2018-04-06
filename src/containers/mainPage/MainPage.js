@@ -1,33 +1,27 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import { Alert } from "react-bootstrap";
-import showSuccessAlert from "../actions/successAlert";
+import showSuccessAlert from "../../actions/successAlert";
+import { HeaderComponent } from "../../components/HeaderComponent";
+import { SuccessAlertComponent } from "../../components/SuccessAlertComponent";
 
 class MainPage extends Component {
   constructor(props) {
     super(props);
-    this.closeSuccsesAlert = this.closeSuccsesAlert.bind(this);
+    // this.closeSuccessAlert = this.closeSuccessAlert.bind(this);
     this.showAlert = this.showAlert.bind(this);
   }
-  closeSuccsesAlert() {
+  closeSuccessAlert() {
     this.props.handleSignInDismiss(false);
   }
   showAlert() {
     if (this.props.showSuccessAlert) {
-      return (
-        <Alert
-          bsStyle="success"
-          onDismiss={this.closeSuccsesAlert}
-          bsClass="alert alert-success alert-dismissable container"
-        >
-          <strong>We are glad to see you.</strong>
-        </Alert>
-      );
+      return (<SuccessAlertComponent closeSuccessAlert={this.closeSuccessAlert.bind(this)} />);
     }
   }
   render() {
     return (
-      <div className="MainPage">
+      <div>
+        <HeaderComponent />
         {this.showAlert()}
         <p>This is page for signed in user</p>
       </div>
