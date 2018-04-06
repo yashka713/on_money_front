@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { Alert } from "react-bootstrap";
 import { connect } from "react-redux";
 import { push } from "react-router-redux";
-import { SignTabs } from "../../components/SignTabs";
+import { SignTabs } from "../../components/loginPage/SignTabs";
 import showErrorAlert from "../../actions/signForm/errorAlert";
 
 class SignInPage extends Component {

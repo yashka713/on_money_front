@@ -1,5 +1,6 @@
 import Token from "./localStorageProvider";
 import getTokenFromPromise from "./getTokenFromPromise";
+import getUserInfo from "./setCurrentUser";
 
 export default function startSession(url, formData) {
   for (let key in formData) {
@@ -15,17 +16,25 @@ export default function startSession(url, formData) {
     headers,
     body: JSON.stringify(data)
   };
-
   const request = new Request(url, options);
   return fetch(request)
-    .then(responce => {
-      if (responce.status >= 200 && responce.status < 300) {
-        const token = getTokenFromPromise(responce);
+    .then(response => {
+      if (response.status >= 200 && response.status < 300) {
+        const token = getTokenFromPromise(response);
         Token.saveToken(token);
       } else {
         localStorage.clear();
       }
-      return responce.status;
+      return response.json().then(json => {
+        return {
+          data: json.data,
+          status: response.status
+        };
+      });
+    })
+    .then(answer => {
+      const current_user = getUserInfo(answer.data);
+      return { status: answer.status, current_user: current_user };
     })
     .catch(error => {
       console.error(error);

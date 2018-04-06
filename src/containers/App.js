@@ -17,7 +17,7 @@ import createHistory from "../utils/history";
 const history = createHistory;
 const middleware = routerMiddleware(history);
 
-const store = createStore(
+export const store = createStore(
   allReducers,
   composeWithDevTools(applyMiddleware(thunk), applyMiddleware(middleware))
 );

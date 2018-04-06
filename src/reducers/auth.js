@@ -1,17 +1,9 @@
-import checkUser from "../utils/session/checkUser";
-
-function user_present() {
-  const status = checkUser();
-  return status >= 200 && status < 300;
-}
-
-const logged = user_present();
+import { logged } from "../utils/session/checkUser";
 
 const initialState = {
   email: "",
   password: "",
-  isAuthenticated: logged,
-  showSuccessAlert: !logged
+  isAuthenticated: logged
 };
 
 export default function auth(state = initialState, action) {
@@ -32,25 +24,14 @@ export default function auth(state = initialState, action) {
   } else if (action.type === "AUTH_SUCCESS") {
     return {
       ...state,
-      email: state.email,
-      password: state.password,
-      isAuthenticated: true,
-      showSuccessAlert: true
+      email: "",
+      password: "",
+      isAuthenticated: true
     };
   } else if (action.type === "LOGOUT") {
     return {
       ...state,
-      email: state.email,
-      password: state.password,
       isAuthenticated: false
-    };
-  } else if (action.type === "SHOW_SUCCESS_ALERT") {
-    return {
-      ...state,
-      email: state.email,
-      password: state.password,
-      isAuthenticated: state.isAuthenticated,
-      showSuccessAlert: action.payload
     };
   }
   return state;

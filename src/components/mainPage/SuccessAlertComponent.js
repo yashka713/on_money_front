@@ -9,7 +9,7 @@ export const SuccessAlertComponent = props => {
     <Alert
       bsStyle="success"
       onDismiss={this.closeAlert}
-      bsClass="alert alert-success alert-dismissable container"
+      bsClass="alert alert-success alert-dismissable container b-popup text-center"
     >
       <strong>We are glad to see you.</strong>
     </Alert>

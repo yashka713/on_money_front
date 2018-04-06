@@ -20,9 +20,17 @@
 .navbar {
   margin: 0 auto 20px; }
 
-.alert {
-  margin-top: 3%;
-  text-align: center; }
+.b-popup {
+  min-height: 40px;
+  background-color: rgba(0, 0, 0, 0.5);
+  overflow: hidden;
+  position: fixed;
+  top: 45px;
+  opacity: 0.9;
+  left: calc(-50vw + 50%);
+  right: calc(-50vw + 50%);
+  margin-left: auto;
+  margin-right: auto; }
 
 .cursor-pointer {
   cursor: pointer; }

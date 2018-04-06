@@ -1,6 +1,6 @@
 import React from "react";
 
-import SignForm from "../forms/SignForm";
+import SignForm from "../../forms/SignForm";
 import { Tabs, Tab } from "react-bootstrap";
 
 export const SignTabs = () => {

@@ -1,7 +1,8 @@
 import Token from "./localStorageProvider";
 import getTokenFromXhr from "./getTokenFromXhr";
+import getUserInfo from "./setCurrentUser";
 
-export default function checkUser() {
+function checkUser() {
   try {
     let token = Token.getToken();
     if (token !== null && token !== undefined) {
@@ -20,10 +21,20 @@ export default function checkUser() {
       } else {
         localStorage.clear();
       }
-      return xhr.status;
+      return {
+        status: xhr.status,
+        current_user: getUserInfo(JSON.parse(xhr.responseText))
+      };
     }
     return 0;
   } catch (error) {
     console.error(error);
   }
 }
+
+function user_present() {
+  const answer = checkUser();
+  return answer.status >= 200 && answer.status < 300;
+}
+
+export const logged = user_present();
