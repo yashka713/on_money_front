@@ -1,7 +1,9 @@
 import React, { Component } from "react";
-import SignTabs from "./SignTabs";
 import { Alert } from "react-bootstrap";
 import { connect } from "react-redux";
+import { push } from "react-router-redux";
+import SignTabs from "./SignTabs";
+import showErrorAlert from "../actions/signForm/errorAlert";
 
 class SignInPage extends Component {
   constructor(props) {
@@ -9,12 +11,16 @@ class SignInPage extends Component {
     this.showAlert = this.showAlert.bind(this);
     this.closeAlert = this.closeAlert.bind(this);
   }
+  componentWillMount() {
+    this.props.current_user(this.props.isAuthenticated);
+  }
+
   closeAlert() {
-    this.props.handleDismiss("");
+    this.props.handleDismiss(false);
   }
 
   showAlert() {
-    if (this.props.state.showSignInAlert) {
+    if (this.props.notice.showSignInAlert) {
       return (
         <Alert
           bsStyle="danger"
@@ -43,14 +49,15 @@ class SignInPage extends Component {
 
 export default connect(
   state => ({
-    state: state.notice
+    notice: state.notice,
+    isAuthenticated: state.auth.isAuthenticated
   }),
   dispatch => ({
     handleDismiss: status => {
-      dispatch({
-        type: "SHOW_ERROR_ALERT",
-        payload: false
-      });
+      dispatch(showErrorAlert(status));
+    },
+    current_user: auth => {
+      if (auth) dispatch(push("/"));
     }
   })
 )(SignInPage);
