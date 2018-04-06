@@ -27,6 +27,7 @@
     "watch:css": "yarn css -w",
     "build": "react-scripts build",
     "test": "react-scripts test --env=jsdom",
+    "test:ci": "react-scripts test --env=jsdom --setupFiles `pwd`/tests/config/localStorageConfig.js",
     "eject": "react-scripts eject",
     "lint": "eslint src"
   },

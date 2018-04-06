@@ -54,6 +54,12 @@ for starting App without building stylesheet.
 
 Navigate to [http://localhost:3001](http://localhost:3001) or run `curl localhost:3001/status`.
 
+Tests
+------
+
+```apple js
+yarn test:ci
+```
 
 Changelog
 ---------

@@ -26,7 +26,7 @@ function checkUser() {
         current_user: getUserInfo(JSON.parse(xhr.responseText))
       };
     }
-    return 0;
+    return { status: 0, current_user: {} };
   } catch (error) {
     console.error(error);
   }
