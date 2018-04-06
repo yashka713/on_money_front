@@ -1,6 +1,6 @@
 import React from "react";
 import ReactDOM from "react-dom";
-import SignInPage from "./components/SignInPage";
+import SignInPage from "./containers/SignInPage";
 
 // store
 import { Provider } from "react-redux";

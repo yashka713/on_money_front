@@ -3,7 +3,7 @@ import MainPage from "./MainPage";
 import SignInPage from "./SignInPage";
 import PrivateRoute from "./PrivateRoute";
 // reducers
-import allReducers from "../reducers";
+import allReducers from "../reducers/index";
 // routing
 import { Provider } from "react-redux";
 import { Route, Switch } from "react-router";
