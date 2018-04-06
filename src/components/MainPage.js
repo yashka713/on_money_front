@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import { Alert } from "react-bootstrap";
+import showSuccessAlert from "../actions/successAlert";
 
 class MainPage extends Component {
   constructor(props) {
@@ -40,10 +41,7 @@ export default connect(
   }),
   dispatch => ({
     handleSignInDismiss: status => {
-      dispatch({
-        type: "SHOW_SUCCESS_ALERT",
-        payload: status
-      });
+      dispatch(showSuccessAlert(status));
     }
   })
 )(MainPage);

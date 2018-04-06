@@ -5,6 +5,11 @@ import { connect } from "react-redux";
 import { push } from "react-router-redux";
 // utils
 import startSession from "../utils/session/startSession";
+// actions
+import changeEmail from "../actions/signForm/changeEmail";
+import changePassword from "../actions/signForm/changePassword";
+import showErrorAlert from "../actions/signForm/errorAlert";
+import successAuth from "../actions/successAuth";
 
 class SignForm extends Component {
   constructor(props) {
@@ -28,7 +33,6 @@ class SignForm extends Component {
     const answer = startSession(url, this.props.auth);
     answer.then(result => {
       if (result >= 200 && result < 300) {
-        this.props.errorAlert(false);
         this.props.login();
       } else {
         this.props.errorAlert(true);
@@ -83,27 +87,16 @@ export default connect(
   }),
   dispatch => ({
     handleChangeEmail: inputValue => {
-      dispatch({
-        type: "CHANGE_EMAIL",
-        payload: inputValue
-      });
+      dispatch(changeEmail(inputValue));
     },
     handleChangePassword: inputValue => {
-      dispatch({
-        type: "CHANGE_PASSWORD",
-        payload: inputValue
-      });
+      dispatch(changePassword(inputValue));
     },
     errorAlert: status => {
-      dispatch({
-        type: "SHOW_ERROR_ALERT",
-        payload: status
-      });
+      dispatch(showErrorAlert(status));
     },
     login: () => {
-      dispatch({
-        type: "AUTH_SUCCESS"
-      });
+      dispatch(successAuth());
       dispatch(push("/"));
     }
   })
