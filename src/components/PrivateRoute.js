@@ -3,6 +3,7 @@ import { Redirect } from "react-router-dom";
 import { connect } from "react-redux";
 import { Route } from "react-router";
 import { push } from "react-router-redux";
+import successAuth from "../actions/successAuth";
 
 class PrivateRoute extends Component {
   render() {
@@ -33,9 +34,7 @@ export default connect(
   }),
   dispatch => ({
     login: () => {
-      dispatch({
-        type: "AUTH_SUCCESS"
-      });
+      dispatch(successAuth());
       dispatch(push("/"));
     }
   })
