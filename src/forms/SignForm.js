@@ -33,7 +33,7 @@ class SignForm extends Component {
     const url = event.target.action;
     const answer = startSession(url, this.props.auth);
     answer.then(result => {
-      if (result.status >= 200 && result.status < 300) {
+      if (result && result.status >= 200 && result.status < 300) {
         this.props.login();
       } else {
         this.props.errorAlert(true);

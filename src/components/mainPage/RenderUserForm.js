@@ -10,7 +10,7 @@ const RenderUserForm = ({ callback }) => (
       className="cursor-pointer close"
       onClick={callback}
     />
-    <UserUpdateForm action="http://localhost:3000/auth" id="UserUpdateForm" />
+    <UserUpdateForm action="https://api-on-money.herokuapp.com/auth" id="UserUpdateForm" />
   </div>
 );
 
