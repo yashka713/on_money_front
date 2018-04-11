@@ -7,7 +7,7 @@ export default {
       localStorage.setItem(STORAGE_NAME, JSON.stringify(token));
     } catch (error) {
       console.error(error);
-      localStorage.clear();
+      this.clearLS();
     }
   },
   getToken() {
@@ -20,8 +20,11 @@ export default {
       }
     } catch (error) {
       console.error(error);
-      localStorage.clear();
+      this.clearLS();
       return null;
     }
+  },
+  clearLS() {
+    localStorage.clear();
   }
 };

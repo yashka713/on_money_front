@@ -32,19 +32,36 @@ Required software:
 * [hivemind](https://github.com/DarthSim/hivemind)
 
 Install
------------------
+-------
 ```
 git clone git@github.com:yashka713/on_money_front.git
 yarn
 ```
 
 Launch
-------------
+------
 
 If you are using `hivemind` for launching back-end and front-end for development, please, configure `Procfile`
 and start:
 ```
 hivemind
 ```
+or
+```
+yarn start
+```
+for starting App without building stylesheet.
 
 Navigate to [http://localhost:3001](http://localhost:3001) or run `curl localhost:3001/status`.
+
+Tests
+------
+
+```apple js
+yarn test:ci
+```
+
+Changelog
+---------
+
+* 0.0.1 - 05.04.2018 - Added authorization for user
