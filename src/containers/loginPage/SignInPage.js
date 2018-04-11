@@ -2,8 +2,8 @@ import React, { Component } from "react";
 import { Alert } from "react-bootstrap";
 import { connect } from "react-redux";
 import { push } from "react-router-redux";
-import SignTabs from "./SignTabs";
-import showErrorAlert from "../actions/signForm/errorAlert";
+import { SignTabs } from "../../components/loginPage/SignTabs";
+import showErrorAlert from "../../actions/signForm/errorAlert";
 
 class SignInPage extends Component {
   constructor(props) {
@@ -50,7 +50,7 @@ class SignInPage extends Component {
 export default connect(
   state => ({
     notice: state.notice,
-    isAuthenticated: state.auth.isAuthenticated
+    isAuthenticated: state.current_user.isAuthenticated
   }),
   dispatch => ({
     handleDismiss: status => {
