@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import showSuccessAlert from "../../actions/successAlert";
-import { HeaderComponent } from "../../components/mainPage/HeaderComponent";
+import HeaderComponent from "./HeaderComponent";
 import { SuccessAlertComponent } from "../../components/mainPage/SuccessAlertComponent";
 
 class MainPage extends Component {

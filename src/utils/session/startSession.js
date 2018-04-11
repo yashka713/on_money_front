@@ -2,6 +2,7 @@ import Token from "./localStorageProvider";
 import getTokenFromPromise from "./getTokenFromPromise";
 import getUserInfo from "./setCurrentUser";
 
+//TODO refactor this
 export default function startSession(url, formData) {
   for (let key in formData) {
     if (key !== "email" && key !== "password") {
@@ -33,7 +34,10 @@ export default function startSession(url, formData) {
       });
     })
     .then(answer => {
-      const current_user = getUserInfo(answer.data);
+      let current_user = {};
+      if (answer.status < 300 && answer.status >= 200) {
+        current_user = getUserInfo(answer.data);
+      }
       return { status: answer.status, current_user: current_user };
     })
     .catch(error => {

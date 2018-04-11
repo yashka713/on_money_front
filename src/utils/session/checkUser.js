@@ -1,6 +1,7 @@
 import Token from "./localStorageProvider";
 import getTokenFromXhr from "./getTokenFromXhr";
 import getUserInfo from "./setCurrentUser";
+import setXhrHeaders from "./setXhrHeaders";
 
 function checkUser() {
   try {
@@ -8,13 +9,7 @@ function checkUser() {
     if (token !== null && token !== undefined) {
       let xhr = new XMLHttpRequest();
       xhr.open("get", "http://localhost:3000/authn/checkme", false);
-      xhr.setRequestHeader("Accept", "application/json, text/plain, */*");
-      xhr.setRequestHeader("Content-Type", "application/json");
-      xhr.setRequestHeader("token-type", token["tokenType"]);
-      xhr.setRequestHeader("access-token", token["accessToken"]);
-      xhr.setRequestHeader("uid", token["uid"]);
-      xhr.setRequestHeader("expiry", token["expiry"]);
-      xhr.setRequestHeader("client", token["client"]);
+      xhr = setXhrHeaders(xhr, token);
       xhr.send();
       if (xhr.status >= 200 && xhr.status < 300) {
         Token.saveToken(getTokenFromXhr(xhr));
@@ -32,9 +27,4 @@ function checkUser() {
   }
 }
 
-function user_present() {
-  const answer = checkUser();
-  return answer.status >= 200 && answer.status < 300;
-}
-
-export const logged = user_present();
+export const logged = checkUser();

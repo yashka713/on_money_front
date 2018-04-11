@@ -27,5 +27,5 @@ class PrivateRoute extends Component {
 }
 
 export default connect(state => ({
-  isAuthenticated: state.auth.isAuthenticated
+  isAuthenticated: state.current_user.isAuthenticated
 }))(PrivateRoute);

@@ -50,7 +50,7 @@ class SignInPage extends Component {
 export default connect(
   state => ({
     notice: state.notice,
-    isAuthenticated: state.auth.isAuthenticated
+    isAuthenticated: state.current_user.isAuthenticated
   }),
   dispatch => ({
     handleDismiss: status => {
