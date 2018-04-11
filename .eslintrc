@@ -1,0 +1,38 @@
+{
+  "extends": ["prettier"],
+
+  "plugins": ["prettier"],
+
+  "env": {
+    "browser": true
+  },
+
+  "rules": {
+    "prettier/prettier": "error",
+    "semi": ["error", "always"],
+    "quotes": ["error", "double"],
+    "func-names": ["error", "never"]
+  },
+
+  "parser": "babel-eslint",
+
+  "parserOptions": {
+    "ecmaVersion": 6,
+    "sourceType": "module",
+    "ecmaFeatures": {
+      "jsx": true
+    }
+  },
+
+  "settings": {
+    "import/resolver": {
+      "yarn": {
+        "config": {
+          "resolve": {
+            "modules": ["src", "node_modules"]
+          }
+        }
+      }
+    }
+  }
+}
