@@ -46,7 +46,6 @@ class UserUpdateForm extends Component {
           id={`${this.props.id}Name`}
           type="text"
           label="User Name"
-          required
           placeholder="Enter User Name"
           onChange={this.handleChangeName}
         />
@@ -54,7 +53,6 @@ class UserUpdateForm extends Component {
           id={`${this.props.id}Nickname`}
           type="text"
           label="User Nickname"
-          required
           placeholder="Enter User Nickname"
           onChange={this.handleChangeNickname}
         />
