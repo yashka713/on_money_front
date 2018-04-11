@@ -1,9 +1,9 @@
 import React, { Component } from "react";
-import MainPage from "./MainPage";
-import SignInPage from "./SignInPage";
+import MainPage from "./mainPage/MainPage";
+import SignInPage from "./loginPage/SignInPage";
 import PrivateRoute from "./PrivateRoute";
 // reducers
-import allReducers from "../reducers";
+import allReducers from "../reducers/index";
 // routing
 import { Provider } from "react-redux";
 import { Route, Switch } from "react-router";
@@ -17,7 +17,7 @@ import createHistory from "../utils/history";
 const history = createHistory;
 const middleware = routerMiddleware(history);
 
-const store = createStore(
+export const store = createStore(
   allReducers,
   composeWithDevTools(applyMiddleware(thunk), applyMiddleware(middleware))
 );
