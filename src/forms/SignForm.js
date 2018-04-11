@@ -10,6 +10,7 @@ import changeEmail from "../actions/signForm/changeEmail";
 import changePassword from "../actions/signForm/changePassword";
 import showErrorAlert from "../actions/signForm/errorAlert";
 import successAuth from "../actions/successAuth";
+import showSuccessAlert from "../actions/successAlert";
 
 class SignForm extends Component {
   constructor(props) {
@@ -32,7 +33,7 @@ class SignForm extends Component {
     const url = event.target.action;
     const answer = startSession(url, this.props.auth);
     answer.then(result => {
-      if (result >= 200 && result < 300) {
+      if (result.status >= 200 && result.status < 300) {
         this.props.login();
       } else {
         this.props.errorAlert(true);
@@ -98,6 +99,7 @@ export default connect(
     login: () => {
       dispatch(successAuth());
       dispatch(push("/"));
+      dispatch(showSuccessAlert(true));
     }
   })
 )(SignForm);
