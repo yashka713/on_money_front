@@ -1,7 +1,6 @@
 import React, { Component } from "react";
 import FieldGroup from "./FieldGroup";
 import { connect } from "react-redux";
-import { Button } from "react-bootstrap";
 
 class UserUpdateForm extends Component {
   constructor(props) {
@@ -41,6 +40,8 @@ class UserUpdateForm extends Component {
         method="patch"
         id={this.props.id}
       >
+        <p className="text-center">Sorry, function in development</p>
+        <hr />
         <FieldGroup
           id={`${this.props.id}Name`}
           type="text"
@@ -57,7 +58,7 @@ class UserUpdateForm extends Component {
           placeholder="Enter User Nickname"
           onChange={this.handleChangeNickname}
         />
-        <input type="submit" value="Update" />
+        <input type="submit" value="Update" disabled />
       </form>
     );
   }

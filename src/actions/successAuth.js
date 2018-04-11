@@ -1,5 +1,6 @@
-export default function successAuth() {
+export default function successAuth(user) {
   return {
-    type: "AUTH_SUCCESS"
+    type: "AUTH_SUCCESS",
+    payload: user
   };
 }

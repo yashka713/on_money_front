@@ -11,7 +11,10 @@ export default function current_user(state = initialState, action) {
   if (action.type === "AUTH_SUCCESS") {
     return {
       ...state,
-      isAuthenticated: true
+      isAuthenticated: true,
+      email: action.payload.email || "",
+      name: action.payload.name || "",
+      nickname: action.payload.nickname || ""
     };
   } else if (action.type === "LOGOUT") {
     return {

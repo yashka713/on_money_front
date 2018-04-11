@@ -34,7 +34,7 @@ class SignForm extends Component {
     const answer = startSession(url, this.props.auth);
     answer.then(result => {
       if (result.status >= 200 && result.status < 300) {
-        this.props.login();
+        this.props.login(result.current_user);
       } else {
         this.props.errorAlert(true);
       }
@@ -96,8 +96,8 @@ export default connect(
     errorAlert: status => {
       dispatch(showErrorAlert(status));
     },
-    login: () => {
-      dispatch(successAuth());
+    login: (user) => {
+      dispatch(successAuth(user));
       dispatch(push("/"));
       dispatch(showSuccessAlert(true));
     }
