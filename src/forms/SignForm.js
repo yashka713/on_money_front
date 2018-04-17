@@ -96,7 +96,7 @@ export default connect(
     errorAlert: status => {
       dispatch(showErrorAlert(status));
     },
-    login: (user) => {
+    login: user => {
       dispatch(successAuth(user));
       dispatch(push("/"));
       dispatch(showSuccessAlert(true));

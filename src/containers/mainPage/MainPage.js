@@ -1,8 +1,8 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import showSuccessAlert from "../../actions/successAlert";
-import HeaderComponent from "./HeaderComponent";
 import { SuccessAlertComponent } from "../../components/mainPage/SuccessAlertComponent";
+import Navbar from "./Navbar";
 
 class MainPage extends Component {
   constructor(props) {
@@ -14,13 +14,17 @@ class MainPage extends Component {
   }
   showAlert() {
     if (this.props.showSuccessAlert) {
-      return (<SuccessAlertComponent closeSuccessAlert={this.closeSuccessAlert.bind(this)} />);
+      return (
+        <SuccessAlertComponent
+          closeSuccessAlert={this.closeSuccessAlert.bind(this)}
+        />
+      );
     }
   }
   render() {
     return (
       <div>
-        <HeaderComponent />
+        <Navbar />
         {this.showAlert()}
         <p className="container">This is page for signed in user</p>
       </div>
@@ -30,7 +34,7 @@ class MainPage extends Component {
 
 export default connect(
   state => ({
-    showSuccessAlert: state.notice.showSuccessAlert
+    showSuccessAlert: state.notice.showSuccessAlert,
   }),
   dispatch => ({
     handleSignInDismiss: status => {

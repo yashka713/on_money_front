@@ -1,8 +1,12 @@
-import React, { Component, Fragment } from "react";
+import React, { Component } from "react";
 import { Modal, Button } from "react-bootstrap";
 import { connect } from "react-redux";
+import FontAwesomeIcon from "@fortawesome/react-fontawesome";
+import faBackward from "@fortawesome/fontawesome-free-solid/faBackward";
+import faEdit from "@fortawesome/fontawesome-free-solid/faEdit";
+
 import UserInfo from "../../components/mainPage/UserInfo";
-import RenderUserForm from "../../components/mainPage/RenderUserForm";
+import UserUpdateForm from "../../forms/UserUpdateForm";
 
 class UserProfile extends Component {
   constructor(props, context) {
@@ -23,24 +27,35 @@ class UserProfile extends Component {
   render() {
     return (
       <div>
-        <span onClick={this.handleShowModal}>User profile</span>
+        <div
+          onClick={this.handleShowModal}
+          className="user-profile cursor-pointer config-element"
+        >
+          User profile
+        </div>
         <Modal show={this.state.showModal} onHide={this.handleShowModal}>
           <Modal.Header closeButton>
+            {this.state.showForm ? (
+              <FontAwesomeIcon
+                icon={faBackward}
+                className="cursor-pointer close fa-margin"
+                onClick={this.handleShowForm}
+              />
+            ) : (
+              <FontAwesomeIcon
+                icon={faEdit}
+                className="cursor-pointer close fa-margin"
+                onClick={this.handleShowForm}
+              />
+            )}
             <Modal.Title>User profile: </Modal.Title>
           </Modal.Header>
           <Modal.Body>
-            <div className="user-info">
-              <Fragment>
-                {this.state.showForm ? (
-                  <RenderUserForm callback={this.handleShowForm} />
-                ) : (
-                  <UserInfo
-                    current_user={this.props.current_user}
-                    callback={this.handleShowForm}
-                  />
-                )}
-              </Fragment>
-            </div>
+            {this.state.showForm ? (
+              <UserUpdateForm />
+            ) : (
+              <UserInfo current_user={this.props.current_user} />
+            )}
           </Modal.Body>
           <Modal.Footer>
             <Button onClick={this.handleShowModal}>Close</Button>
@@ -50,6 +65,7 @@ class UserProfile extends Component {
     );
   }
 }
+
 export default connect(state => ({
   current_user: state.current_user
 }))(UserProfile);
