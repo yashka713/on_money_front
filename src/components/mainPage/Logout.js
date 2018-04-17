@@ -14,7 +14,7 @@ class LogoutComponent extends Component {
     Token.clearLS();
   }
   render() {
-    return <span className="center-block" onClick={this.logout}>Logout</span>;
+    return <div onClick={this.logout}>Logout</div>;
   }
 }
 

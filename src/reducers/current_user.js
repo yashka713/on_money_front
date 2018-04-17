@@ -21,6 +21,12 @@ export default function current_user(state = initialState, action) {
       ...state,
       isAuthenticated: false
     };
+  } else if (action.type === "UPDATE_USER") {
+    return {
+      ...state,
+      name: action.payload.name || "",
+      nickname: action.payload.nickname || ""
+    };
   }
   return state;
 }
