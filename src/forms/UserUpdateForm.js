@@ -76,11 +76,11 @@ class UserUpdateForm extends Component {
           type="text"
           label="User Name"
           placeholder="Enter User Name"
-          value={this.state.name}
           onChange={this.handleChangeName}
+          value={this.state.name}
         />
         <FieldGroup
-          id="UserUpdateickname"
+          id="UserUpdateNickname"
           type="text"
           value={this.state.nickname}
           label="User Nickname"

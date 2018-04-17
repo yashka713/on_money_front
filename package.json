@@ -1,6 +1,6 @@
 {
   "name": "on_money_front",
-  "version": "0.1.0",
+  "version": "0.0.1",
   "private": true,
   "dependencies": {
     "@fortawesome/fontawesome": "^1.1.5",
@@ -25,7 +25,7 @@
     "redux-thunk": "^2.1.0"
   },
   "scripts": {
-    "start": "PORT=3001 react-scripts start",
+    "start": "react-scripts start",
     "css": "node-sass src/styles/main.scss src/dest/main.css",
     "watch:css": "yarn css -w",
     "build": "react-scripts build",

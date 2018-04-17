@@ -12,7 +12,7 @@ export default function updateUser(data) {
     headers,
     body: JSON.stringify(data)
   };
-  const request = new Request("http://localhost:3000/auth", options);
+  const request = new Request("https://api-on-money.herokuapp.com/auth", options);
   return fetch(request)
     .then(response => {
       if (response.status >= 200 && response.status < 300) {
