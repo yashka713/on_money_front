@@ -3,14 +3,14 @@ import FontAwesomeIcon from "@fortawesome/react-fontawesome";
 import faBackward from "@fortawesome/fontawesome-free-solid/faBackward";
 import UserUpdateForm from "../../forms/UserUpdateForm";
 
-const RenderUserForm = ({ callback }) => (
+const RenderUserForm = ({ callback, showModal }) => (
   <div>
     <FontAwesomeIcon
       icon={faBackward}
       className="cursor-pointer close"
       onClick={callback}
     />
-    <UserUpdateForm action="http://localhost:3000/auth" id="UserUpdateForm" />
+    <UserUpdateForm showModal={showModal} />
   </div>
 );
 
