@@ -3,14 +3,15 @@ import { Button } from "react-bootstrap";
 import FieldGroup from "./FieldGroup";
 import { connect } from "react-redux";
 import { push } from "react-router-redux";
-// utils
-import startSession from "../utils/session/startSession";
+// services
+import startSessionRequest from "../services/requests/startSessionRequest";
 // actions
 import changeEmail from "../actions/signForm/changeEmail";
 import changePassword from "../actions/signForm/changePassword";
-import showErrorAlert from "../actions/signForm/errorAlert";
+import clearSignFields from "../actions/signForm/clearSignFields";
 import successAuth from "../actions/successAuth";
 import showSuccessAlert from "../actions/successAlert";
+import showErrorAlert from "../actions/signForm/errorAlert";
 
 class SignForm extends Component {
   constructor(props) {
@@ -24,6 +25,7 @@ class SignForm extends Component {
   handleChangeEmail(event) {
     this.props.handleChangeEmail(event.target.value);
   }
+
   handleChangePassword(event) {
     this.props.handleChangePassword(event.target.value);
   }
@@ -31,12 +33,11 @@ class SignForm extends Component {
   handleSubmit(event) {
     event.preventDefault();
     const url = event.target.action;
-    const answer = startSession(url, this.props.auth);
-    answer.then(result => {
-      if (result.status >= 200 && result.status < 300) {
-        this.props.login(result.current_user);
+    startSessionRequest(url, this.props.auth).then(responce => {
+      if (responce.status === 200 || responce.status === 201) {
+        this.props.login(responce.current_user);
       } else {
-        this.props.errorAlert(true);
+        this.props.handleError(responce);
       }
     });
     return false;
@@ -48,7 +49,7 @@ class SignForm extends Component {
         <br />
         <p className="text-center">example@example.com</p>
         <p className="text-center">onioni@example.com</p>
-        <p className="text-center">password</p>
+        <p className="text-center">Passw1</p>
         <form
           action={this.props.action}
           method="post"
@@ -93,11 +94,12 @@ export default connect(
     handleChangePassword: inputValue => {
       dispatch(changePassword(inputValue));
     },
-    errorAlert: status => {
-      dispatch(showErrorAlert(status));
+    handleError: result => {
+      dispatch(showErrorAlert(result));
     },
-    login: (user) => {
+    login: user => {
       dispatch(successAuth(user));
+      dispatch(clearSignFields());
       dispatch(push("/"));
       dispatch(showSuccessAlert(true));
     }
