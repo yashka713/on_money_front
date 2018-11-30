@@ -32,7 +32,10 @@ class UserProfile extends Component {
             <div className="user-info">
               <Fragment>
                 {this.state.showForm ? (
-                  <RenderUserForm callback={this.handleShowForm} />
+                  <RenderUserForm
+                    callback={this.handleShowForm}
+                    showModal={this.handleShowModal}
+                  />
                 ) : (
                   <UserInfo
                     current_user={this.props.current_user}

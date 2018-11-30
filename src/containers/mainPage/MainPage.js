@@ -14,7 +14,11 @@ class MainPage extends Component {
   }
   showAlert() {
     if (this.props.showSuccessAlert) {
-      return (<SuccessAlertComponent closeSuccessAlert={this.closeSuccessAlert.bind(this)} />);
+      return (
+        <SuccessAlertComponent
+          closeSuccessAlert={this.closeSuccessAlert.bind(this)}
+        />
+      );
     }
   }
   render() {
