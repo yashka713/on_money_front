@@ -1,11 +1,12 @@
 {
   "name": "on_money_front",
-  "version": "0.0.1",
+  "version": "0.1.1",
   "private": true,
   "dependencies": {
     "@fortawesome/fontawesome": "^1.1.5",
     "@fortawesome/fontawesome-free-solid": "^5.0.9",
     "@fortawesome/react-fontawesome": "^0.0.18",
+    "axios": "^0.18.0",
     "bootstrap": "3",
     "history": "^4.7.2",
     "node-sass": "^4.8.3",
@@ -25,7 +26,7 @@
     "redux-thunk": "^2.1.0"
   },
   "scripts": {
-    "start": "react-scripts start",
+    "start": "PORT=3001 react-scripts start",
     "css": "node-sass src/styles/main.scss src/dest/main.css",
     "watch:css": "yarn css -w",
     "build": "react-scripts build",

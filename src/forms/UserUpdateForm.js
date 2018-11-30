@@ -1,10 +1,14 @@
 import React, { Component } from "react";
-import { Button, Alert } from "react-bootstrap";
 import FieldGroup from "./FieldGroup";
 import { connect } from "react-redux";
+import { Button } from "react-bootstrap";
+import Api from "../api/Api";
+import { push } from "react-router-redux";
 
-import userUpdate from "../utils/userUpdate/userUpdate";
-import updateUser from "../actions/updateUser";
+import updateProfileRequest from "../services/requests/updateProfileRequest";
+
+import updateProfile from "../actions/updateProfile";
+import userLogout from "../actions/logout";
 
 class UserUpdateForm extends Component {
   constructor(props) {
@@ -12,14 +16,11 @@ class UserUpdateForm extends Component {
 
     this.handleChangeName = this.handleChangeName.bind(this);
     this.handleChangeNickname = this.handleChangeNickname.bind(this);
-    this.handleUserUpdate = this.handleUserUpdate.bind(this);
-    this.handleAlert = this.handleAlert.bind(this);
-    this.handleDismissAlert = this.handleDismissAlert.bind(this);
+    this.handleUpdateProfile = this.handleUpdateProfile.bind(this);
+
     this.state = {
       name: this.props.current_user.name,
-      nickname: this.props.current_user.nickname,
-      showAlert: false,
-      alertType: "success"
+      nickname: this.props.current_user.nickname
     };
   }
 
@@ -33,64 +34,56 @@ class UserUpdateForm extends Component {
       nickname: event.target.value
     });
   }
-  handleDismissAlert() {
-    this.setState({
-      showAlert: false
-    });
-  }
-  handleAlert() {
-    if (this.state.showAlert) {
-      let text = "";
-      if (this.state.alertType === "success") {
-        text = "Success";
-      } else {
-        text = "Oh snap! You got an error";
-      }
-      return <Alert bsStyle={this.state.alertType} onDismiss={this.handleDismissAlert}><h4>{text}</h4></Alert>;
-    }
-  }
 
-  handleUserUpdate(event) {
+  handleUpdateProfile(event) {
     event.preventDefault();
-    const answer = userUpdate(this.state);
-    answer
-      .then(result => {
-        console.log(result);
-        if (result.status >= 200 && result.status < 300) {
-          this.props.update(result.current_user);
-          this.setState({ alertType: "success" });
-        }
-      })
-      .catch(e => {
-        this.setState({ alertType: "danger" });
-      });
-    this.setState({ showAlert: true });
+    const url = event.target.action;
+
+    updateProfileRequest(url, this.state).then(responce => {
+      if (responce.status === 200) {
+        this.props.updateProfile(responce.current_user);
+        this.props.showModal();
+      } else if (responce.status >= 400 || responce.status === 0) {
+        this.props.logoutUser();
+      }
+    });
     return false;
   }
+
   render() {
     return (
-      <form onSubmit={this.handleUserUpdate} id="UserUpdateForm">
-        {this.handleAlert()}
-        <FieldGroup
-          id="UserUpdateName"
-          type="text"
-          label="User Name"
-          placeholder="Enter User Name"
-          onChange={this.handleChangeName}
-          value={this.state.name}
-        />
-        <FieldGroup
-          id="UserUpdateNickname"
-          type="text"
-          value={this.state.nickname}
-          label="User Nickname"
-          placeholder="Enter User Nickname"
-          onChange={this.handleChangeNickname}
-        />
-        <Button type="submit" form="UserUpdateForm" bsStyle="success">
-          Update
-        </Button>
-      </form>
+      <div>
+        <form
+          name="UserUpdateProfile"
+          onSubmit={this.handleUpdateProfile}
+          action={Api.profilesPath()}
+          id="UserUpdateForm"
+        >
+          <FieldGroup
+            id="userName"
+            type="text"
+            label="User Name"
+            placeholder="Enter User Name"
+            onChange={this.handleChangeName}
+            value={this.state.name}
+          />
+          <FieldGroup
+            id="nickname"
+            type="text"
+            label="User Nickname"
+            placeholder="Enter User Nickname"
+            onChange={this.handleChangeNickname}
+            value={this.state.nickname}
+          />
+          <Button
+            type="submit"
+            bsStyle="primary"
+            onClick={e => e.stopPropagation()}
+          >
+            Update
+          </Button>
+        </form>
+      </div>
     );
   }
 }
@@ -100,8 +93,12 @@ export default connect(
     current_user: state.current_user
   }),
   dispatch => ({
-    update: user => {
-      dispatch(updateUser(user));
+    logoutUser: () => {
+      dispatch(userLogout());
+      dispatch(push("/login"));
+    },
+    updateProfile: user => {
+      dispatch(updateProfile(user));
     }
   })
 )(UserUpdateForm);

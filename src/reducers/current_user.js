@@ -1,10 +1,11 @@
-import { logged } from "../utils/session/checkUser";
+import Token from "../services/session/localStorageProvider";
 
-const initialState = {
-  email: logged.current_user.email || "",
-  name: logged.current_user.name || "",
-  nickname: logged.current_user.nickname || "",
-  isAuthenticated: logged.status >= 200 && logged.status < 300
+let initialState = {
+  id: 0,
+  email: "",
+  name: "",
+  nickname: "",
+  isAuthenticated: false
 };
 
 export default function current_user(state = initialState, action) {
@@ -12,14 +13,26 @@ export default function current_user(state = initialState, action) {
     return {
       ...state,
       isAuthenticated: true,
+      id: action.payload.id || 0,
       email: action.payload.email || "",
       name: action.payload.name || "",
       nickname: action.payload.nickname || ""
     };
   } else if (action.type === "LOGOUT") {
+    Token.clearLS();
     return {
       ...state,
-      isAuthenticated: false
+      isAuthenticated: false,
+      id: 0,
+      email: "",
+      name: "",
+      nickname: ""
+    };
+  } else if (action.type === "UPDATE_PROFILE") {
+    return {
+      ...state,
+      name: action.payload.name || "",
+      nickname: action.payload.nickname || ""
     };
   } else if (action.type === "UPDATE_USER") {
     return {
