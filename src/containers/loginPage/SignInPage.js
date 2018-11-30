@@ -21,13 +21,17 @@ class SignInPage extends Component {
 
   showAlert() {
     if (this.props.notice.showSignInAlert) {
+      let errorsList = this.props.notice.errorMessages.map((message, index) => {
+        return <li key={index}>{message.detail}.</li>;
+      });
+      setTimeout(this.closeAlert.bind(this), 3000);
       return (
         <Alert
           bsStyle="danger"
           onDismiss={this.closeAlert}
-          bsClass="alert alert-danger alert-dismissable container"
+          bsClass="alert alert-danger alert-dismissable allerts"
         >
-          <strong>Something going wrong, please, check the fields.</strong>
+          <ul>{errorsList}</ul>
         </Alert>
       );
     } else {
