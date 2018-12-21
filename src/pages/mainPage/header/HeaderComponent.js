@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 
 import { Navbar, Nav, NavItem } from "react-bootstrap";
-import LogoutComponent from "../../components/mainPage/Logout";
+import LogoutComponent from "./Logout";
 import UserProfile from "./UserProfile";
 import { connect } from "react-redux";
 

@@ -8,7 +8,7 @@ import registerServiceWorker from "./registerServiceWorker";
 // app styles
 import "./dest/main.css";
 //
-import App from "./containers/App";
+import App from "./pages/App";
 
 ReactDOM.render(<App />, document.getElementById("root"));
 

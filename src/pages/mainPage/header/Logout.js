@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import { push } from "react-router-redux";
-import userLogout from "../../actions/logout";
+import userLogout from "../../../actions/logout";
 
 class LogoutComponent extends Component {
   constructor(props) {

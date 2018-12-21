@@ -1,8 +1,8 @@
 import React, { Component, Fragment } from "react";
 import { Modal, Button } from "react-bootstrap";
 import { connect } from "react-redux";
-import UserInfo from "../../components/mainPage/UserInfo";
-import RenderUserForm from "../../components/mainPage/RenderUserForm";
+import UserInfo from "./UserInfo";
+import RenderUserForm from "./RenderUserForm";
 
 class UserProfile extends Component {
   constructor(props, context) {

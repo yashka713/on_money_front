@@ -1,8 +1,9 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import showSuccessAlert from "../../actions/successAlert";
-import { SuccessAlertComponent } from "../../components/mainPage/SuccessAlertComponent";
-import HeaderComponent from "./HeaderComponent";
+import { SuccessAlertComponent } from "./SuccessAlertComponent";
+import HeaderComponent from "./header/HeaderComponent";
+import Body from "./main";
 
 class MainPage extends Component {
   constructor(props) {
@@ -26,7 +27,7 @@ class MainPage extends Component {
       <div>
         <HeaderComponent />
         {this.showAlert()}
-        <p className="container">This is page for signed in user</p>
+        <Body />
       </div>
     );
   }
