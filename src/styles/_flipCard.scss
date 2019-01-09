@@ -1,0 +1,48 @@
+.cardContainer {
+  perspective: 600;
+  position: relative;
+  height: 1000px;
+  width: 100%;
+}
+
+.flipCard {
+  height: 100%;
+  position: absolute;
+  transform-style: preserve-3d;
+  transition: all 1s ease-in-out;
+  width: 100%;
+}
+
+.flipRotate {
+  transform: rotateY(180deg);
+  transition: 1s;
+}
+
+.flipCard .flipSide {
+  backface-visibility: hidden;
+  border-radius: 6px;
+  height: 100%;
+  position: absolute;
+  overflow: hidden;
+  width: 100%;
+}
+
+.flipCard .flipBack {
+  background: #eaeaed;
+  transform: rotateY(180deg);
+}
+
+.faContainer {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  align-items: center;
+}
+
+.faFontFlip {
+  font-size: 50px;
+  font-weight: bold;
+  line-height: 1;
+  color: black;
+  margin: 0.3em 0.3em 0 0;
+}

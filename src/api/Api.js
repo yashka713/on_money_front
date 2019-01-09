@@ -10,5 +10,20 @@ export default {
   },
   profilesPath() {
     return process.env.REACT_APP_API_HOST + "profiles";
+  },
+  accountsPath() {
+    return process.env.REACT_APP_API_HOST + "accounts";
+  },
+  profitCategoriesPath() {
+    return process.env.REACT_APP_API_HOST + "categories?type_of=profits_categories";
+  },
+  chargeCategoriesPath() {
+    return process.env.REACT_APP_API_HOST + "categories?type_of=charges_categories";
+  },
+  currenciesPath() {
+    return process.env.REACT_APP_API_HOST + "currencies";
+  },
+  accountPath(id) {
+    return process.env.REACT_APP_API_HOST + "accounts/" + id;
   }
 };
