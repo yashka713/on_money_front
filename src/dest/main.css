@@ -33,6 +33,137 @@
   left: 0;
   right: 0; }
 
+.margin-top-15 {
+  margin-top: 15px; }
+
+.cardContainer {
+  perspective: 600;
+  position: relative;
+  height: 1000px;
+  width: 100%; }
+
+.flipCard {
+  height: 100%;
+  position: absolute;
+  transform-style: preserve-3d;
+  transition: all 1s ease-in-out;
+  width: 100%; }
+
+.flipRotate {
+  transform: rotateY(180deg);
+  transition: 1s; }
+
+.flipCard .flipSide {
+  backface-visibility: hidden;
+  border-radius: 6px;
+  height: 100%;
+  position: absolute;
+  overflow: hidden;
+  width: 100%; }
+
+.flipCard .flipBack {
+  background: #eaeaed;
+  transform: rotateY(180deg); }
+
+.faContainer {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  align-items: center; }
+
+.faFontFlip {
+  font-size: 50px;
+  font-weight: bold;
+  line-height: 1;
+  color: black;
+  margin: 0.3em 0.3em 0 0; }
+
+.flexContainer {
+  margin: 0;
+  padding: 0;
+  display: flex;
+  list-style: none;
+  justify-content: center;
+  flex-wrap: wrap;
+  align-items: center;
+  align-content: center; }
+
+.accountBox {
+  margin: 10px;
+  padding: 5px;
+  width: 11em;
+  height: 7.5em;
+  border: solid 1px black;
+  border-radius: 5px;
+  cursor: pointer;
+  align-self: center; }
+  .accountBox:hover .box-settings {
+    visibility: visible; }
+
+.flexBox {
+  margin: 5px;
+  padding: 5px;
+  width: 7em;
+  height: 3.5em;
+  border: solid 1px black;
+  border-radius: 5px;
+  cursor: pointer; }
+  .flexBox:hover .box-settings {
+    visibility: visible; }
+
+.centralize {
+  display: flex;
+  align-items: center;
+  justify-content: center; }
+  .centralize span {
+    margin: 0; }
+
+.addAccount {
+  font-size: 40px;
+  font-weight: bold;
+  line-height: 1;
+  color: black; }
+
+.addCategory {
+  font-size: 25px;
+  font-weight: bold;
+  line-height: 1;
+  color: black; }
+
+.informationPopover {
+  vertical-align: super; }
+
+.box-info {
+  width: 85%;
+  float: left; }
+  .box-info p {
+    -webkit-line-clamp: 2;
+    display: -webkit-box;
+    overflow: hidden;
+    /* autoprefixer: off */
+    -webkit-box-orient: vertical; }
+
+.box-settings {
+  width: 15%;
+  float: right;
+  visibility: hidden; }
+
+.margin-left-5 {
+  margin-left: 5px; }
+
+.activityBox {
+  position: relative; }
+  .activityBox .invisibleTrash {
+    visibility: hidden;
+    width: 0; }
+
+.trash {
+  z-index: 100;
+  font-size: 70px;
+  position: fixed;
+  top: 2.7em;
+  right: -1em; }
+
 body {
   margin: 0;
   padding: 0;
