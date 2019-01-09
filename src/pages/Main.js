@@ -24,8 +24,8 @@ class Main extends Component {
 }
 
 export default connect(null, dispatch => ({
-    handleError: response => {
-      dispatch(showErrorAlert(response));
+  handleError: response => {
+    dispatch(showErrorAlert(response));
   },
   currentUser: user => {
     dispatch(successAuth(user));
