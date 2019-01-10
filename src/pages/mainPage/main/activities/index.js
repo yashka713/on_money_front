@@ -15,8 +15,7 @@ class Activities extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      showModal: false,
-      item: {}
+      showModal: false
     };
 
     this.onDrop = this.onDrop.bind(this);
@@ -80,7 +79,6 @@ class Activities extends Component {
         </div>
         <DestroyModal
           showModal={this.state.showModal}
-          item={this.state.item}
           callback={this.handleShowModal}
         />
       </div>
