@@ -8,7 +8,7 @@ import successAuth from "../actions/successAuth";
 import showErrorAlert from "../actions/signForm/errorAlert";
 
 class Main extends Component {
-  componentWillMount() {
+  componentDidMount() {
     checkUserRequest().then(response => {
       if (response.status === 200) {
         this.props.currentUser(response.current_user);

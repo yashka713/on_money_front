@@ -25,5 +25,14 @@ export default {
   },
   accountPath(id) {
     return process.env.REACT_APP_API_HOST + "accounts/" + id;
+  },
+  categoriesPath() {
+    return process.env.REACT_APP_API_HOST + "categories/";
+  },
+  hideCategoryPath(id) {
+    return process.env.REACT_APP_API_HOST + "categories/" + id + "?type=hide";
+  },
+  categoryPath(id) {
+    return process.env.REACT_APP_API_HOST + "categories/" + id;
   }
 };

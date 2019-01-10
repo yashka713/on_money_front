@@ -11,7 +11,7 @@ class SignInPage extends Component {
     this.showAlert = this.showAlert.bind(this);
     this.closeAlert = this.closeAlert.bind(this);
   }
-  componentWillMount() {
+  componentDidMount() {
     this.props.current_user(this.props.isAuthenticated);
   }
 

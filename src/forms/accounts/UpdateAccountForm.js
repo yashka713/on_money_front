@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import addAccount from "../actions/account/addAccount";
-import newAccountRequest from "../services/requests/newAccountRequest";
+import updateAccount from "../../actions/accounts/updateAccount";
+import updateAccountRequest from "../../services/requests/updateAccountRequest";
 import {
   Button,
   Col,
@@ -12,18 +12,18 @@ import {
   InputGroup,
   Modal
 } from "react-bootstrap";
-import Api from "../api/Api";
+import Api from "../../api/Api";
 
-class NewAccountForm extends Component {
+class UpdateAccountForm extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
       item: {
-        name: "",
-        balance: 0,
-        note: "",
-        currency: this.props.currencies[0].attributes.iso_code
+        name: this.props.item.attributes.name,
+        balance: this.props.item.attributes.balance,
+        note: this.props.item.attributes.note || "",
+        currency: this.props.item.attributes.currency
       },
       currencies: props.currencies
     };
@@ -72,14 +72,16 @@ class NewAccountForm extends Component {
 
   handleSubmit(event) {
     event.preventDefault();
-    newAccountRequest(event.target.action, this.state.item).then(responce => {
-      if (responce.status === 201) {
-        this.props.addAccount(responce.data.data);
-        this.props.callback();
-      } else {
-        console.log("error", responce);
+    updateAccountRequest(event.target.action, this.state.item).then(
+      responce => {
+        if (responce.status === 200) {
+          this.props.updateAccount(responce.data.data);
+          this.props.callback();
+        } else {
+          console.log("error", responce);
+        }
       }
-    });
+    );
     return false;
   }
 
@@ -87,17 +89,17 @@ class NewAccountForm extends Component {
     return (
       <div>
         <Modal.Header closeButton>
-          <Modal.Title>New Account</Modal.Title>
+          <Modal.Title>Update Account</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <Form
             horizontal
-            id="newAccountForm"
-            action={Api.accountsPath()}
-            method="post"
+            id="updateAccountForm"
+            action={Api.accountPath(this.props.item.id)}
+            method="patch"
             onSubmit={this.handleSubmit}
           >
-            <FormGroup controlId="newAccountName">
+            <FormGroup controlId="updateAccountName">
               <Col componentClass={ControlLabel} sm={2}>
                 Name:
               </Col>
@@ -105,12 +107,13 @@ class NewAccountForm extends Component {
                 <FormControl
                   type="text"
                   required
+                  defaultValue={this.state.item.name}
                   placeholder="Enter Account name"
                   onChange={this.handleChangeName}
                 />
               </Col>
             </FormGroup>
-            <FormGroup controlId="newAccountBalance">
+            <FormGroup controlId="updateAccountBalance">
               <Col componentClass={ControlLabel} sm={2}>
                 Balance:
               </Col>
@@ -121,6 +124,7 @@ class NewAccountForm extends Component {
                     type="number"
                     step="0.01"
                     required
+                    defaultValue={this.state.item.balance}
                     placeholder="Enter Account balance"
                     onChange={this.handleChangeBalance}
                   />
@@ -128,19 +132,20 @@ class NewAccountForm extends Component {
                 </InputGroup>
               </Col>
             </FormGroup>
-            <FormGroup controlId="newAccountNote">
+            <FormGroup controlId="updateAccountNote">
               <Col componentClass={ControlLabel} sm={2}>
                 Note:
               </Col>
               <Col sm={10}>
                 <FormControl
                   type="text"
+                  defaultValue={this.state.item.note}
                   placeholder="Enter Account note"
                   onChange={this.handleChangeNote}
                 />
               </Col>
             </FormGroup>
-            <FormGroup controlId="newAccountCurrency">
+            <FormGroup controlId="updateAccountCurrency">
               <Col componentClass={ControlLabel} sm={2}>
                 Currency:
               </Col>
@@ -148,6 +153,7 @@ class NewAccountForm extends Component {
                 <FormControl
                   componentClass="select"
                   placeholder="Choose currency..."
+                  defaultValue={this.state.item.currency}
                   onChange={this.handleChangeCurrency}
                 >
                   {this.props.currencyList}
@@ -158,8 +164,8 @@ class NewAccountForm extends Component {
         </Modal.Body>
         <Modal.Footer>
           <Button onClick={this.props.callback}>Close</Button>
-          <Button type="submit" bsStyle="primary" form="newAccountForm">
-            Create
+          <Button type="submit" bsStyle="primary" form="updateAccountForm">
+            Update
           </Button>
         </Modal.Footer>
       </div>
@@ -168,7 +174,7 @@ class NewAccountForm extends Component {
 }
 
 export default connect(null, dispatch => ({
-  addAccount: account => {
-    dispatch(addAccount(account));
+  updateAccount: account => {
+    dispatch(updateAccount(account));
   }
-}))(NewAccountForm);
+}))(UpdateAccountForm);

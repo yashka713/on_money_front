@@ -5,7 +5,8 @@ import { connect } from "react-redux";
 import clear_destroyer from "../../../../actions/clear_destroyer";
 import Api from "../../../../api/Api";
 import destroyAccountRequest from "../../../../services/requests/destroyAccountRequest";
-import destroyAccount from "../../../../actions/account/destroyAccount";
+import destroyAccount from "../../../../actions/accounts/destroyAccount";
+import hideCategory from "../../../../actions/categories/hideCategory";
 
 class DestroyModal extends Component {
   constructor(props) {
@@ -26,31 +27,42 @@ class DestroyModal extends Component {
         responce => {
           if (responce.status === 200) {
             this.props.destroyAccount(this.props.destroy_item);
-            this.props.callback();
           } else {
             console.log("error", responce);
           }
-          this.props.clearDestroyer();
         }
       );
     }
-    console.log("destroyed");
+    if (this.props.destroy_item.type === "categories") {
+      destroyAccountRequest(
+        Api.hideCategoryPath(this.props.destroy_item.id)
+      ).then(responce => {
+        if (responce.status === 200) {
+          this.props.hideCategory(this.props.destroy_item);
+        } else {
+          console.log("error", responce);
+        }
+      });
+    }
     this.props.callback();
   }
 
   render() {
-    return !this.props.item.attributes ? (
+    return !this.props.destroy_item.attributes ? (
       ""
     ) : (
       <Modal show={this.state.showModal} onHide={this.props.callback}>
         <Modal.Header closeButton>
           <Modal.Title>
-            You are trying to delete 1 of the {capitalize(this.props.item.type)}
+            You are trying to delete 1 of the {capitalize(this.props.destroy_item.type)}
           </Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <p>
-            Are you sure you want to delete <mark><strong>{this.props.item.attributes.name}</strong></mark>?
+            Are you sure you want to delete{" "}
+            <mark>
+              <strong>{this.props.destroy_item.attributes.name}</strong>
+            </mark>?
           </p>
           <p>This action cannot be undone.</p>
         </Modal.Body>
@@ -75,6 +87,11 @@ export default connect(
     },
     destroyAccount: item => {
       dispatch(destroyAccount(item.id));
+      dispatch(clear_destroyer());
+    },
+    hideCategory: item => {
+      dispatch(hideCategory(item.id, item.attributes.type_of));
+      dispatch(clear_destroyer());
     }
   })
 )(DestroyModal);
