@@ -8,7 +8,6 @@ import destroyer from "../../../../../actions/destroyer";
 import clear_destroyer from "../../../../../actions/clear_destroyer";
 import dndLogo from "../../../../../services/utils/dndLogo";
 
-// export const Category = ({ category }) => {
 class Category extends React.Component {
   constructor(props) {
     super(props);
@@ -24,7 +23,6 @@ class Category extends React.Component {
 
   onDragEnd(e) {
     this.props.handleShowTrashIcon(false);
-    this.props.clearDestroyer();
     e.preventDefault();
   }
 
@@ -48,7 +46,11 @@ class Category extends React.Component {
           </div>
         </OverlayTrigger>
         <div className="box-settings">
-          <FontAwesomeIcon icon={faPencilAlt} className="cursor-pointer" />
+          <FontAwesomeIcon
+            icon={faPencilAlt}
+            className="cursor-pointer"
+            onClick={this.props.updateCallback}
+          />
         </div>
       </li>
     );

@@ -5,6 +5,7 @@ import current_user from "./current_user";
 import trashIcon from "./trashIcon";
 import destroyer from "./destroyer";
 import accounts from "./accounts";
+import categories from "./categories";
 // routing
 import { routerReducer } from "react-router-redux";
 
@@ -15,6 +16,7 @@ const allReducers = combineReducers({
   notice,
   trashIcon,
   accounts,
+  categories,
   destroyer
 });
 
