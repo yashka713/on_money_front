@@ -2,8 +2,8 @@ import React, { Component } from "react";
 import { Modal } from "react-bootstrap";
 import getRequest from "../../../../../services/requests/getRequest";
 import Api from "../../../../../api/Api";
-import NewAccountForm from "../../../../../forms/NewAccountForm";
-import UpdateAccountForm from "../../../../../forms/UpdateAccountForm";
+import NewAccountForm from "../../../../../forms/accounts/NewAccountForm";
+import UpdateAccountForm from "../../../../../forms/accounts/UpdateAccountForm";
 
 export default class AccountModal extends Component {
   constructor(props) {
@@ -16,7 +16,7 @@ export default class AccountModal extends Component {
     this.currencyList = this.currencyList.bind(this);
   }
 
-  componentWillMount() {
+  componentDidMount() {
     getRequest(Api.currenciesPath()).then(responce => {
       this.setState({
         currencies: responce

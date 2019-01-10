@@ -6,7 +6,7 @@ import AccountModal from "./AccountModal";
 import getRequest from "../../../../../services/requests/getRequest";
 import Api from "../../../../../api/Api";
 import { connect } from "react-redux";
-import downloadAccounts from "../../../../../actions/account/downloadAccounts";
+import downloadAccounts from "../../../../../actions/accounts/downloadAccounts";
 
 class AccountsList extends React.Component {
   constructor(props) {
@@ -22,7 +22,7 @@ class AccountsList extends React.Component {
     this.handleShowModal = this.handleShowModal.bind(this);
   }
 
-  componentWillMount() {
+  componentDidMount() {
     getRequest(Api.accountsPath()).then(responce => {
       this.props.downloadAccounts(responce);
     });
