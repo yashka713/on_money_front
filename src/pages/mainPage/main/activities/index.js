@@ -4,6 +4,7 @@ import Categories from "./categories";
 import faTrash from "@fortawesome/fontawesome-free-solid/faTrash";
 import FontAwesomeIcon from "@fortawesome/react-fontawesome";
 import DestroyModal from "./DestroyModal";
+import Transactions from "./transactions";
 
 import { connect } from "react-redux";
 
@@ -53,15 +54,7 @@ class Activities extends Component {
         <Accounts />
         <div className="col-md-12 margin-top-15">
           <div className="col-md-7">
-            <p>
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-              eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut
-              enim ad minim veniam, quis nostrud exercitation ullamco laboris
-              nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in
-              reprehenderit in voluptate velit esse cillum dolore eu fugiat
-              nulla pariatur. Excepteur sint occaecat cupidatat non proident,
-              sunt in culpa qui officia deserunt mollit anim id est laborum.
-            </p>
+            <Transactions />
           </div>
           <div className="col-md-5">
             <Categories url={Api.profitCategoriesPath()} type="profit" />
