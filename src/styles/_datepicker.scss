@@ -1,0 +1,29 @@
+.datepicker-box {
+  z-index: 3;
+  position: relative;
+  display: flex;
+  padding: 2em 3em;
+}
+
+.datepicker-item-selected {
+  width: 30%;
+}
+
+.datepicker-item-selector {
+  width: 70%;
+}
+
+.btn-block {
+  button {
+    margin-top: 1em;
+    width: 80%;
+  }
+}
+
+.Range .DayPicker-Day--selected:not(.DayPicker-Day--start):not(.DayPicker-Day--end):not(.DayPicker-Day--outside) {
+  background-color: #f0f8ff !important;
+  color: #4a90e2;
+}
+.Range .DayPicker-Day {
+  border-radius: 0 !important;
+}

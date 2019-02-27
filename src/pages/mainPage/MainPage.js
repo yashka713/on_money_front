@@ -3,7 +3,7 @@ import { connect } from "react-redux";
 import showSuccessAlert from "../../actions/successAlert";
 import { SuccessAlertComponent } from "./SuccessAlertComponent";
 import HeaderComponent from "./header/HeaderComponent";
-import Body from "./main";
+import { Body } from "./main";
 
 class MainPage extends Component {
   constructor(props) {
