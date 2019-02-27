@@ -15,10 +15,14 @@ export default {
     return process.env.REACT_APP_API_HOST + "accounts";
   },
   profitCategoriesPath() {
-    return process.env.REACT_APP_API_HOST + "categories?type_of=profits_categories";
+    return (
+      process.env.REACT_APP_API_HOST + "categories?type_of=profits_categories"
+    );
   },
   chargeCategoriesPath() {
-    return process.env.REACT_APP_API_HOST + "categories?type_of=charges_categories";
+    return (
+      process.env.REACT_APP_API_HOST + "categories?type_of=charges_categories"
+    );
   },
   currenciesPath() {
     return process.env.REACT_APP_API_HOST + "currencies";
@@ -34,5 +38,18 @@ export default {
   },
   categoryPath(id) {
     return process.env.REACT_APP_API_HOST + "categories/" + id;
+  },
+  transactionsPath(pageNumber, from = "", to = "") {
+    let request = "";
+    if (from) request += `&date[from]=${from}`;
+    if (to) request += `&date[to]=${to}`;
+
+    return (
+      process.env.REACT_APP_API_HOST +
+      "transactions?" +
+      "page[number]=" +
+      pageNumber +
+      request
+    );
   }
 };
