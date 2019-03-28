@@ -1,14 +1,9 @@
-import { connect } from "react-redux";
 import React, { Component } from "react";
 import DayPicker from "react-day-picker/DayPicker";
 import { Button } from "react-bootstrap";
 import "react-day-picker/lib/style.css";
-import downloadTransactions from "../../../../../actions/transactions/downloadTransactions";
-import downloadRelatedItems from "../../../../../actions/transactions/downloadRelatedItems";
-import transactionsGetRequest from "../../../../../services/requests/transactionsGetRequest";
-import Api from "../../../../../api/Api";
 
-class TransactionCalendar extends Component {
+export default class TransactionCalendar extends Component {
   render() {
     const from = this.props.fromDay;
     const to = this.props.toDay;
@@ -60,12 +55,3 @@ class TransactionCalendar extends Component {
     );
   }
 }
-
-export default connect(null, dispatch => ({
-  downloadTransactions: transactions => {
-    dispatch(downloadTransactions(transactions));
-  },
-  downloadRelatedItems: items => {
-    dispatch(downloadRelatedItems(items));
-  }
-}))(TransactionCalendar);

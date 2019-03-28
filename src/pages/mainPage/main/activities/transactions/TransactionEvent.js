@@ -3,6 +3,8 @@ import FontAwesomeIcon from "@fortawesome/react-fontawesome";
 import faHandHoldingUsd from "@fortawesome/fontawesome-free-solid/faHandHoldingUsd";
 import faExchangeAlt from "@fortawesome/fontawesome-free-solid/faExchangeAlt";
 import faShoppingCart from "@fortawesome/fontawesome-free-solid/faShoppingCart";
+import faPencilAlt from "@fortawesome/fontawesome-free-solid/faPencilAlt";
+import faTimes from "@fortawesome/fontawesome-free-solid/faTimes";
 import { connect } from "react-redux";
 
 class TransactionEvent extends React.Component {
@@ -12,6 +14,9 @@ class TransactionEvent extends React.Component {
       from: {},
       to: {}
     };
+
+    this.handleDeleteTransaction = this.handleDeleteTransaction.bind(this);
+    this.handleUpdateTransaction = this.handleUpdateTransaction.bind(this);
   }
 
   componentDidMount() {
@@ -37,8 +42,24 @@ class TransactionEvent extends React.Component {
     });
   }
 
+  handleDeleteTransaction() {
+    this.props.deleteTransactionCallback();
+    this.props.setTransaction(
+      this.props.transaction.id,
+      this.props.transaction.attributes.operation_type
+    );
+  }
+
+  handleUpdateTransaction() {
+    this.props.updateTransactionCallback();
+    this.props.setTransaction(
+      this.props.transaction.id,
+      this.props.transaction.attributes.operation_type
+    );
+  }
+
   render() {
-    let bacgrounds = {
+    let backgrounds = {
       profit: {
         iconColor: "#6ef309",
         icon: <FontAwesomeIcon icon={faHandHoldingUsd} className="" />,
@@ -56,7 +77,7 @@ class TransactionEvent extends React.Component {
       }
     };
     let iconStyle =
-      bacgrounds[this.props.transaction.attributes.operation_type];
+      backgrounds[this.props.transaction.attributes.operation_type];
 
     const amount = transaction => {
       if (this.props.transaction.attributes.operation_type !== "transfer") {
@@ -81,19 +102,38 @@ class TransactionEvent extends React.Component {
     return !this.state.from.attributes ? (
       ""
     ) : (
-      <div className={iconStyle.positionClass + " timeline-container"} key={this.props.transaction.id}>
-        <div className="timeline-content">
-          <p className="timeline-date">
-            {this.props.transaction.attributes.date}
-          </p>
-          <p>
-            From <strong>{this.state.from.attributes.name}</strong>
-          </p>
-          <p>
-            To <strong>{this.state.to.attributes.name}</strong>
-          </p>
-          <p>Amount: {amount(this.props.transaction)}</p>
-          <p>Note: {this.props.transaction.attributes.note}</p>
+      <div
+        className={iconStyle.positionClass + " timeline-container show-edit"}
+        key={this.props.transaction.id}
+      >
+        <div className="timeline-controls">
+          <div className="hide-controls control-edit">
+            <FontAwesomeIcon
+              icon={faPencilAlt}
+              className="cursor-pointer transaction-edit"
+              onClick={this.handleUpdateTransaction}
+            />
+          </div>
+          <div className="hide-controls control-destroy">
+            <FontAwesomeIcon
+              icon={faTimes}
+              className="cursor-pointer transaction-destroy"
+              onClick={this.handleDeleteTransaction}
+            />
+          </div>
+          <div className="timeline-content">
+            <p className="timeline-date">
+              {this.props.transaction.attributes.date}
+            </p>
+            <p>
+              From <strong>{this.state.from.attributes.name}</strong>
+            </p>
+            <p>
+              To <strong>{this.state.to.attributes.name}</strong>
+            </p>
+            <p>Amount: {amount(this.props.transaction)}</p>
+            <p>Note: {this.props.transaction.attributes.note}</p>
+          </div>
         </div>
       </div>
     );
@@ -102,7 +142,9 @@ class TransactionEvent extends React.Component {
 
 export default connect(
   state => ({
-    related: state.transactions.relatedFields
+    related: state.accounts.accounts
+      .concat(state.categories.categories.charge)
+      .concat(state.categories.categories.profit)
   }),
   null
 )(TransactionEvent);

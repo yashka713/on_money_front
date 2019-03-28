@@ -58,6 +58,30 @@
   .accountBox:hover .box-settings {
     visibility: visible; }
 
+.DayPicker-TodayButton {
+  font-size: 1.875em;
+  width: 100%; }
+
+.day-picker-modal input {
+  width: 100%;
+  height: 34px;
+  padding: 6px 12px;
+  font-size: 14px;
+  line-height: 1.42857143;
+  color: #555;
+  background-color: #fff;
+  background-image: none;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  text-align: center; }
+
+.day-picker-modal-overlay {
+  position: absolute;
+  left: 0;
+  z-index: 10;
+  background: white;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15); }
+
 .flexBox {
   margin: 5px;
   padding: 5px;
@@ -117,11 +141,11 @@
     width: 0; }
 
 .trash {
-  z-index: 100;
-  font-size: 70px;
+  z-index: 1000;
+  font-size: 75px;
   position: fixed;
-  top: 2.7em;
-  right: -1em; }
+  top: 3.3em;
+  right: 4em; }
 
 /* The actual timeline (the vertical ruler) */
 .timeline {
@@ -169,6 +193,14 @@
 .timeline-left {
   left: 0; }
 
+.timeline-container.timeline-left::before,
+.timeline-container.timeline-left::after {
+  top: 115px; }
+
+.timeline-container.timeline-right::before,
+.timeline-container.timeline-right::after {
+  top: 115px; }
+
 /* Place the container to the right */
 .timeline-right {
   left: 50%; }
@@ -215,11 +247,30 @@
 
 /* The actual content */
 .timeline-content {
-  padding: 20px 30px;
+  padding: 20px 20px;
   background-color: white;
   position: relative;
-  border-radius: 6px;
-  z-index: 2; }
+  border-radius: 0 0 6px 6px;
+  z-index: 2;
+  width: 100%; }
+
+.hide-controls {
+  padding: 0.3em 0;
+  visibility: hidden;
+  display: inline-block;
+  width: 50%;
+  text-align: center;
+  border-radius: 6px 6px 0 0; }
+
+.transaction-edit,
+.transaction-destroy {
+  font-size: 20px; }
+
+.control-edit {
+  background-color: rgba(255, 227, 50, 0.5); }
+
+.control-destroy {
+  background-color: rgba(241, 111, 92, 0.5); }
 
 .loaderBtn {
   display: flex;
@@ -230,6 +281,19 @@
 
 .timeline-date {
   text-align: right; }
+
+.timeline-container:hover .hide-controls {
+  visibility: visible; }
+
+.modal-container {
+  position: relative; }
+
+.modal-container .modal, .modal-container .modal-backdrop {
+  position: absolute; }
+
+.transaction-btn-group {
+  width: 95%;
+  margin: 10px auto; }
 
 /* Media queries - Responsive timeline on screens less than 600px wide */
 @media screen and (max-width: 600px) {

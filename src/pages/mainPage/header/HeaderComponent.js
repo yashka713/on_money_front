@@ -13,7 +13,10 @@ class HeaderComponent extends Component {
           <Navbar.Header>
             <Navbar.Brand>
               <a href={null} className="cursor-pointer">
-                Hello, {this.props.current_user.name || this.props.current_user.nickname || "anonymous"}
+                Hello,{" "}
+                {this.props.current_user.name ||
+                  this.props.current_user.nickname ||
+                  "anonymous"}
               </a>
             </Navbar.Brand>
             <Navbar.Toggle />

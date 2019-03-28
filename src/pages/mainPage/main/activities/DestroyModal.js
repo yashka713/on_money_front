@@ -54,7 +54,8 @@ class DestroyModal extends Component {
       <Modal show={this.state.showModal} onHide={this.props.callback}>
         <Modal.Header closeButton>
           <Modal.Title>
-            You are trying to delete 1 of the {capitalize(this.props.destroy_item.type)}
+            You are trying to delete 1 of the{" "}
+            {capitalize(this.props.destroy_item.type)}
           </Modal.Title>
         </Modal.Header>
         <Modal.Body>

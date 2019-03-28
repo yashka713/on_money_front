@@ -1,3 +1,5 @@
+import orderBy from "lodash/orderBy";
+
 const initialState = {
   transactions: [],
   relatedFields: []
@@ -5,19 +7,30 @@ const initialState = {
 
 export default function transactions(state = initialState, action) {
   if (action.type === "DOWNLOAD_TRANSACTIONS") {
-    // let newTransactions = uniqWith(state.transactions.concat(action.payload), isEqual);
-    let newTransactions = action.payload;
+    let transactions = action.payload;
     return {
       ...state,
-      transactions: newTransactions
+      transactions: transactions
     };
-  } else if (action.type === "DOWNLOAD_RELATED_FIELDS") {
-    // let newRelatedFields = compact(uniqWith(state.relatedFields.concat(action.payload), isEqual));
-    let newRelatedFields = action.payload;
+  } else if (action.type === "NEW_TRANSACTION") {
+    let transactions = orderBy(
+      state.transactions.concat(action.payload),
+      item => new Date(item.attributes.date),
+      ["desc"]
+    );
 
     return {
       ...state,
-      relatedFields: newRelatedFields
+      transactions: transactions
+    };
+  } else if (action.type === "DELETE_TRANSACTION") {
+    let new_transactions = state.transactions.filter(item => {
+      return item.id !== action.payload.id;
+    });
+
+    return {
+      ...state,
+      transactions: new_transactions
     };
   }
 
