@@ -23,7 +23,8 @@ export const AccountHeader = () => {
 
   return (
     <OverlayTrigger placement="bottom" overlay={popover}>
-      <p className="text-center">Accounts Info{" "}
+      <p className="text-center">
+        Accounts Info{" "}
         <FontAwesomeIcon
           icon={faInfo}
           className="cursor-pointer informationPopover"

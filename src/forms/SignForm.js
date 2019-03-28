@@ -45,39 +45,33 @@ class SignForm extends Component {
 
   render() {
     return (
-      <div>
-        <br />
-        <p className="text-center">example@example.com</p>
-        <p className="text-center">onioni@example.com</p>
-        <p className="text-center">Passw1</p>
-        <form
-          action={this.props.action}
-          method="post"
-          id={this.props.id}
-          className="custom-form"
-          onSubmit={this.handleSubmit}
-        >
-          <FieldGroup
-            id={`${this.props.id}Email`}
-            type="email"
-            label="Email address:"
-            required
-            placeholder="Enter email"
-            onChange={this.handleChangeEmail}
-          />
-          <FieldGroup
-            id={`${this.props.id}Password`}
-            label="Password:"
-            type="password"
-            required
-            placeholder="password"
-            onChange={this.handleChangePassword}
-          />
-          <Button type="submit" bsStyle="primary">
-            Submit
-          </Button>
-        </form>
-      </div>
+      <form
+        action={this.props.action}
+        method="post"
+        id={this.props.id}
+        className="custom-form"
+        onSubmit={this.handleSubmit}
+      >
+        <FieldGroup
+          id={`${this.props.id}Email`}
+          type="email"
+          label="Email address:"
+          required
+          placeholder="Enter email"
+          onChange={this.handleChangeEmail}
+        />
+        <FieldGroup
+          id={`${this.props.id}Password`}
+          label="Password:"
+          type="password"
+          required
+          placeholder="password"
+          onChange={this.handleChangePassword}
+        />
+        <Button type="submit" bsStyle="primary">
+          Submit
+        </Button>
+      </form>
     );
   }
 }

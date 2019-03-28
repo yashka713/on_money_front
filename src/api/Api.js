@@ -51,5 +51,26 @@ export default {
       pageNumber +
       request
     );
+  },
+  transfersPath() {
+    return process.env.REACT_APP_API_HOST + "transfers";
+  },
+  profitsPath() {
+    return process.env.REACT_APP_API_HOST + "profits";
+  },
+  chargesPath() {
+    return process.env.REACT_APP_API_HOST + "charges";
+  },
+  deleteTransactionPath(id, type) {
+    switch (type) {
+      case "transfer":
+        return this.transfersPath() + "/" + id;
+      case "profit":
+        return this.profitsPath() + "/" + id;
+      case "charge":
+        return this.chargesPath() + "/" + id;
+      default:
+        console.log("Unavailable type");
+    }
   }
 };

@@ -35,7 +35,7 @@ class MainPage extends Component {
 
 export default connect(
   state => ({
-    showSuccessAlert: state.notice.showSuccessAlert,
+    showSuccessAlert: state.notice.showSuccessAlert
   }),
   dispatch => ({
     handleSignInDismiss: status => {

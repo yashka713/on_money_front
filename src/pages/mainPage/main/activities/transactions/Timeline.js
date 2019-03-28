@@ -1,18 +1,62 @@
 import { connect } from "react-redux";
 import React, { Component } from "react";
 import TransactionEvent from "./TransactionEvent";
+import DestroyTransactionModal from "./DestroyTransactionModal";
+import UpdateTransactionModal from "./UpdateTransactionModal";
 import { Pager } from "react-bootstrap";
 
 class Timeline extends Component {
   constructor(props) {
     super(props);
+    this.state = {
+      showDestroyModal: false,
+      showUpdateModal: false,
+      transaction: {
+        id: null,
+        type: ""
+      }
+    };
     this.handlePreviousPage = this.handlePreviousPage.bind(this);
     this.handleNextPage = this.handleNextPage.bind(this);
+    this.setTransaction = this.setTransaction.bind(this);
+    this.deleteTransactionModal = this.deleteTransactionModal.bind(this);
+    this.updateTransactionModal = this.updateTransactionModal.bind(this);
   }
 
   timelineEvents() {
     return this.props.transactions.map(item => {
-      return <TransactionEvent transaction={item} key={item.id} />;
+      return (
+        <TransactionEvent
+          transaction={item}
+          key={item.id}
+          deleteTransactionCallback={this.deleteTransactionModal}
+          updateTransactionCallback={this.updateTransactionModal}
+          setTransaction={this.setTransaction}
+        />
+      );
+    });
+  }
+
+  deleteTransactionModal() {
+    let showModal = !this.state.showDestroyModal;
+    this.setState({
+      showDestroyModal: showModal
+    });
+  }
+
+  updateTransactionModal() {
+    let showModal = !this.state.showUpdateModal;
+    this.setState({
+      showUpdateModal: showModal
+    });
+  }
+
+  setTransaction(id, type) {
+    this.setState({
+      transaction: {
+        id: id,
+        type: type
+      }
     });
   }
 
@@ -27,9 +71,21 @@ class Timeline extends Component {
   render() {
     let disPrevPage = this.props.currentPage <= 1;
     let disNextPage = this.props.currentPage === this.props.lastPage;
+    let transactionsLength = this.props.transactions.length;
 
-    return this.props.transactions.length > 0 ? (
-      <div className="timeline">
+    return transactionsLength > 0 ? (
+      <div className="timeline modal-container">
+        <DestroyTransactionModal
+          container={this}
+          show={this.state.showDestroyModal}
+          closeDeleteModal={this.deleteTransactionModal}
+          item={this.state.transaction}
+        />
+        <UpdateTransactionModal
+          show={this.state.showUpdateModal}
+          closeUpdateModal={this.updateTransactionModal}
+          item={this.state.transaction}
+        />
         <Pager>
           <Pager.Item
             href="#"
@@ -60,8 +116,7 @@ class Timeline extends Component {
 
 export default connect(
   state => ({
-    transactions: state.transactions.transactions,
-    related: state.transactions.relatedFields
+    transactions: state.transactions.transactions
   }),
   null
 )(Timeline);
