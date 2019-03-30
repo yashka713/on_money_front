@@ -136,7 +136,7 @@ class NewChargeForm extends Component {
 
   handleChangeNote(event) {
     this.setState({
-      transfer: {
+      charge: {
         ...this.state.charge,
         note: event.target.value
       }
@@ -300,7 +300,7 @@ class NewChargeForm extends Component {
   }
 
   render() {
-    const currency = this.getCurrency(this.state.charge.to);
+    const currency = this.getCurrency(this.state.charge.from);
     return (
       <div>
         <Modal.Header closeButton>
@@ -395,7 +395,7 @@ class NewChargeForm extends Component {
                     type="number"
                     step="0.01"
                     required
-                    placeholder="Enter transfer amount"
+                    placeholder="Enter Charge amount"
                     onChange={this.handleChangeAmount}
                   />
                   <InputGroup.Addon>.00</InputGroup.Addon>
@@ -410,7 +410,7 @@ class NewChargeForm extends Component {
                 <FormControl
                   type="text"
                   defaultValue={this.state.charge.note}
-                  placeholder="Enter Transfer note"
+                  placeholder="Enter Charge note"
                   onChange={this.handleChangeNote}
                 />
               </Col>

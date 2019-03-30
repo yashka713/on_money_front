@@ -12,14 +12,14 @@ import {
 
 import { connect } from "react-redux";
 import Api from "../../../api/Api";
-import newTransactionRequest from "../../../services/requests/newTransactionRequest";
 
 import DayPickerInput from "react-day-picker/DayPickerInput";
 import CustomOverlay from "../DatePickerOverlay";
-import newTransaction from "../../../actions/transactions/newTransaction";
 import updateAccount from "../../../actions/accounts/updateAccount";
+import updateTransaction from "../../../actions/transactions/updateTransaction";
+import patchTransactionRequest from "../../../services/requests/patchTransactionRequest";
 
-class NewProfitForm extends Component {
+class UpdateProfitForm extends Component {
   constructor(props) {
     super(props);
 
@@ -37,29 +37,43 @@ class NewProfitForm extends Component {
   }
 
   getInitialState() {
+    const from = this.props.profits.filter(item => {
+      return (
+        item.id === this.props.transaction.relationships.chargeable.data.id
+      );
+    })[0];
+    const to = this.findItem(
+      this.props.transaction.relationships.profitable.data.id
+    );
+
     return {
       validationState: {
         from: null,
         to: null,
         date: null,
         amount: null,
-        disableSubmit: true
+        disableSubmit: false
       },
       profit: {
-        from: null,
-        to: null,
-        date: new Date().toISOString().slice(0, 10),
-        amount: null,
-
-        note: ""
+        from: from,
+        to: to,
+        date: new Date(this.props.transaction.attributes.date)
+          .toISOString()
+          .slice(0, 10),
+        amount: this.props.transaction.attributes.from_amount,
+        note: this.props.transaction.attributes.note
       }
     };
   }
 
-  handleChangeAccount(event) {
-    const item = this.props.accounts.filter(item => {
-      return item.id === event.target.value;
+  findItem(account) {
+    return this.props.accounts.filter(item => {
+      return item.id === account;
     })[0];
+  }
+
+  handleChangeAccount(event) {
+    const item = this.findItem(event.target.value);
     this.setState(
       {
         profit: {
@@ -287,10 +301,10 @@ class NewProfitForm extends Component {
   handleSubmit(event) {
     event.preventDefault();
 
-    newTransactionRequest(event.target.action, this.profitAttributes()).then(
+    patchTransactionRequest(event.target.action, this.profitAttributes()).then(
       responce => {
-        if (responce.status === 201) {
-          this.props.newProfit(responce.data);
+        if (responce.status === 200) {
+          this.props.updateProfit(responce.data);
           this.props.callback();
         } else {
           console.log("error", responce);
@@ -305,18 +319,21 @@ class NewProfitForm extends Component {
     return (
       <div>
         <Modal.Header closeButton>
-          <Modal.Title>New Profit Operation</Modal.Title>
+          <Modal.Title>Update Profit Operation</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <Form
             horizontal
-            id="newProfitForm"
-            action={Api.profitsPath()}
-            method="post"
+            id="updateProfitForm"
+            action={Api.transactionPath(
+              this.props.transaction.id,
+              this.props.transaction.attributes.operation_type
+            )}
+            method="patch"
             onSubmit={this.handleSubmit}
           >
             <FormGroup
-              controlId="newProfitFrom"
+              controlId="updateProfitFrom"
               validationState={this.state.validationState.from}
             >
               <Col componentClass={ControlLabel} sm={2}>
@@ -325,9 +342,9 @@ class NewProfitForm extends Component {
               <Col sm={10}>
                 <FormControl
                   componentClass="select"
-                  required="true"
+                  required
                   onChange={e => this.handleChangeCategory(e)}
-                  defaultValue={this.state.profit.from}
+                  defaultValue={this.state.profit.from.id}
                 >
                   <option key="0" value="0">
                     Choose profit category...
@@ -337,7 +354,7 @@ class NewProfitForm extends Component {
               </Col>
             </FormGroup>
             <FormGroup
-              controlId="newProfitTo"
+              controlId="updateProfitTo"
               validationState={this.state.validationState.to}
             >
               <Col componentClass={ControlLabel} sm={2}>
@@ -346,9 +363,9 @@ class NewProfitForm extends Component {
               <Col sm={10}>
                 <FormControl
                   componentClass="select"
-                  required="true"
+                  required
+                  defaultValue={this.state.profit.to.id}
                   onChange={e => this.handleChangeAccount(e)}
-                  defaultValue={this.state.profit.to}
                 >
                   <option key="0" value="0">
                     Choose account...
@@ -358,7 +375,7 @@ class NewProfitForm extends Component {
               </Col>
             </FormGroup>
             <FormGroup
-              controlId="newProfitDate"
+              controlId="updateProfitDate"
               validationState={this.state.validationState.date}
             >
               <Col componentClass={ControlLabel} sm={2}>
@@ -383,7 +400,7 @@ class NewProfitForm extends Component {
               </Col>
             </FormGroup>
             <FormGroup
-              controlId="newProfitAmount"
+              controlId="updateProfitAmount"
               validationState={this.state.validationState.amount}
             >
               <Col componentClass={ControlLabel} sm={2}>
@@ -396,6 +413,7 @@ class NewProfitForm extends Component {
                     type="number"
                     step="0.01"
                     required
+                    defaultValue={this.state.profit.amount}
                     placeholder="Enter Profit amount"
                     onChange={this.handleChangeAmount}
                   />
@@ -403,7 +421,7 @@ class NewProfitForm extends Component {
                 </InputGroup>
               </Col>
             </FormGroup>
-            <FormGroup controlId="newProfitNote">
+            <FormGroup controlId="updateProfitNote">
               <Col componentClass={ControlLabel} sm={2}>
                 Note:
               </Col>
@@ -422,11 +440,11 @@ class NewProfitForm extends Component {
           <Button onClick={this.props.callback}>Close</Button>
           <Button
             type="submit"
-            bsStyle="primary"
-            form="newProfitForm"
+            bsStyle="warning"
+            form="updateProfitForm"
             disabled={this.state.validationState.disableSubmit}
           >
-            Create
+            Update
           </Button>
         </Modal.Footer>
       </div>
@@ -440,9 +458,9 @@ export default connect(
     profits: state.categories.categories.profit
   }),
   dispatch => ({
-    newProfit: profit => {
-      dispatch(newTransaction(profit.data));
+    updateProfit: profit => {
+      dispatch(updateTransaction(profit.data));
       dispatch(updateAccount(profit.included.pop()));
     }
   })
-)(NewProfitForm);
+)(UpdateProfitForm);
