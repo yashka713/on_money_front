@@ -11,6 +11,10 @@ import {
 } from "react-bootstrap";
 
 import { connect } from "react-redux";
+import updateTransaction from "../../../actions/transactions/updateTransaction";
+import updateAccount from "../../../actions/accounts/updateAccount";
+import patchTransactionRequest from "../../../services/requests/patchTransactionRequest";
+import Api from "../../../api/Api";
 
 import DayPickerInput from "react-day-picker/DayPickerInput";
 import CustomOverlay from "../DatePickerOverlay";
@@ -30,46 +34,50 @@ class UpdateTransferForm extends Component {
     this.handleChangeRateFrom = this.handleChangeRateFrom.bind(this);
     this.handleChangeRateTo = this.handleChangeRateTo.bind(this);
     this.accountsOptionForSelect = this.accountsOptionForSelect.bind(this);
+    this.findItem = this.findItem.bind(this);
   }
 
   getInitialState() {
-    let transaction = this.props.transactions.filter(item => {
-      return item.id === this.props.item.id;
-    })[0];
-
-    let from = this.props.accounts.filter(item => {
-      return item.id === transaction.relationships.chargeable.data.id;
-    })[0];
-
-    let to = this.props.accounts.filter(item => {
-      return item.id === transaction.relationships.profitable.data.id;
-    })[0];
+    const from = this.findItem(
+      this.props.transaction.relationships.chargeable.data.id
+    );
+    const to = this.findItem(
+      this.props.transaction.relationships.profitable.data.id
+    );
 
     return {
       validationState: {
         from: null,
         to: null,
-        disableSubmit: true
+        date: null,
+        amount: null,
+        disableSubmit: false
       },
       transfer: {
         from: from,
         to: to,
-        date: new Date(transaction.attributes.date).toISOString().slice(0, 10),
-        amount: transaction.attributes.from_amount,
-        note: transaction.attributes.note || ""
+        date: new Date(this.props.transaction.attributes.date)
+          .toISOString()
+          .slice(0, 10),
+        amount: this.props.transaction.attributes.from_amount,
+        note: this.props.transaction.attributes.note
       },
       rate: {
-        from: transaction.attributes.from_amount,
-        to: transaction.attributes.to_amount
+        from: this.props.transaction.attributes.from_amount,
+        to: this.props.transaction.attributes.to_amount
       },
       sameCurrency: from.attributes.currency === to.attributes.currency
     };
   }
 
-  handleChangeAccount(event, account) {
-    const item = this.props.accounts.filter(item => {
-      return item.id === event.target.value;
+  findItem(account) {
+    return this.props.accounts.filter(item => {
+      return item.id === account;
     })[0];
+  }
+
+  handleChangeAccount(event, account) {
+    const item = this.findItem(event.target.value);
     this.setState(
       {
         transfer: {
@@ -88,21 +96,40 @@ class UpdateTransferForm extends Component {
   }
 
   handleDayChange(day) {
-    this.setState({
-      transfer: {
-        ...this.state.transfer,
-        date: new Date(day).toISOString().slice(0, 10)
+    this.setState(
+      {
+        transfer: {
+          ...this.state.transfer,
+          date: day ? new Date(day).toISOString().slice(0, 10) : ""
+        },
+        validationState: {
+          ...this.state.validationState,
+          date: day ? null : "error"
+        }
+      },
+      () => {
+        this.formValidation();
       }
-    });
+    );
   }
 
   handleChangeAmount(event) {
-    this.setState({
-      transfer: {
-        ...this.state.transfer,
-        amount: event.target.value
+    const amount = event.target.value;
+    this.setState(
+      {
+        transfer: {
+          ...this.state.transfer,
+          amount: amount
+        },
+        validationState: {
+          ...this.state.validationState,
+          amount: amount ? null : "error"
+        }
+      },
+      () => {
+        this.formValidation();
       }
-    });
+    );
   }
 
   handleChangeNote(event) {
@@ -115,21 +142,60 @@ class UpdateTransferForm extends Component {
   }
 
   handleChangeRateFrom(event) {
+    const rateFrom = event.target.value;
+    const rateTo = this.state.rate.to;
+
     this.setState({
-      rate: {
-        ...this.state.rate,
-        from: event.target.value
+      transfer: {
+        ...this.state.transfer,
+        amount: rateFrom && rateTo && rateTo !== 0 ? rateFrom : null
       }
     });
+
+    this.setState(
+      {
+        rate: {
+          ...this.state.rate,
+          from: rateFrom
+        },
+        validationState: {
+          ...this.state.validationState,
+          amount: rateFrom && rateFrom !== 0 ? null : "error"
+        }
+      },
+      () => {
+        this.formValidation();
+      }
+    );
   }
 
   handleChangeRateTo(event) {
+    const rateTo = event.target.value;
+    const rateFrom = this.state.rate.from;
+
     this.setState({
-      rate: {
-        ...this.state.rate,
-        to: event.target.value
+      transfer: {
+        ...this.state.transfer,
+        amount:
+          rateFrom && rateTo && rateTo !== 0 && rateFrom !== 0 ? rateFrom : null
       }
     });
+
+    this.setState(
+      {
+        rate: {
+          ...this.state.rate,
+          to: rateTo
+        },
+        validationState: {
+          ...this.state.validationState,
+          amount: rateTo && rateTo !== 0 ? null : "error"
+        }
+      },
+      () => {
+        this.formValidation();
+      }
+    );
   }
 
   accountsOptionForSelect() {
@@ -161,9 +227,27 @@ class UpdateTransferForm extends Component {
   formValidation() {
     const from = this.state.transfer.from;
     const to = this.state.transfer.to;
+    const date = this.state.transfer.date;
+    const amount = this.state.transfer.amount;
     const currencyFrom = this.getCurrency(from);
     const currencyTo = this.getCurrency(to);
-    if ((!from && !to) || from === to) {
+
+    if (!from && !to && !date && !amount) {
+      this.setState(
+        {
+          validationState: {
+            ...this.state.validationState,
+            to: "error",
+            from: "error",
+            date: "error",
+            amount: "error"
+          }
+        },
+        () => {
+          this.disableSubmit();
+        }
+      );
+    } else if ((!from && !to) || from === to) {
       this.setState(
         {
           validationState: {
@@ -194,6 +278,30 @@ class UpdateTransferForm extends Component {
           validationState: {
             ...this.state.validationState,
             to: "error"
+          }
+        },
+        () => {
+          this.disableSubmit();
+        }
+      );
+    } else if (!date) {
+      this.setState(
+        {
+          validationState: {
+            ...this.state.validationState,
+            date: "error"
+          }
+        },
+        () => {
+          this.disableSubmit();
+        }
+      );
+    } else if (!amount) {
+      this.setState(
+        {
+          validationState: {
+            ...this.state.validationState,
+            amount: "error"
           }
         },
         () => {
@@ -245,22 +353,23 @@ class UpdateTransferForm extends Component {
       transfer["rate"] = this.state.rate.to / this.state.rate.from;
     }
 
-    return transfer;
+    return { transfer: transfer };
   }
 
   handleSubmit(event) {
     event.preventDefault();
 
-    newTransactionRequest(event.target.action, this.transferAttributes()).then(
-      responce => {
-        if (responce.status === 201) {
-          this.props.newProfit(responce.data);
-          this.props.callback();
-        } else {
-          console.log("error", responce);
-        }
+    patchTransactionRequest(
+      event.target.action,
+      this.transferAttributes()
+    ).then(responce => {
+      if (responce.status === 200) {
+        this.props.updateTransfer(responce.data);
+        this.props.callback();
+      } else {
+        console.log("error", responce);
       }
-    );
+    });
     return false;
   }
 
@@ -270,20 +379,21 @@ class UpdateTransferForm extends Component {
     return (
       <div>
         <Modal.Header closeButton>
-          <Modal.Title id="contained-modal-title-sm">
-            Change Transfer
-          </Modal.Title>
+          <Modal.Title>Update Transfer Operation</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <Form
             horizontal
-            id="UpdateTransferForm"
-            action=""
+            id="updateTransferForm"
+            action={Api.transactionPath(
+              this.props.transaction.id,
+              this.props.transaction.attributes.operation_type
+            )}
             method="patch"
             onSubmit={this.handleSubmit}
           >
             <FormGroup
-              controlId="UpdateTransferFrom"
+              controlId="updateTransferFrom"
               validationState={this.state.validationState.from}
             >
               <Col componentClass={ControlLabel} sm={2}>
@@ -294,7 +404,7 @@ class UpdateTransferForm extends Component {
                   componentClass="select"
                   required="true"
                   onChange={e => this.handleChangeAccount(e, "from")}
-                  defaultValue={this.state.transfer.from}
+                  defaultValue={this.state.transfer.from.id}
                 >
                   <option key="0" value="0">
                     Choose account...
@@ -304,7 +414,7 @@ class UpdateTransferForm extends Component {
               </Col>
             </FormGroup>
             <FormGroup
-              controlId="UpdateTransferTo"
+              controlId="updateTransferTo"
               validationState={this.state.validationState.to}
             >
               <Col componentClass={ControlLabel} sm={2}>
@@ -313,9 +423,9 @@ class UpdateTransferForm extends Component {
               <Col sm={10}>
                 <FormControl
                   componentClass="select"
-                  required="true"
+                  required
                   onChange={e => this.handleChangeAccount(e, "to")}
-                  defaultValue={this.state.transfer.to}
+                  defaultValue={this.state.transfer.to.id}
                 >
                   <option key="0" value="0">
                     Choose account...
@@ -324,7 +434,10 @@ class UpdateTransferForm extends Component {
                 </FormControl>
               </Col>
             </FormGroup>
-            <FormGroup controlId="UpdateTransferDate">
+            <FormGroup
+              controlId="updateTransferDate"
+              validationState={this.state.validationState.date}
+            >
               <Col componentClass={ControlLabel} sm={2}>
                 Date:
               </Col>
@@ -337,7 +450,7 @@ class UpdateTransferForm extends Component {
                   dayPickerProps={{
                     todayButton: "Today"
                   }}
-                  value={new Date(this.state.transfer.date)}
+                  value={this.state.transfer.date}
                   overlayComponent={CustomOverlay}
                   keepFocus={false}
                   inputProps={{ required: true }}
@@ -346,7 +459,10 @@ class UpdateTransferForm extends Component {
               </Col>
             </FormGroup>
             {this.state.sameCurrency ? (
-              <FormGroup controlId="UpdateTransferAmount">
+              <FormGroup
+                controlId="updateTransferAmount"
+                validationState={this.state.validationState.amount}
+              >
                 <Col componentClass={ControlLabel} sm={2}>
                   Amount:
                 </Col>
@@ -357,6 +473,7 @@ class UpdateTransferForm extends Component {
                       type="number"
                       step="0.01"
                       required
+                      defaultValue={this.state.transfer.amount}
                       placeholder="Enter transfer amount"
                       onChange={this.handleChangeAmount}
                     />
@@ -366,7 +483,10 @@ class UpdateTransferForm extends Component {
               </FormGroup>
             ) : (
               <div>
-                <FormGroup controlId="UpdateTransferFromAmount">
+                <FormGroup
+                  controlId="updateTransferFromAmount"
+                  validationState={this.state.validationState.amount}
+                >
                   <Col componentClass={ControlLabel} sm={3}>
                     From Amount:
                   </Col>
@@ -377,6 +497,7 @@ class UpdateTransferForm extends Component {
                         type="number"
                         step="0.01"
                         required
+                        defaultValue={this.state.rate.from}
                         placeholder="Enter transfer amount"
                         onChange={this.handleChangeRateFrom}
                       />
@@ -384,7 +505,10 @@ class UpdateTransferForm extends Component {
                     </InputGroup>
                   </Col>
                 </FormGroup>
-                <FormGroup controlId="UpdateTransferToAmount">
+                <FormGroup
+                  controlId="updateTransferToAmount"
+                  validationState={this.state.validationState.amount}
+                >
                   <Col componentClass={ControlLabel} sm={3}>
                     To Amount:
                   </Col>
@@ -395,6 +519,7 @@ class UpdateTransferForm extends Component {
                         type="number"
                         step="0.01"
                         required
+                        defaultValue={this.state.rate.to}
                         placeholder="Enter transfer amount"
                         onChange={this.handleChangeRateTo}
                       />
@@ -404,7 +529,7 @@ class UpdateTransferForm extends Component {
                 </FormGroup>
               </div>
             )}
-            <FormGroup controlId="UpdateTransferNote">
+            <FormGroup controlId="updateTransferNote">
               <Col componentClass={ControlLabel} sm={2}>
                 Note:
               </Col>
@@ -420,8 +545,15 @@ class UpdateTransferForm extends Component {
           </Form>
         </Modal.Body>
         <Modal.Footer>
-          <Button bsStyle="warning">Update</Button>
           <Button onClick={this.props.callback}>Close</Button>
+          <Button
+            type="submit"
+            bsStyle="warning"
+            form="updateTransferForm"
+            disabled={this.state.validationState.disableSubmit}
+          >
+            Update
+          </Button>
         </Modal.Footer>
       </div>
     );
@@ -430,14 +562,13 @@ class UpdateTransferForm extends Component {
 
 export default connect(
   state => ({
-    transactions: state.transactions.transactions,
     accounts: state.accounts.accounts
   }),
   dispatch => ({
-    newTransfer: transfer => {
-      // dispatch(newProfit(transfer.data));
-      // dispatch(updateAccount(transfer.included.pop()));
-      // dispatch(updateAccount(transfer.included.pop()));
+    updateTransfer: transfer => {
+      dispatch(updateTransaction(transfer.data));
+      dispatch(updateAccount(transfer.included.pop()));
+      dispatch(updateAccount(transfer.included.pop()));
     }
   })
 )(UpdateTransferForm);

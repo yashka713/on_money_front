@@ -4,15 +4,12 @@ import transactionsGetRequest from "../../../../../services/requests/transaction
 import Api from "../../../../../api/Api";
 import Timeline from "./Timeline";
 import TransactionCalendar from "./TransactionCalendar";
+import { TransactionForm } from "./TransactionForm";
 import { DateUtils } from "react-day-picker/DayPicker";
 import downloadTransactions from "../../../../../actions/transactions/downloadTransactions";
 
 import { ButtonGroup, Button, Modal } from "react-bootstrap";
 import "react-day-picker/lib/style.css";
-
-import NewTransferForm from "../../../../../forms/transactions/transfers/NewTransferForm";
-import NewProfitForm from "../../../../../forms/transactions/profits/NewProfitForm";
-import NewChargeForm from "../../../../../forms/transactions/charges/NewChargeForm";
 
 class Transactions extends Component {
   constructor(props) {
@@ -26,10 +23,7 @@ class Transactions extends Component {
     this.handleDayClick = this.handleDayClick.bind(this);
     this.handleDayMouseEnter = this.handleDayMouseEnter.bind(this);
     this.handleShowModal = this.handleShowModal.bind(this);
-    this.handleNewTransfer = this.handleNewTransfer.bind(this);
-    this.handleNewProfit = this.handleNewProfit.bind(this);
-    this.handleNewCharge = this.handleNewCharge.bind(this);
-    this.whichForm = this.whichForm.bind(this);
+    this.updateHandler = this.updateHandler.bind(this);
   }
 
   getInitialState() {
@@ -39,6 +33,10 @@ class Transactions extends Component {
       lastPage: 0,
       fromDay: null,
       toDay: null,
+      form: {
+        formType: null,
+        transaction: {}
+      },
       enteredTo: null // Keep track of the last day for mouseEnter.
     };
   }
@@ -89,12 +87,6 @@ class Transactions extends Component {
   resetState() {
     this.setState(this.getInitialState(), () => {
       this.getTransactionsRequest(this.state.currentPage);
-    });
-    this.setState({
-      showModal: false,
-      currentPage: 1,
-      lastPage: 0,
-      whichForm: null
     });
   }
 
@@ -167,38 +159,24 @@ class Transactions extends Component {
     });
   }
 
-  handleNewTransfer() {
-    this.setState({
-      whichForm: "NewTransferForm"
-    });
-    this.handleShowModal();
+  handleNewTransactionType(transactionType, transaction = {}) {
+    this.setState(
+      {
+        ...this.state,
+        form: {
+          formType: transactionType,
+          transaction: transaction
+        }
+      },
+      () => this.handleShowModal()
+    );
   }
 
-  handleNewProfit() {
-    this.setState({
-      whichForm: "NewProfitForm"
-    });
-    this.handleShowModal();
-  }
-
-  handleNewCharge() {
-    this.setState({
-      whichForm: "NewChargeForm"
-    });
-    this.handleShowModal();
-  }
-
-  whichForm() {
-    switch (this.state.whichForm) {
-      case "NewTransferForm":
-        return <NewTransferForm callback={this.handleShowModal} />;
-      case "NewProfitForm":
-        return <NewProfitForm callback={this.handleShowModal} />;
-      case "NewChargeForm":
-        return <NewChargeForm callback={this.handleShowModal} />;
-      default:
-        return "";
-    }
+  updateHandler(transaction) {
+    this.handleNewTransactionType(
+      transaction.attributes.operation_type,
+      transaction
+    );
   }
 
   render() {
@@ -214,13 +192,24 @@ class Transactions extends Component {
         />
         <div className="transaction-btn-group">
           <ButtonGroup justified>
-            <Button href="#" bsStyle="primary" onClick={this.handleNewTransfer}>
+            <Button
+              href="#"
+              bsStyle="primary"
+              onClick={() => this.handleNewTransactionType("transfer")}
+            >
               New Transfer
             </Button>
-            <Button href="#" bsStyle="info" onClick={this.handleNewProfit}>
+            <Button
+              href="#"
+              bsStyle="info"
+              onClick={() => this.handleNewTransactionType("profit")}
+            >
               New Profit
             </Button>
-            <Button href="#" onClick={this.handleNewCharge}>
+            <Button
+              href="#"
+              onClick={() => this.handleNewTransactionType("charge")}
+            >
               New Charge
             </Button>
             <Button href="#" bsStyle="warning" onClick={this.resetState}>
@@ -228,10 +217,15 @@ class Transactions extends Component {
             </Button>
           </ButtonGroup>
           <Modal show={this.state.showModal} onHide={this.handleShowModal}>
-            {this.whichForm()}
+            <TransactionForm
+              operationType={this.state.form.formType}
+              transaction={this.state.form.transaction}
+              handleShowModal={this.handleShowModal}
+            />
           </Modal>
         </div>
         <Timeline
+          updateHandler={this.updateHandler}
           updateTransactions={this.getTransactionsRequest}
           handlePreviousPage={this.handlePreviousPage}
           handleNextPage={this.handleNextPage}

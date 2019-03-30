@@ -18,7 +18,7 @@ class DestroyTransactionModal extends Component {
     event.preventDefault();
 
     destroyTransactionRequest(
-      Api.deleteTransactionPath(this.props.item.id, this.props.item.type)
+      Api.transactionPath(this.props.item.id, this.props.item.type)
     ).then(responce => {
       if (responce.status === 200) {
         this.props.deleteTransaction(responce.data.data);

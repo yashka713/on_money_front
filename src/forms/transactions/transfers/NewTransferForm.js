@@ -34,6 +34,7 @@ class NewTransferForm extends Component {
     this.handleChangeRateFrom = this.handleChangeRateFrom.bind(this);
     this.handleChangeRateTo = this.handleChangeRateTo.bind(this);
     this.accountsOptionForSelect = this.accountsOptionForSelect.bind(this);
+    this.findItem = this.findItem.bind(this);
   }
 
   getInitialState() {
@@ -60,10 +61,14 @@ class NewTransferForm extends Component {
     };
   }
 
-  handleChangeAccount(event, account) {
-    const item = this.props.accounts.filter(item => {
-      return item.id === event.target.value;
+  findItem(account) {
+    return this.props.accounts.filter(item => {
+      return item.id === account;
     })[0];
+  }
+
+  handleChangeAccount(event, account) {
+    const item = this.findItem(event.target.value);
     this.setState(
       {
         transfer: {
@@ -386,7 +391,6 @@ class NewTransferForm extends Component {
                   componentClass="select"
                   required="true"
                   onChange={e => this.handleChangeAccount(e, "from")}
-                  defaultValue={this.state.transfer.from}
                 >
                   <option key="0" value="0">
                     Choose account...
@@ -405,9 +409,8 @@ class NewTransferForm extends Component {
               <Col sm={10}>
                 <FormControl
                   componentClass="select"
-                  required="true"
+                  required
                   onChange={e => this.handleChangeAccount(e, "to")}
-                  defaultValue={this.state.transfer.to}
                 >
                   <option key="0" value="0">
                     Choose account...
@@ -455,7 +458,7 @@ class NewTransferForm extends Component {
                       type="number"
                       step="0.01"
                       required
-                      placeholder="Enter transfer amount"
+                      placeholder="Enter Transfer amount"
                       onChange={this.handleChangeAmount}
                     />
                     <InputGroup.Addon>.00</InputGroup.Addon>
@@ -478,7 +481,7 @@ class NewTransferForm extends Component {
                         type="number"
                         step="0.01"
                         required
-                        placeholder="Enter transfer amount"
+                        placeholder="Enter Transfer amount"
                         onChange={this.handleChangeRateFrom}
                       />
                       <InputGroup.Addon>.00</InputGroup.Addon>
@@ -499,7 +502,7 @@ class NewTransferForm extends Component {
                         type="number"
                         step="0.01"
                         required
-                        placeholder="Enter transfer amount"
+                        placeholder="Enter Transfer amount"
                         onChange={this.handleChangeRateTo}
                       />
                       <InputGroup.Addon>.00</InputGroup.Addon>
@@ -515,7 +518,6 @@ class NewTransferForm extends Component {
               <Col sm={10}>
                 <FormControl
                   type="text"
-                  defaultValue={this.state.transfer.note}
                   placeholder="Enter Transfer note"
                   onChange={this.handleChangeNote}
                 />

@@ -16,20 +16,19 @@ class TransactionEvent extends React.Component {
     };
 
     this.handleDeleteTransaction = this.handleDeleteTransaction.bind(this);
-    this.handleUpdateTransaction = this.handleUpdateTransaction.bind(this);
   }
 
-  componentDidMount() {
-    const relationships = this.props.transaction.relationships;
+  setRelationships(props) {
+    const relationships = props.transaction.relationships;
 
-    const from = this.props.related.filter(item => {
+    const from = props.related.filter(item => {
       return (
         item.id === relationships.chargeable.data.id &&
         item.type === relationships.chargeable.data.type
       );
     })[0];
 
-    const to = this.props.related.filter(item => {
+    const to = props.related.filter(item => {
       return (
         item.id === relationships.profitable.data.id &&
         item.type === relationships.profitable.data.type
@@ -42,17 +41,16 @@ class TransactionEvent extends React.Component {
     });
   }
 
-  handleDeleteTransaction() {
-    this.props.deleteTransactionCallback();
-    this.props.setTransaction(
-      this.props.transaction.id,
-      this.props.transaction.attributes.operation_type
-    );
+  componentDidMount() {
+    this.setRelationships(this.props);
   }
 
-  handleUpdateTransaction() {
-    this.props.updateTransactionCallback();
-    this.props.setTransaction(
+  componentWillReceiveProps(props) {
+    this.setRelationships(props);
+  }
+
+  handleDeleteTransaction() {
+    this.props.deleteTransactionCallback(
       this.props.transaction.id,
       this.props.transaction.attributes.operation_type
     );
@@ -111,7 +109,9 @@ class TransactionEvent extends React.Component {
             <FontAwesomeIcon
               icon={faPencilAlt}
               className="cursor-pointer transaction-edit"
-              onClick={this.handleUpdateTransaction}
+              onClick={() =>
+                this.props.updateTransactionCallback(this.props.transaction)
+              }
             />
           </div>
           <div className="hide-controls control-destroy">

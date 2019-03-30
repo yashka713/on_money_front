@@ -61,7 +61,7 @@ export default {
   chargesPath() {
     return process.env.REACT_APP_API_HOST + "charges";
   },
-  deleteTransactionPath(id, type) {
+  transactionPath(id, type) {
     switch (type) {
       case "transfer":
         return this.transfersPath() + "/" + id;
