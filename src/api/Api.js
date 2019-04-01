@@ -5,6 +5,9 @@ export default {
   startSessionPath() {
     return process.env.REACT_APP_API_HOST + "sessions";
   },
+  supportPath() {
+    return process.env.REACT_APP_API_HOST + "support";
+  },
   registerUserPath() {
     return process.env.REACT_APP_API_HOST + "profiles/registration";
   },
