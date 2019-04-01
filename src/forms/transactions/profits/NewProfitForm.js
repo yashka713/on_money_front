@@ -50,7 +50,6 @@ class NewProfitForm extends Component {
         to: null,
         date: new Date().toISOString().slice(0, 10),
         amount: null,
-
         note: ""
       }
     };

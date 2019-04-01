@@ -1,17 +1,26 @@
 .first-page {
+  height: 26em;
   width: 40%;
   margin: 10% auto;
   border: 1px solid gray;
   padding: 15px;
   border-radius: 15px; }
 
-.custom-form {
-  margin-top: 20px; }
+.login-form {
+  margin-top: 3em; }
+  .login-form button {
+    padding: 0.7em 0;
+    margin: 1.5em auto;
+    display: block;
+    width: 100%; }
 
-.custom-form > button {
-  margin: 0 auto;
-  display: block;
-  width: 100%; }
+.support-form {
+  margin-top: 1em; }
+  .support-form button {
+    padding: 0.7em 0;
+    margin: 1.5em auto;
+    display: block;
+    width: 100%; }
 
 .header {
   width: 90%;

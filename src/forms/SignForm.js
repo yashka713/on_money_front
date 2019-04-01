@@ -49,7 +49,7 @@ class SignForm extends Component {
         action={this.props.action}
         method="post"
         id={this.props.id}
-        className="custom-form"
+        className="login-form"
         onSubmit={this.handleSubmit}
       >
         <FieldGroup
