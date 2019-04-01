@@ -18,16 +18,6 @@ export default function current_user(state = initialState, action) {
       name: action.payload.name || "",
       nickname: action.payload.nickname || ""
     };
-  } else if (action.type === "LOGOUT") {
-    Token.clearLS();
-    return {
-      ...state,
-      isAuthenticated: false,
-      id: 0,
-      email: "",
-      name: "",
-      nickname: ""
-    };
   } else if (action.type === "UPDATE_PROFILE") {
     return {
       ...state,

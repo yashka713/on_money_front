@@ -10,7 +10,7 @@ import categories from "./categories";
 // routing
 import { routerReducer } from "react-router-redux";
 
-const allReducers = combineReducers({
+const appReducer = combineReducers({
   router: routerReducer,
   auth,
   current_user,
@@ -22,4 +22,12 @@ const allReducers = combineReducers({
   destroyer
 });
 
-export default allReducers;
+const rootReducer = (state, action) => {
+  if (action.type === "LOGOUT") {
+    state = undefined;
+  }
+
+  return appReducer(state, action);
+};
+
+export default rootReducer;
