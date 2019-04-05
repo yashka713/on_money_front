@@ -18,6 +18,7 @@ import CustomOverlay from "../DatePickerOverlay";
 import updateAccount from "../../../actions/accounts/updateAccount";
 import patchTransactionRequest from "../../../services/requests/patchTransactionRequest";
 import updateTransaction from "../../../actions/transactions/updateTransaction";
+import successAlert from "../../../actions/successAlert";
 
 class UpdateChargeForm extends Component {
   constructor(props) {
@@ -462,6 +463,9 @@ export default connect(
     updateCharge: charge => {
       dispatch(updateTransaction(charge.data));
       dispatch(updateAccount(charge.included.shift()));
+      dispatch(
+        successAlert(true, "Charge Transaction was successfully changed")
+      );
     }
   })
 )(UpdateChargeForm);

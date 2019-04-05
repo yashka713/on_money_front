@@ -13,6 +13,7 @@ import {
 import { connect } from "react-redux";
 import newTransaction from "../../../actions/transactions/newTransaction";
 import updateAccount from "../../../actions/accounts/updateAccount";
+import successAlert from "../../../actions/successAlert";
 import newTransactionRequest from "../../../services/requests/newTransactionRequest";
 import Api from "../../../api/Api";
 
@@ -352,6 +353,7 @@ class NewTransferForm extends Component {
 
     newTransactionRequest(event.target.action, this.transferAttributes()).then(
       responce => {
+
         if (responce.status === 201) {
           this.props.newTransfer(responce.data);
           this.props.callback();
@@ -550,6 +552,7 @@ export default connect(
       dispatch(newTransaction(transfer.data));
       dispatch(updateAccount(transfer.included.pop()));
       dispatch(updateAccount(transfer.included.pop()));
+      dispatch(successAlert(true, "New Transfer Transaction was created"));
     }
   })
 )(NewTransferForm);

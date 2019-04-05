@@ -18,6 +18,7 @@ import DayPickerInput from "react-day-picker/DayPickerInput";
 import CustomOverlay from "../DatePickerOverlay";
 import newTransaction from "../../../actions/transactions/newTransaction";
 import updateAccount from "../../../actions/accounts/updateAccount";
+import successAlert from "../../../actions/successAlert";
 
 class NewProfitForm extends Component {
   constructor(props) {
@@ -442,6 +443,7 @@ export default connect(
     newProfit: profit => {
       dispatch(newTransaction(profit.data));
       dispatch(updateAccount(profit.included.pop()));
+      dispatch(successAlert(true, "New Profit Transaction was created"));
     }
   })
 )(NewProfitForm);

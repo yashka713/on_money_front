@@ -35,7 +35,7 @@ class SignForm extends Component {
     const url = event.target.action;
     startSessionRequest(url, this.props.auth).then(responce => {
       if (responce.status === 200 || responce.status === 201) {
-        this.props.login(responce.current_user);
+        this.props.login(responce.current_user, "We are glad to see you.");
       } else {
         this.props.handleError(responce);
       }
@@ -91,11 +91,11 @@ export default connect(
     handleError: result => {
       dispatch(showErrorAlert(result));
     },
-    login: user => {
+    login: (user, message) => {
       dispatch(successAuth(user));
       dispatch(clearSignFields());
       dispatch(push("/"));
-      dispatch(showSuccessAlert(true));
+      dispatch(showSuccessAlert(true, message));
     }
   })
 )(SignForm);

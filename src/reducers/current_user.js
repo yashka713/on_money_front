@@ -1,5 +1,3 @@
-import Token from "../services/session/localStorageProvider";
-
 let initialState = {
   id: 0,
   email: "",
