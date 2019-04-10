@@ -19,6 +19,7 @@ import CustomOverlay from "../DatePickerOverlay";
 import newTransaction from "../../../actions/transactions/newTransaction";
 import updateAccount from "../../../actions/accounts/updateAccount";
 import successAlert from "../../../actions/successAlert";
+import { ErrorModalAlert } from "../ErrorModalAlert";
 
 class NewProfitForm extends Component {
   constructor(props) {
@@ -35,6 +36,7 @@ class NewProfitForm extends Component {
     this.accountsOptionForSelect = this.accountsOptionForSelect.bind(this);
     this.profitsOptionForSelect = this.profitsOptionForSelect.bind(this);
     this.profitAttributes = this.profitAttributes.bind(this);
+    this.handleShowingError = this.handleShowingError.bind(this);
   }
 
   getInitialState() {
@@ -52,6 +54,11 @@ class NewProfitForm extends Component {
         date: new Date().toISOString().slice(0, 10),
         amount: null,
         note: ""
+      },
+      showErrorAlert: false,
+      errorMessages: {
+        pointers: [],
+        messages: []
       }
     };
   }
@@ -237,7 +244,7 @@ class NewProfitForm extends Component {
           this.disableSubmit();
         }
       );
-    } else if (!amount) {
+    } else if (!amount || amount <= 0) {
       this.setState(
         {
           validationState: {
@@ -293,11 +300,36 @@ class NewProfitForm extends Component {
           this.props.newProfit(responce.data);
           this.props.callback();
         } else {
+          this.handleShowingError(responce.body);
           console.log("error", responce);
         }
       }
     );
     return false;
+  }
+
+  handleShowingError(messages = "") {
+    let pointers = [];
+    let details = [];
+    if (messages !== "") {
+      pointers = messages.map(item => {
+        return item.pointer
+          .split("/")
+          .pop()
+          .split("_")
+          .pop();
+      });
+      details = messages.map(item => {
+        return item.detail;
+      });
+    }
+    this.setState({
+      showErrorAlert: !this.state.showErrorAlert,
+      errorMessages: {
+        pointers: [...new Set(pointers)],
+        messages: [...new Set(details)]
+      }
+    });
   }
 
   render() {
@@ -315,6 +347,11 @@ class NewProfitForm extends Component {
             method="post"
             onSubmit={this.handleSubmit}
           >
+            <ErrorModalAlert
+              shouldShown={this.state.showErrorAlert}
+              errors={this.state.errorMessages}
+              handleDismiss={this.handleShowingError}
+            />
             <FormGroup
               controlId="newProfitFrom"
               validationState={this.state.validationState.from}
@@ -395,6 +432,7 @@ class NewProfitForm extends Component {
                   <FormControl
                     type="number"
                     step="0.01"
+                    min="0.01"
                     required
                     placeholder="Enter Profit amount"
                     onChange={this.handleChangeAmount}

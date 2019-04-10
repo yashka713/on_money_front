@@ -7,6 +7,7 @@ import showTrashIcon from "../../../../../actions/showTrashIcon";
 import destroyer from "../../../../../actions/destroyer";
 import clear_destroyer from "../../../../../actions/clear_destroyer";
 import dndLogo from "../../../../../services/utils/dndLogo";
+import gradient from "random-gradient";
 
 class Category extends React.Component {
   constructor(props) {
@@ -33,8 +34,12 @@ class Category extends React.Component {
       </Popover>
     );
 
+    const uniqGrName = "category_" + this.props.category.id;
+    const bgGradient = { background: gradient(uniqGrName) };
+
     return (
       <li
+        style={bgGradient}
         className="flexBox text-center hidden-edit"
         draggable
         onDragStart={e => this.onDragStart(e, this.props.category.id)}

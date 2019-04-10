@@ -19,6 +19,7 @@ import updateAccount from "../../../actions/accounts/updateAccount";
 import updateTransaction from "../../../actions/transactions/updateTransaction";
 import patchTransactionRequest from "../../../services/requests/patchTransactionRequest";
 import successAlert from "../../../actions/successAlert";
+import {ErrorModalAlert} from "../ErrorModalAlert";
 
 class UpdateProfitForm extends Component {
   constructor(props) {
@@ -35,6 +36,7 @@ class UpdateProfitForm extends Component {
     this.accountsOptionForSelect = this.accountsOptionForSelect.bind(this);
     this.profitsOptionForSelect = this.profitsOptionForSelect.bind(this);
     this.profitAttributes = this.profitAttributes.bind(this);
+    this.handleShowingError = this.handleShowingError.bind(this);
   }
 
   getInitialState() {
@@ -63,6 +65,11 @@ class UpdateProfitForm extends Component {
           .slice(0, 10),
         amount: this.props.transaction.attributes.from_amount,
         note: this.props.transaction.attributes.note
+      },
+      showErrorAlert: false,
+      errorMessages: {
+        pointers: [],
+        messages: []
       }
     };
   }
@@ -252,7 +259,7 @@ class UpdateProfitForm extends Component {
           this.disableSubmit();
         }
       );
-    } else if (!amount) {
+    } else if (!amount || amount <= 0) {
       this.setState(
         {
           validationState: {
@@ -308,11 +315,36 @@ class UpdateProfitForm extends Component {
           this.props.updateProfit(responce.data);
           this.props.callback();
         } else {
+          this.handleShowingError(responce.body);
           console.log("error", responce);
         }
       }
     );
     return false;
+  }
+
+  handleShowingError(messages = "") {
+    let pointers = [];
+    let details = [];
+    if (messages !== "") {
+      pointers = messages.map(item => {
+        return item.pointer
+          .split("/")
+          .pop()
+          .split("_")
+          .pop();
+      });
+      details = messages.map(item => {
+        return item.detail;
+      });
+    }
+    this.setState({
+      showErrorAlert: !this.state.showErrorAlert,
+      errorMessages: {
+        pointers: [...new Set(pointers)],
+        messages: [...new Set(details)]
+      }
+    });
   }
 
   render() {
@@ -333,6 +365,11 @@ class UpdateProfitForm extends Component {
             method="patch"
             onSubmit={this.handleSubmit}
           >
+            <ErrorModalAlert
+              shouldShown={this.state.showErrorAlert}
+              errors={this.state.errorMessages}
+              handleDismiss={this.handleShowingError}
+            />
             <FormGroup
               controlId="updateProfitFrom"
               validationState={this.state.validationState.from}
@@ -461,7 +498,9 @@ export default connect(
   dispatch => ({
     updateProfit: profit => {
       dispatch(updateTransaction(profit.data));
-      dispatch(updateAccount(profit.included.pop()));
+      profit.included.forEach(item => {
+        if (item.type === "accounts") dispatch(updateAccount(item));
+      });
       dispatch(
         successAlert(true, "Profit Transaction was successfully changed")
       );

@@ -14,7 +14,7 @@ class Categories extends React.Component {
 
   render() {
     return (
-      <div className="margin-top-15">
+      <div className="col-md-6">
         <CategoryHeader categoryType={this.props.type} />
         <CategoriesList
           list={this.props.categories[this.props.type]}

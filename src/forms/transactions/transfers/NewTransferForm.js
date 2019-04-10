@@ -19,6 +19,7 @@ import Api from "../../../api/Api";
 
 import DayPickerInput from "react-day-picker/DayPickerInput";
 import CustomOverlay from "../DatePickerOverlay";
+import { ErrorModalAlert } from "../ErrorModalAlert";
 
 class NewTransferForm extends Component {
   constructor(props) {
@@ -36,6 +37,7 @@ class NewTransferForm extends Component {
     this.handleChangeRateTo = this.handleChangeRateTo.bind(this);
     this.accountsOptionForSelect = this.accountsOptionForSelect.bind(this);
     this.findItem = this.findItem.bind(this);
+    this.handleShowingError = this.handleShowingError.bind(this);
   }
 
   getInitialState() {
@@ -58,7 +60,12 @@ class NewTransferForm extends Component {
         from: 0,
         to: 0
       },
-      sameCurrency: true
+      sameCurrency: true,
+      showErrorAlert: false,
+      errorMessages: {
+        pointers: [],
+        messages: []
+      }
     };
   }
 
@@ -288,7 +295,7 @@ class NewTransferForm extends Component {
           this.disableSubmit();
         }
       );
-    } else if (!amount) {
+    } else if (!amount || amount < 0) {
       this.setState(
         {
           validationState: {
@@ -353,16 +360,40 @@ class NewTransferForm extends Component {
 
     newTransactionRequest(event.target.action, this.transferAttributes()).then(
       responce => {
-
         if (responce.status === 201) {
           this.props.newTransfer(responce.data);
           this.props.callback();
         } else {
+          this.handleShowingError(responce.body);
           console.log("error", responce);
         }
       }
     );
     return false;
+  }
+
+  handleShowingError(messages = "") {
+    let pointers = [];
+    let details = [];
+    if (messages !== "") {
+      pointers = messages.map(item => {
+        return item.pointer
+          .split("/")
+          .pop()
+          .split("_")
+          .pop();
+      });
+      details = messages.map(item => {
+        return item.detail;
+      });
+    }
+    this.setState({
+      showErrorAlert: !this.state.showErrorAlert,
+      errorMessages: {
+        pointers: [...new Set(pointers)],
+        messages: [...new Set(details)]
+      }
+    });
   }
 
   render() {
@@ -381,6 +412,11 @@ class NewTransferForm extends Component {
             method="post"
             onSubmit={this.handleSubmit}
           >
+            <ErrorModalAlert
+              shouldShown={this.state.showErrorAlert}
+              errors={this.state.errorMessages}
+              handleDismiss={this.handleShowingError}
+            />
             <FormGroup
               controlId="newTransferFrom"
               validationState={this.state.validationState.from}
