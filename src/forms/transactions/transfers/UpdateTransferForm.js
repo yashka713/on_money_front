@@ -18,6 +18,7 @@ import Api from "../../../api/Api";
 
 import DayPickerInput from "react-day-picker/DayPickerInput";
 import CustomOverlay from "../DatePickerOverlay";
+import successAlert from "../../../actions/successAlert";
 
 class UpdateTransferForm extends Component {
   constructor(props) {
@@ -569,6 +570,9 @@ export default connect(
       dispatch(updateTransaction(transfer.data));
       dispatch(updateAccount(transfer.included.pop()));
       dispatch(updateAccount(transfer.included.pop()));
+      dispatch(
+        successAlert(true, "Transfer Transaction was successfully changed")
+      );
     }
   })
 )(UpdateTransferForm);

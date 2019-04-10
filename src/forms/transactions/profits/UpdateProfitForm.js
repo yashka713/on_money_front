@@ -18,6 +18,7 @@ import CustomOverlay from "../DatePickerOverlay";
 import updateAccount from "../../../actions/accounts/updateAccount";
 import updateTransaction from "../../../actions/transactions/updateTransaction";
 import patchTransactionRequest from "../../../services/requests/patchTransactionRequest";
+import successAlert from "../../../actions/successAlert";
 
 class UpdateProfitForm extends Component {
   constructor(props) {
@@ -461,6 +462,9 @@ export default connect(
     updateProfit: profit => {
       dispatch(updateTransaction(profit.data));
       dispatch(updateAccount(profit.included.pop()));
+      dispatch(
+        successAlert(true, "Profit Transaction was successfully changed")
+      );
     }
   })
 )(UpdateProfitForm);

@@ -18,6 +18,7 @@ import DayPickerInput from "react-day-picker/DayPickerInput";
 import CustomOverlay from "../DatePickerOverlay";
 import newTransaction from "../../../actions/transactions/newTransaction";
 import updateAccount from "../../../actions/accounts/updateAccount";
+import successAlert from "../../../actions/successAlert";
 
 class NewChargeForm extends Component {
   constructor(props) {
@@ -442,6 +443,7 @@ export default connect(
     newCharge: charge => {
       dispatch(newTransaction(charge.data));
       dispatch(updateAccount(charge.included.shift()));
+      dispatch(successAlert(true, "New Charge Transaction was created"));
     }
   })
 )(NewChargeForm);
