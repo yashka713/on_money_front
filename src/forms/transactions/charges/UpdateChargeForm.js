@@ -19,6 +19,7 @@ import updateAccount from "../../../actions/accounts/updateAccount";
 import patchTransactionRequest from "../../../services/requests/patchTransactionRequest";
 import updateTransaction from "../../../actions/transactions/updateTransaction";
 import successAlert from "../../../actions/successAlert";
+import { ErrorModalAlert } from "../ErrorModalAlert";
 
 class UpdateChargeForm extends Component {
   constructor(props) {
@@ -36,6 +37,7 @@ class UpdateChargeForm extends Component {
     this.chargeOptionForSelect = this.chargeOptionForSelect.bind(this);
     this.chargeAttributes = this.chargeAttributes.bind(this);
     this.findItem = this.findItem.bind(this);
+    this.handleShowingError = this.handleShowingError.bind(this);
   }
 
   findItem(account) {
@@ -253,7 +255,7 @@ class UpdateChargeForm extends Component {
           this.disableSubmit();
         }
       );
-    } else if (!amount) {
+    } else if (!amount || amount <= 0) {
       this.setState(
         {
           validationState: {
@@ -309,11 +311,36 @@ class UpdateChargeForm extends Component {
           this.props.updateCharge(responce.data);
           this.props.callback();
         } else {
+          this.handleShowingError(responce.body);
           console.log("error", responce);
         }
       }
     );
     return false;
+  }
+
+  handleShowingError(messages = "") {
+    let pointers = [];
+    let details = [];
+    if (messages !== "") {
+      pointers = messages.map(item => {
+        return item.pointer
+          .split("/")
+          .pop()
+          .split("_")
+          .pop();
+      });
+      details = messages.map(item => {
+        return item.detail;
+      });
+    }
+    this.setState({
+      showErrorAlert: !this.state.showErrorAlert,
+      errorMessages: {
+        pointers: [...new Set(pointers)],
+        messages: [...new Set(details)]
+      }
+    });
   }
 
   render() {
@@ -334,6 +361,11 @@ class UpdateChargeForm extends Component {
             method="patch"
             onSubmit={this.handleSubmit}
           >
+            <ErrorModalAlert
+              shouldShown={this.state.showErrorAlert}
+              errors={this.state.errorMessages}
+              handleDismiss={this.handleShowingError}
+            />
             <FormGroup
               controlId="updateChargeFrom"
               validationState={this.state.validationState.from}
@@ -462,7 +494,9 @@ export default connect(
   dispatch => ({
     updateCharge: charge => {
       dispatch(updateTransaction(charge.data));
-      dispatch(updateAccount(charge.included.shift()));
+      charge.included.forEach(item => {
+        if (item.type === "accounts") dispatch(updateAccount(item));
+      });
       dispatch(
         successAlert(true, "Charge Transaction was successfully changed")
       );

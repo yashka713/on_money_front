@@ -8,6 +8,7 @@ import showTrashIcon from "../../../../../actions/showTrashIcon";
 import destroyer from "../../../../../actions/destroyer";
 
 import dndLogo from "../../../../../services/utils/dndLogo";
+import gradient from "random-gradient";
 
 class Account extends React.Component {
   constructor(props) {
@@ -34,8 +35,12 @@ class Account extends React.Component {
       </Popover>
     );
 
+    const uniqGrName = "account_" + this.props.account.id;
+    const bgGradient = { background: gradient(uniqGrName) };
+
     return (
       <li
+        style={bgGradient}
         className="accountBox text-center hidden-edit"
         draggable
         onDragStart={e => this.onDragStart(e, this.props.account.id)}

@@ -37,7 +37,7 @@ export default class TransactionCalendar extends Component {
 
     const startMonth = new Date(new Date().setMonth(new Date().getMonth() - 1));
     return (
-      <div className="datepicker-box">
+      <div className="datepicker-box col-md-7">
         <div className="datepicker-item-selected">{message()}</div>
         <div className="datepicker-item-selector">
           <DayPicker

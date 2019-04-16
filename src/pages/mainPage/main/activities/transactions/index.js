@@ -2,13 +2,15 @@ import { connect } from "react-redux";
 import React, { Component } from "react";
 import transactionsGetRequest from "../../../../../services/requests/transactionsGetRequest";
 import Api from "../../../../../api/Api";
-import Timeline from "./Timeline";
+import ScrolledTimeline from "./ScrolledTimeline";
 import TransactionCalendar from "./TransactionCalendar";
-import { TransactionForm } from "./TransactionForm";
+import { TransactionType } from "./TransactionType";
+import { Pagers } from "./Pagers";
+import { NewTransactionBtnGroup } from "./NewTransactionBtnGroup";
 import { DateUtils } from "react-day-picker/DayPicker";
 import downloadTransactions from "../../../../../actions/transactions/downloadTransactions";
 
-import { ButtonGroup, Button, Modal } from "react-bootstrap";
+import { Modal } from "react-bootstrap";
 import "react-day-picker/lib/style.css";
 
 class Transactions extends Component {
@@ -24,6 +26,7 @@ class Transactions extends Component {
     this.handleDayMouseEnter = this.handleDayMouseEnter.bind(this);
     this.handleShowModal = this.handleShowModal.bind(this);
     this.updateHandler = this.updateHandler.bind(this);
+    this.handleNewTransactionType = this.handleNewTransactionType.bind(this);
   }
 
   getInitialState() {
@@ -181,7 +184,7 @@ class Transactions extends Component {
 
   render() {
     return (
-      <div>
+      <div className="col-md-12">
         <TransactionCalendar
           fromDay={this.state.fromDay}
           toDay={this.state.toDay}
@@ -190,41 +193,31 @@ class Transactions extends Component {
           handleDayClick={this.handleDayClick}
           handleDayMouseEnter={this.handleDayMouseEnter}
         />
-        <div className="transaction-btn-group">
-          <ButtonGroup justified>
-            <Button
-              href="#"
-              bsStyle="primary"
-              onClick={() => this.handleNewTransactionType("transfer")}
-            >
-              New Transfer
-            </Button>
-            <Button
-              href="#"
-              bsStyle="info"
-              onClick={() => this.handleNewTransactionType("profit")}
-            >
-              New Profit
-            </Button>
-            <Button
-              href="#"
-              onClick={() => this.handleNewTransactionType("charge")}
-            >
-              New Charge
-            </Button>
-            <Button href="#" bsStyle="warning" onClick={this.resetState}>
-              Update transactions
-            </Button>
-          </ButtonGroup>
-          <Modal show={this.state.showModal} onHide={this.handleShowModal}>
-            <TransactionForm
-              operationType={this.state.form.formType}
-              transaction={this.state.form.transaction}
-              handleShowModal={this.handleShowModal}
-            />
-          </Modal>
+        <div className="col-md-5 margin-top-15">
+          At vero eos et accusamus et iusto odio dignissimos ducimus qui
+          blanditiis praesentium voluptatum deleniti atque corrupti quos dolores
+          et quas molestias excepturi sint occaecati cupiditate non provident,
+          similique sunt in culpa qui officia deserunt mollitia animi, id est
+          laborum et dolorum fuga. Et harum quidem rerum facilis est et expedita
+          distinctio. Nam libero tempore, cum soluta nobis est eligendi optio
+          cumque nihil impedit quo minus id quod
         </div>
-        <Timeline
+        <NewTransactionBtnGroup
+          handleNewTransactionType={this.handleNewTransactionType}
+          resetState={this.resetState}
+        />
+        <Modal show={this.state.showModal} onHide={this.handleShowModal}>
+          <TransactionType
+            operationType={this.state.form.formType}
+            transaction={this.state.form.transaction}
+            handleShowModal={this.handleShowModal}
+          />
+        </Modal>
+        <Pagers
+          handlePreviousPage={this.handlePreviousPage}
+          handleNextPage={this.handleNextPage}
+        />
+        <ScrolledTimeline
           updateHandler={this.updateHandler}
           updateTransactions={this.getTransactionsRequest}
           handlePreviousPage={this.handlePreviousPage}
