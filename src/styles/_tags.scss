@@ -1,0 +1,44 @@
+.tagsContainer {
+  display: flex;
+  list-style: none;
+  justify-content: flex-start;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  height: 12em;
+  background-color: #a6c1ee;
+  overflow: hidden;
+}
+
+.tag-item {
+  margin: 0.3em;
+  padding: 0.3em;
+  background-color: #1EA349;
+  color: white;
+  border-radius: 3px;
+}
+
+.tagTrash {
+  height: 2em;
+  width: 100%;
+  background-color: #D93A30;
+  color: white;
+}
+
+.approveBox {
+  display: flex;
+}
+
+.approveBox-answer {
+  width: 50%;
+  padding: 0.1em;
+  cursor: pointer;
+  border-radius: 10px;
+}
+
+.approveBox-answer__cancel {
+  background-color: #FF2133;
+}
+
+.approveBox-answer__approve {
+  background-color: #27ff8c;
+}

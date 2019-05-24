@@ -12,6 +12,7 @@ import downloadTransactions from "../../../../../actions/transactions/downloadTr
 
 import { Modal } from "react-bootstrap";
 import "react-day-picker/lib/style.css";
+import TagList from "./tags/TagList";
 
 class Transactions extends Component {
   constructor(props) {
@@ -184,7 +185,7 @@ class Transactions extends Component {
 
   render() {
     return (
-      <div className="col-md-12">
+      <div className="col-md-12 margin-top-15">
         <TransactionCalendar
           fromDay={this.state.fromDay}
           toDay={this.state.toDay}
@@ -193,15 +194,7 @@ class Transactions extends Component {
           handleDayClick={this.handleDayClick}
           handleDayMouseEnter={this.handleDayMouseEnter}
         />
-        <div className="col-md-5 margin-top-15">
-          At vero eos et accusamus et iusto odio dignissimos ducimus qui
-          blanditiis praesentium voluptatum deleniti atque corrupti quos dolores
-          et quas molestias excepturi sint occaecati cupiditate non provident,
-          similique sunt in culpa qui officia deserunt mollitia animi, id est
-          laborum et dolorum fuga. Et harum quidem rerum facilis est et expedita
-          distinctio. Nam libero tempore, cum soluta nobis est eligendi optio
-          cumque nihil impedit quo minus id quod
-        </div>
+        <TagList />
         <NewTransactionBtnGroup
           handleNewTransactionType={this.handleNewTransactionType}
           resetState={this.resetState}
