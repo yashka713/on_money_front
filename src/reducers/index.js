@@ -7,6 +7,7 @@ import destroyer from "./destroyer";
 import accounts from "./accounts";
 import transactions from "./transactions";
 import categories from "./categories";
+import tags from "./tags";
 // routing
 import { routerReducer } from "react-router-redux";
 
@@ -17,6 +18,7 @@ const appReducer = combineReducers({
   notice,
   trashIcon,
   accounts,
+  tags,
   transactions,
   categories,
   destroyer

@@ -7,7 +7,11 @@ import UpdateProfitForm from "../../../../../forms/transactions/profits/UpdatePr
 import NewChargeForm from "../../../../../forms/transactions/charges/NewChargeForm";
 import UpdateChargeForm from "../../../../../forms/transactions/charges/UpdateChargeForm";
 
-export const TransactionType = ({ operationType, transaction, handleShowModal }) => {
+export const TransactionType = ({
+  operationType,
+  transaction,
+  handleShowModal
+}) => {
   switch (operationType) {
     case "transfer":
       if (isEmpty(transaction)) {

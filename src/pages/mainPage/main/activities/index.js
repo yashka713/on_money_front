@@ -28,7 +28,7 @@ class Activities extends Component {
     this.setState({ showModal: !this.state.showModal });
   }
 
-  onDrop(e) {
+  onDrop() {
     this.setState({ item: this.props.destroyItem });
     this.props.handleShowTrashIcon(false);
     this.handleShowModal();
