@@ -9,6 +9,7 @@ import {
   InputGroup,
   Modal
 } from "react-bootstrap";
+import Select from "react-select";
 
 import { connect } from "react-redux";
 import newTransaction from "../../../actions/transactions/newTransaction";
@@ -38,6 +39,8 @@ class NewTransferForm extends Component {
     this.accountsOptionForSelect = this.accountsOptionForSelect.bind(this);
     this.findItem = this.findItem.bind(this);
     this.handleShowingError = this.handleShowingError.bind(this);
+    this.getOptionsForTag = this.getOptionsForTag.bind(this);
+    this.handleChangeTags = this.handleChangeTags.bind(this);
   }
 
   getInitialState() {
@@ -54,6 +57,7 @@ class NewTransferForm extends Component {
         to: null,
         date: new Date().toISOString().slice(0, 10),
         amount: null,
+        tag_ids: [],
         note: ""
       },
       rate: {
@@ -67,6 +71,15 @@ class NewTransferForm extends Component {
         messages: []
       }
     };
+  }
+
+  getOptionsForTag() {
+    return this.props.tags.map(tag => {
+      return {
+        value: tag.id,
+        label: tag.attributes.name
+      };
+    });
   }
 
   findItem(account) {
@@ -344,6 +357,7 @@ class NewTransferForm extends Component {
       amount: this.state.transfer.amount,
       rate: 1,
       date: this.state.transfer.date,
+      tag_ids: this.state.transfer.tag_ids.map(tag => Number(tag.value)),
       note: this.state.transfer.note
     };
 
@@ -396,6 +410,15 @@ class NewTransferForm extends Component {
     });
   }
 
+  handleChangeTags(selectedOption) {
+    this.setState({
+      transfer: {
+        ...this.state.transfer,
+        tag_ids: selectedOption
+      }
+    });
+  }
+
   render() {
     const currencyFrom = this.getCurrency(this.state.transfer.from);
     const currencyTo = this.getCurrency(this.state.transfer.to);
@@ -427,7 +450,7 @@ class NewTransferForm extends Component {
               <Col sm={10}>
                 <FormControl
                   componentClass="select"
-                  required="true"
+                  required
                   onChange={e => this.handleChangeAccount(e, "from")}
                 >
                   <option key="0" value="0">
@@ -561,6 +584,19 @@ class NewTransferForm extends Component {
                 />
               </Col>
             </FormGroup>
+            <FormGroup controlId="newTransferTags">
+              <Col componentClass={ControlLabel} sm={2}>
+                Tags:
+              </Col>
+              <Col sm={10}>
+                <Select
+                  name="newTransferTags"
+                  options={this.getOptionsForTag()}
+                  onChange={this.handleChangeTags}
+                  isMulti
+                />
+              </Col>
+            </FormGroup>
           </Form>
         </Modal.Body>
         <Modal.Footer>
@@ -581,7 +617,8 @@ class NewTransferForm extends Component {
 
 export default connect(
   state => ({
-    accounts: state.accounts.accounts
+    accounts: state.accounts.accounts,
+    tags: state.tags.tags
   }),
   dispatch => ({
     newTransfer: transfer => {

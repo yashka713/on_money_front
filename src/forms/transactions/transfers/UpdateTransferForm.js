@@ -9,6 +9,7 @@ import {
   InputGroup,
   Modal
 } from "react-bootstrap";
+import Select from "react-select";
 
 import { connect } from "react-redux";
 import updateTransaction from "../../../actions/transactions/updateTransaction";
@@ -38,6 +39,8 @@ class UpdateTransferForm extends Component {
     this.accountsOptionForSelect = this.accountsOptionForSelect.bind(this);
     this.findItem = this.findItem.bind(this);
     this.handleShowingError = this.handleShowingError.bind(this);
+    this.handleChangeTags = this.handleChangeTags.bind(this);
+    this.getOptionsForTag = this.getOptionsForTag.bind(this);
   }
 
   getInitialState() {
@@ -46,6 +49,13 @@ class UpdateTransferForm extends Component {
     );
     const to = this.findItem(
       this.props.transaction.relationships.profitable.data.id
+    );
+
+    const transactionTags = this.props.transaction.relationships.tags.data.map(
+      tag => tag.id
+    );
+    const tagOptions = this.getOptionsForTag().filter(tag =>
+      transactionTags.includes(tag["value"])
     );
 
     return {
@@ -63,6 +73,7 @@ class UpdateTransferForm extends Component {
           .toISOString()
           .slice(0, 10),
         amount: this.props.transaction.attributes.from_amount,
+        tag_ids: tagOptions,
         note: this.props.transaction.attributes.note
       },
       rate: {
@@ -76,6 +87,15 @@ class UpdateTransferForm extends Component {
         messages: []
       }
     };
+  }
+
+  getOptionsForTag() {
+    return this.props.tags.map(tag => {
+      return {
+        value: tag.id,
+        label: tag.attributes.name
+      };
+    });
   }
 
   findItem(account) {
@@ -353,6 +373,7 @@ class UpdateTransferForm extends Component {
       amount: this.state.transfer.amount,
       rate: 1,
       date: this.state.transfer.date,
+      tag_ids: this.state.transfer.tag_ids.map(tag => Number(tag.value)),
       note: this.state.transfer.note
     };
 
@@ -406,9 +427,19 @@ class UpdateTransferForm extends Component {
     });
   }
 
+  handleChangeTags(selectedOption) {
+    this.setState({
+      transfer: {
+        ...this.state.transfer,
+        tag_ids: selectedOption
+      }
+    });
+  }
+
   render() {
     const currencyFrom = this.getCurrency(this.state.transfer.from);
     const currencyTo = this.getCurrency(this.state.transfer.to);
+    const selectedTags = this.state.transfer.tag_ids;
     return (
       <div>
         <Modal.Header closeButton>
@@ -440,7 +471,7 @@ class UpdateTransferForm extends Component {
               <Col sm={10}>
                 <FormControl
                   componentClass="select"
-                  required="true"
+                  required
                   onChange={e => this.handleChangeAccount(e, "from")}
                   defaultValue={this.state.transfer.from.id}
                 >
@@ -580,6 +611,20 @@ class UpdateTransferForm extends Component {
                 />
               </Col>
             </FormGroup>
+            <FormGroup controlId="updateTransferTagIds">
+              <Col componentClass={ControlLabel} sm={2}>
+                Tags:
+              </Col>
+              <Col sm={10}>
+                <Select
+                  name="updateTransferTagIds"
+                  value={selectedTags}
+                  options={this.getOptionsForTag()}
+                  onChange={this.handleChangeTags}
+                  isMulti
+                />
+              </Col>
+            </FormGroup>
           </Form>
         </Modal.Body>
         <Modal.Footer>
@@ -600,7 +645,8 @@ class UpdateTransferForm extends Component {
 
 export default connect(
   state => ({
-    accounts: state.accounts.accounts
+    accounts: state.accounts.accounts,
+    tags: state.tags.tags
   }),
   dispatch => ({
     updateTransfer: transfer => {

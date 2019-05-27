@@ -9,6 +9,8 @@ import {
   InputGroup,
   Modal
 } from "react-bootstrap";
+import Select from "react-select";
+
 import { ErrorModalAlert } from "../ErrorModalAlert";
 
 import { connect } from "react-redux";
@@ -37,6 +39,8 @@ class NewChargeForm extends Component {
     this.chargeOptionForSelect = this.chargeOptionForSelect.bind(this);
     this.chargeAttributes = this.chargeAttributes.bind(this);
     this.handleShowingError = this.handleShowingError.bind(this);
+    this.handleChangeTags = this.handleChangeTags.bind(this);
+    this.getOptionsForTag = this.getOptionsForTag.bind(this);
   }
 
   getInitialState() {
@@ -53,6 +57,7 @@ class NewChargeForm extends Component {
         to: null,
         date: new Date().toISOString().slice(0, 10),
         amount: null,
+        tag_ids: [],
         note: ""
       },
       showErrorAlert: false,
@@ -61,6 +66,15 @@ class NewChargeForm extends Component {
         messages: []
       }
     };
+  }
+
+  getOptionsForTag() {
+    return this.props.tags.map(tag => {
+      return {
+        value: tag.id,
+        label: tag.attributes.name
+      };
+    });
   }
 
   handleChangeAccount(event) {
@@ -286,6 +300,7 @@ class NewChargeForm extends Component {
         to: this.state.charge.to.id,
         amount: this.state.charge.amount,
         date: this.state.charge.date,
+        tag_ids: this.state.charge.tag_ids.map(tag => Number(tag.value)),
         note: this.state.charge.note
       }
     };
@@ -332,6 +347,15 @@ class NewChargeForm extends Component {
     });
   }
 
+  handleChangeTags(selectedOption) {
+    this.setState({
+      charge: {
+        ...this.state.charge,
+        tag_ids: selectedOption
+      }
+    });
+  }
+
   render() {
     const currency = this.getCurrency(this.state.charge.from);
     return (
@@ -362,7 +386,7 @@ class NewChargeForm extends Component {
               <Col sm={10}>
                 <FormControl
                   componentClass="select"
-                  required="true"
+                  required
                   onChange={e => this.handleChangeAccount(e)}
                   defaultValue={this.state.charge.to}
                 >
@@ -383,7 +407,7 @@ class NewChargeForm extends Component {
               <Col sm={10}>
                 <FormControl
                   componentClass="select"
-                  required="true"
+                  required
                   onChange={e => this.handleChangeCategory(e)}
                   defaultValue={this.state.charge.from}
                 >
@@ -453,6 +477,19 @@ class NewChargeForm extends Component {
                 />
               </Col>
             </FormGroup>
+            <FormGroup controlId="newProfitTags">
+              <Col componentClass={ControlLabel} sm={2}>
+                Tags:
+              </Col>
+              <Col sm={10}>
+                <Select
+                  name="newChargeTagIds"
+                  options={this.getOptionsForTag()}
+                  onChange={this.handleChangeTags}
+                  isMulti
+                />
+              </Col>
+            </FormGroup>
           </Form>
         </Modal.Body>
         <Modal.Footer>
@@ -474,7 +511,8 @@ class NewChargeForm extends Component {
 export default connect(
   state => ({
     accounts: state.accounts.accounts,
-    charges: state.categories.categories.charge
+    charges: state.categories.categories.charge,
+    tags: state.tags.tags
   }),
   dispatch => ({
     newCharge: charge => {

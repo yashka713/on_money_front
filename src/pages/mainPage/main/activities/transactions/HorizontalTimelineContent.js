@@ -22,8 +22,8 @@ export default class HorizontalTimelineContent extends React.Component {
       stylesOutline: "#dfdfdf",
       isTouchEnabled: true,
       isKeyboardEnabled: true,
-      isOpenEnding: true,
-      isOpenBeginning: true
+      isOpenEnding: false,
+      isOpenBeginning: false
     };
   }
 

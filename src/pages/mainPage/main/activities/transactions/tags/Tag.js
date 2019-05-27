@@ -1,14 +1,5 @@
 import React from "react";
 
-export const Tag = ({ tag, updateClick }) => {
-  return (
-    <div
-      className="tag-item cursor-pointer"
-      draggable
-      onDragStart={e => e.dataTransfer.setData("tagId", tag.id)}
-      onClick={() => updateClick(tag.id)}
-    >
-      {tag.attributes.name}
-    </div>
-  );
+export const Tag = ({ tag }) => {
+  return <div className="tag-item cursor-pointer">{tag.attributes.name}</div>;
 };

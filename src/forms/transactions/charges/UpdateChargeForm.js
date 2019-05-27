@@ -9,6 +9,7 @@ import {
   InputGroup,
   Modal
 } from "react-bootstrap";
+import Select from "react-select";
 
 import { connect } from "react-redux";
 import Api from "../../../api/Api";
@@ -38,6 +39,8 @@ class UpdateChargeForm extends Component {
     this.chargeAttributes = this.chargeAttributes.bind(this);
     this.findItem = this.findItem.bind(this);
     this.handleShowingError = this.handleShowingError.bind(this);
+    this.handleChangeTags = this.handleChangeTags.bind(this);
+    this.getOptionsForTag = this.getOptionsForTag.bind(this);
   }
 
   findItem(account) {
@@ -56,6 +59,13 @@ class UpdateChargeForm extends Component {
       );
     })[0];
 
+    const transactionTags = this.props.transaction.relationships.tags.data.map(
+      tag => tag.id
+    );
+    const tagOptions = this.getOptionsForTag().filter(tag =>
+      transactionTags.includes(tag["value"])
+    );
+
     return {
       validationState: {
         from: null,
@@ -71,9 +81,19 @@ class UpdateChargeForm extends Component {
           .toISOString()
           .slice(0, 10),
         amount: this.props.transaction.attributes.from_amount,
+        tag_ids: tagOptions,
         note: this.props.transaction.attributes.note
       }
     };
+  }
+
+  getOptionsForTag() {
+    return this.props.tags.map(tag => {
+      return {
+        value: tag.id,
+        label: tag.attributes.name
+      };
+    });
   }
 
   handleChangeAccount(event) {
@@ -297,6 +317,7 @@ class UpdateChargeForm extends Component {
         to: this.state.charge.to.id,
         amount: this.state.charge.amount,
         date: this.state.charge.date,
+        tag_ids: this.state.charge.tag_ids.map(tag => Number(tag.value)),
         note: this.state.charge.note
       }
     };
@@ -343,8 +364,18 @@ class UpdateChargeForm extends Component {
     });
   }
 
+  handleChangeTags(selectedOption) {
+    this.setState({
+      charge: {
+        ...this.state.charge,
+        tag_ids: selectedOption
+      }
+    });
+  }
+
   render() {
     const currency = this.getCurrency(this.state.charge.from);
+    const selectedTags = this.state.charge.tag_ids;
     return (
       <div>
         <Modal.Header closeButton>
@@ -376,7 +407,7 @@ class UpdateChargeForm extends Component {
               <Col sm={10}>
                 <FormControl
                   componentClass="select"
-                  required="true"
+                  required
                   onChange={e => this.handleChangeAccount(e)}
                   defaultValue={this.state.charge.from.id}
                 >
@@ -397,7 +428,7 @@ class UpdateChargeForm extends Component {
               <Col sm={10}>
                 <FormControl
                   componentClass="select"
-                  required="true"
+                  required
                   onChange={e => this.handleChangeCategory(e)}
                   defaultValue={this.state.charge.to.id}
                 >
@@ -468,6 +499,20 @@ class UpdateChargeForm extends Component {
                 />
               </Col>
             </FormGroup>
+            <FormGroup controlId="updateChargeTagIds">
+              <Col componentClass={ControlLabel} sm={2}>
+                Tags:
+              </Col>
+              <Col sm={10}>
+                <Select
+                  name="updateChargeTagIds"
+                  value={selectedTags}
+                  options={this.getOptionsForTag()}
+                  onChange={this.handleChangeTags}
+                  isMulti
+                />
+              </Col>
+            </FormGroup>
           </Form>
         </Modal.Body>
         <Modal.Footer>
@@ -489,7 +534,8 @@ class UpdateChargeForm extends Component {
 export default connect(
   state => ({
     accounts: state.accounts.accounts,
-    charges: state.categories.categories.charge
+    charges: state.categories.categories.charge,
+    tags: state.tags.tags
   }),
   dispatch => ({
     updateCharge: charge => {

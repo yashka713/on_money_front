@@ -3,6 +3,7 @@ import React, { Component } from "react";
 import FontAwesomeIcon from "@fortawesome/react-fontawesome";
 import faPencilAlt from "@fortawesome/fontawesome-free-solid/faPencilAlt";
 import faTimes from "@fortawesome/fontawesome-free-solid/faTimes";
+import TagList from "./tags/TagList";
 
 class TransactionItem extends Component {
   constructor(props) {
@@ -80,7 +81,7 @@ class TransactionItem extends Component {
       <div key={this.props.transaction.id} className="col-md-12">
         <div className="col-md-6">
           <div
-            className="col-md-6 transaction-control control-edit cursor-pointer"
+            className="col-md-5 col-md-offset-1 transaction-control control-edit cursor-pointer"
             onClick={() =>
               this.props.updateTransactionCallback(this.props.transaction)
             }
@@ -88,27 +89,29 @@ class TransactionItem extends Component {
             <FontAwesomeIcon icon={faPencilAlt} className="transaction-edit" />
           </div>
           <div
-            className="col-md-6 transaction-control control-destroy cursor-pointer"
+            className="col-md-5 transaction-control control-destroy cursor-pointer"
             onClick={this.handleDeleteTransaction}
           >
-            <FontAwesomeIcon
-              icon={faTimes}
-              className="transaction-destroy"
-            />
+            <FontAwesomeIcon icon={faTimes} className="transaction-destroy" />
           </div>
-          <p className="timeline-date">
-            {this.props.transaction.attributes.date}
-          </p>
-          <p>
-            From <strong>{this.state.from.attributes.name}</strong>
-          </p>
-          <p>
-            To <strong>{this.state.to.attributes.name}</strong>
-          </p>
-          <p>Amount: {amount(this.props.transaction)}</p>
-          <p>Note: {this.props.transaction.attributes.note}</p>
+          <div className="col-md-12">
+            <p className="timeline-date">
+              {this.props.transaction.attributes.date}
+            </p>
+            <p>
+              From <strong>{this.state.from.attributes.name}</strong>
+            </p>
+            <p>
+              To <strong>{this.state.to.attributes.name}</strong>
+            </p>
+            <p>Amount: {amount(this.props.transaction)}</p>
+            <p>Note: {this.props.transaction.attributes.note}</p>
+          </div>
         </div>
-        <div className="col-md-6">Here should be tags</div>
+        <div className="col-md-6">
+          <p>Tags:</p>
+          <TagList transaction={this.props.transaction} />
+        </div>
       </div>
     );
   }

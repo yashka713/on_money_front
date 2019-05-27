@@ -1,5 +1,5 @@
-import { connect } from "react-redux";
-import React, { Component } from "react";
+import {connect} from "react-redux";
+import React, {Component} from "react";
 import HorizontalTimelineContent from "./HorizontalTimelineContent";
 import TransactionItem from "./TransactionItem";
 import DestroyTransactionModal from "./DestroyTransactionModal";
@@ -53,7 +53,7 @@ class ScrolledTimeline extends Component {
   }
 
   render() {
-    return (
+    return this.data.length > 0 ? (
       <HorizontalTimelineContent content={this.data}>
         <DestroyTransactionModal
           show={this.state.showDestroyModal}
@@ -61,6 +61,10 @@ class ScrolledTimeline extends Component {
           item={this.state.transaction}
         />
       </HorizontalTimelineContent>
+    ) : (
+      <div className="text-center col-md-12 margin-top-15">
+        <strong>Nothing to show</strong>
+      </div>
     );
   }
 }

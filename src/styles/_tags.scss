@@ -4,8 +4,6 @@
   justify-content: flex-start;
   flex-wrap: wrap;
   align-items: flex-start;
-  height: 12em;
-  background-color: #a6c1ee;
   overflow: hidden;
 }
 
@@ -41,4 +39,9 @@
 
 .approveBox-answer__approve {
   background-color: #27ff8c;
+}
+
+.display-block {
+  display: block;
+  width: 100%;
 }

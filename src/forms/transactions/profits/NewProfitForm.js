@@ -9,6 +9,7 @@ import {
   InputGroup,
   Modal
 } from "react-bootstrap";
+import Select from "react-select";
 
 import { connect } from "react-redux";
 import Api from "../../../api/Api";
@@ -37,6 +38,8 @@ class NewProfitForm extends Component {
     this.profitsOptionForSelect = this.profitsOptionForSelect.bind(this);
     this.profitAttributes = this.profitAttributes.bind(this);
     this.handleShowingError = this.handleShowingError.bind(this);
+    this.handleChangeTags = this.handleChangeTags.bind(this);
+    this.getOptionsForTag = this.getOptionsForTag.bind(this);
   }
 
   getInitialState() {
@@ -53,6 +56,7 @@ class NewProfitForm extends Component {
         to: null,
         date: new Date().toISOString().slice(0, 10),
         amount: null,
+        tag_ids: [],
         note: ""
       },
       showErrorAlert: false,
@@ -61,6 +65,15 @@ class NewProfitForm extends Component {
         messages: []
       }
     };
+  }
+
+  getOptionsForTag() {
+    return this.props.tags.map(tag => {
+      return {
+        value: tag.id,
+        label: tag.attributes.name
+      };
+    });
   }
 
   handleChangeAccount(event) {
@@ -286,6 +299,7 @@ class NewProfitForm extends Component {
         to: this.state.profit.to.id,
         amount: this.state.profit.amount,
         date: this.state.profit.date,
+        tag_ids: this.state.profit.tag_ids.map(tag => Number(tag.value)),
         note: this.state.profit.note
       }
     };
@@ -293,7 +307,6 @@ class NewProfitForm extends Component {
 
   handleSubmit(event) {
     event.preventDefault();
-
     newTransactionRequest(event.target.action, this.profitAttributes()).then(
       responce => {
         if (responce.status === 201) {
@@ -332,6 +345,15 @@ class NewProfitForm extends Component {
     });
   }
 
+  handleChangeTags(selectedOption) {
+    this.setState({
+      profit: {
+        ...this.state.profit,
+        tag_ids: selectedOption
+      }
+    });
+  }
+
   render() {
     const currency = this.getCurrency(this.state.profit.to);
     return (
@@ -362,7 +384,7 @@ class NewProfitForm extends Component {
               <Col sm={10}>
                 <FormControl
                   componentClass="select"
-                  required="true"
+                  required
                   onChange={e => this.handleChangeCategory(e)}
                   defaultValue={this.state.profit.from}
                 >
@@ -383,7 +405,7 @@ class NewProfitForm extends Component {
               <Col sm={10}>
                 <FormControl
                   componentClass="select"
-                  required="true"
+                  required
                   onChange={e => this.handleChangeAccount(e)}
                   defaultValue={this.state.profit.to}
                 >
@@ -454,6 +476,19 @@ class NewProfitForm extends Component {
                 />
               </Col>
             </FormGroup>
+            <FormGroup controlId="newProfitTags">
+              <Col componentClass={ControlLabel} sm={2}>
+                Tags:
+              </Col>
+              <Col sm={10}>
+                <Select
+                  name="newProfitTagIds"
+                  options={this.getOptionsForTag()}
+                  onChange={this.handleChangeTags}
+                  isMulti
+                />
+              </Col>
+            </FormGroup>
           </Form>
         </Modal.Body>
         <Modal.Footer>
@@ -475,7 +510,8 @@ class NewProfitForm extends Component {
 export default connect(
   state => ({
     accounts: state.accounts.accounts,
-    profits: state.categories.categories.profit
+    profits: state.categories.categories.profit,
+    tags: state.tags.tags
   }),
   dispatch => ({
     newProfit: profit => {
