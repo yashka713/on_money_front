@@ -23,12 +23,15 @@ class Main extends Component {
   }
 }
 
-export default connect(null, dispatch => ({
-  handleError: response => {
-    dispatch(showErrorAlert(response));
-  },
-  currentUser: user => {
-    dispatch(successAuth(user));
-    dispatch(push("/"));
-  }
-}))(Main);
+export default connect(
+  null,
+  dispatch => ({
+    handleError: response => {
+      dispatch(showErrorAlert(response));
+    },
+    currentUser: user => {
+      dispatch(successAuth(user));
+      dispatch(push("/"));
+    }
+  })
+)(Main);

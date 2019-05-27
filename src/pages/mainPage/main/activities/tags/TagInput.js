@@ -1,10 +1,10 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import checkTag from "../../../../../../actions/tags/checkTag";
-import updateTag from "../../../../../../actions/tags/updateTag";
-import postRequest from "../../../../../../services/requests/postRequest";
-import updateRequest from "../../../../../../services/requests/updateRequest";
-import Api from "../../../../../../api/Api";
+import checkTag from "../../../../../actions/tags/checkTag";
+import updateTag from "../../../../../actions/tags/updateTag";
+import postRequest from "../../../../../services/requests/postRequest";
+import updateRequest from "../../../../../services/requests/updateRequest";
+import Api from "../../../../../api/Api";
 import { FormGroup, InputGroup, FormControl, Button } from "react-bootstrap";
 
 class TagInput extends Component {

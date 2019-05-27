@@ -1,8 +1,8 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import destroyTag from "../../../../../../actions/tags/destroyTag";
-import destroyRequest from "../../../../../../services/requests/destroyRequest";
-import Api from "../../../../../../api/Api";
+import destroyTag from "../../../../../actions/tags/destroyTag";
+import destroyRequest from "../../../../../services/requests/destroyRequest";
+import Api from "../../../../../api/Api";
 import { OverlayTrigger, Tooltip } from "react-bootstrap";
 
 const HIDDEN_CLASS = "hidden";

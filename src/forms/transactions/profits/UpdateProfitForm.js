@@ -9,6 +9,7 @@ import {
   InputGroup,
   Modal
 } from "react-bootstrap";
+import Select from "react-select";
 
 import { connect } from "react-redux";
 import Api from "../../../api/Api";
@@ -19,7 +20,7 @@ import updateAccount from "../../../actions/accounts/updateAccount";
 import updateTransaction from "../../../actions/transactions/updateTransaction";
 import patchTransactionRequest from "../../../services/requests/patchTransactionRequest";
 import successAlert from "../../../actions/successAlert";
-import {ErrorModalAlert} from "../ErrorModalAlert";
+import { ErrorModalAlert } from "../ErrorModalAlert";
 
 class UpdateProfitForm extends Component {
   constructor(props) {
@@ -37,6 +38,8 @@ class UpdateProfitForm extends Component {
     this.profitsOptionForSelect = this.profitsOptionForSelect.bind(this);
     this.profitAttributes = this.profitAttributes.bind(this);
     this.handleShowingError = this.handleShowingError.bind(this);
+    this.handleChangeTags = this.handleChangeTags.bind(this);
+    this.getOptionsForTag = this.getOptionsForTag.bind(this);
   }
 
   getInitialState() {
@@ -47,6 +50,13 @@ class UpdateProfitForm extends Component {
     })[0];
     const to = this.findItem(
       this.props.transaction.relationships.profitable.data.id
+    );
+
+    const transactionTags = this.props.transaction.relationships.tags.data.map(
+      tag => tag.id
+    );
+    const tagOptions = this.getOptionsForTag().filter(tag =>
+      transactionTags.includes(tag["value"])
     );
 
     return {
@@ -64,6 +74,7 @@ class UpdateProfitForm extends Component {
           .toISOString()
           .slice(0, 10),
         amount: this.props.transaction.attributes.from_amount,
+        tag_ids: tagOptions,
         note: this.props.transaction.attributes.note
       },
       showErrorAlert: false,
@@ -72,6 +83,15 @@ class UpdateProfitForm extends Component {
         messages: []
       }
     };
+  }
+
+  getOptionsForTag() {
+    return this.props.tags.map(tag => {
+      return {
+        value: tag.id,
+        label: tag.attributes.name
+      };
+    });
   }
 
   findItem(account) {
@@ -301,6 +321,7 @@ class UpdateProfitForm extends Component {
         to: this.state.profit.to.id,
         amount: this.state.profit.amount,
         date: this.state.profit.date,
+        tag_ids: this.state.profit.tag_ids.map(tag => Number(tag.value)),
         note: this.state.profit.note
       }
     };
@@ -347,8 +368,18 @@ class UpdateProfitForm extends Component {
     });
   }
 
+  handleChangeTags(selectedOption) {
+    this.setState({
+      profit: {
+        ...this.state.profit,
+        tag_ids: selectedOption
+      }
+    });
+  }
+
   render() {
     const currency = this.getCurrency(this.state.profit.to);
+    const selectedTags = this.state.profit.tag_ids;
     return (
       <div>
         <Modal.Header closeButton>
@@ -472,6 +503,20 @@ class UpdateProfitForm extends Component {
                 />
               </Col>
             </FormGroup>
+            <FormGroup controlId="updateProfitTagIds">
+              <Col componentClass={ControlLabel} sm={2}>
+                Tags:
+              </Col>
+              <Col sm={10}>
+                <Select
+                  name="updateProfitTagIds"
+                  value={selectedTags}
+                  options={this.getOptionsForTag()}
+                  onChange={this.handleChangeTags}
+                  isMulti
+                />
+              </Col>
+            </FormGroup>
           </Form>
         </Modal.Body>
         <Modal.Footer>
@@ -493,7 +538,8 @@ class UpdateProfitForm extends Component {
 export default connect(
   state => ({
     accounts: state.accounts.accounts,
-    profits: state.categories.categories.profit
+    profits: state.categories.categories.profit,
+    tags: state.tags.tags
   }),
   dispatch => ({
     updateProfit: profit => {

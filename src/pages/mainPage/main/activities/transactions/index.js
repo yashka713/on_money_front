@@ -12,7 +12,7 @@ import downloadTransactions from "../../../../../actions/transactions/downloadTr
 
 import { Modal } from "react-bootstrap";
 import "react-day-picker/lib/style.css";
-import TagList from "./tags/TagList";
+import TagList from "../tags/TagList";
 
 class Transactions extends Component {
   constructor(props) {
@@ -223,8 +223,11 @@ class Transactions extends Component {
   }
 }
 
-export default connect(null, dispatch => ({
-  downloadTransactions: transactions => {
-    dispatch(downloadTransactions(transactions));
-  }
-}))(Transactions);
+export default connect(
+  null,
+  dispatch => ({
+    downloadTransactions: transactions => {
+      dispatch(downloadTransactions(transactions));
+    }
+  })
+)(Transactions);
