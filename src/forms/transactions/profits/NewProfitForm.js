@@ -1,82 +1,61 @@
 import React, { Component } from "react";
+import { Button, Form, Modal } from "react-bootstrap";
 import {
-  Button,
-  Col,
-  ControlLabel,
-  Form,
-  FormControl,
-  FormGroup,
-  InputGroup,
-  Modal
-} from "react-bootstrap";
-import Select from "react-select";
+  ToAccount,
+  FromCategory,
+  Amount,
+  Note,
+  Tags,
+  DayPicker
+} from "./profitFormComponents";
+import {
+  profitAttributes,
+  errorPointersAndDetails
+} from "../transactionFormHelpers";
 
 import { connect } from "react-redux";
 import Api from "../../../api/Api";
 import newTransactionRequest from "../../../services/requests/newTransactionRequest";
 
-import DayPickerInput from "react-day-picker/DayPickerInput";
-import CustomOverlay from "../DatePickerOverlay";
 import newTransaction from "../../../actions/transactions/newTransaction";
 import updateAccount from "../../../actions/accounts/updateAccount";
 import successAlert from "../../../actions/successAlert";
 import { ErrorModalAlert } from "../ErrorModalAlert";
+import { profitValidator } from "./profitValidator";
 
 class NewProfitForm extends Component {
-  constructor(props) {
-    super(props);
+  static defaultProps = {
+    profits: [],
+    tags: [],
+    accounts: []
+  };
 
-    this.state = this.getInitialState();
+  initialState = () => ({
+    validationState: {
+      from: null,
+      to: null,
+      date: null,
+      amount: null,
+      disableSubmit: true
+    },
+    profit: {
+      from: null,
+      to: null,
+      date: new Date().toISOString().slice(0, 10),
+      amount: null,
+      tag_ids: [],
+      note: ""
+    },
+    showErrorAlert: false,
+    errorMessages: {
+      pointers: [],
+      messages: []
+    }
+  });
 
-    this.formValidation = this.formValidation.bind(this);
-    this.handleChangeAccount = this.handleChangeAccount.bind(this);
-    this.handleDayChange = this.handleDayChange.bind(this);
-    this.handleSubmit = this.handleSubmit.bind(this);
-    this.handleChangeAmount = this.handleChangeAmount.bind(this);
-    this.handleChangeNote = this.handleChangeNote.bind(this);
-    this.accountsOptionForSelect = this.accountsOptionForSelect.bind(this);
-    this.profitsOptionForSelect = this.profitsOptionForSelect.bind(this);
-    this.profitAttributes = this.profitAttributes.bind(this);
-    this.handleShowingError = this.handleShowingError.bind(this);
-    this.handleChangeTags = this.handleChangeTags.bind(this);
-    this.getOptionsForTag = this.getOptionsForTag.bind(this);
-  }
+  state = this.initialState();
 
-  getInitialState() {
-    return {
-      validationState: {
-        from: null,
-        to: null,
-        date: null,
-        amount: null,
-        disableSubmit: true
-      },
-      profit: {
-        from: null,
-        to: null,
-        date: new Date().toISOString().slice(0, 10),
-        amount: null,
-        tag_ids: [],
-        note: ""
-      },
-      showErrorAlert: false,
-      errorMessages: {
-        pointers: [],
-        messages: []
-      }
-    };
-  }
-
-  getOptionsForTag() {
-    return this.props.tags.map(tag => {
-      return {
-        value: tag.id,
-        label: tag.attributes.name
-      };
-    });
-  }
-
-  handleChangeAccount(event) {
+  handleChangeAccount = event => {
     const item = this.props.accounts.filter(item => {
       return item.id === event.target.value;
     })[0];
@@ -95,9 +74,9 @@ class NewProfitForm extends Component {
         this.formValidation();
       }
     );
-  }
+  };
 
-  handleChangeCategory(event) {
+  handleChangeCategory = event => {
     const item = this.props.profits.filter(item => {
       return item.id === event.target.value;
     })[0];
@@ -116,9 +95,9 @@ class NewProfitForm extends Component {
         this.formValidation();
       }
     );
-  }
+  };
 
-  handleDayChange(day) {
+  handleDayChange = day =>
     this.setState(
       {
         profit: {
@@ -134,9 +113,8 @@ class NewProfitForm extends Component {
         this.formValidation();
       }
     );
-  }
 
-  handleChangeAmount(event) {
+  handleChangeAmount = event => {
     const amount = event.target.value;
     this.setState(
       {
@@ -153,189 +131,40 @@ class NewProfitForm extends Component {
         this.formValidation();
       }
     );
-  }
+  };
 
-  handleChangeNote(event) {
+  handleChangeNote = event =>
     this.setState({
       profit: {
         ...this.state.profit,
         note: event.target.value
       }
     });
-  }
 
-  accountsOptionForSelect() {
-    return this.props.accounts.map(account => {
-      return (
-        <option key={account.id} value={account.id}>
-          {account.attributes.name} --- {account.attributes.balance}
-          {account.attributes.currency}
-        </option>
-      );
-    });
-  }
-
-  profitsOptionForSelect() {
-    return this.props.profits.map(category => {
-      return (
-        <option key={category.id} value={category.id}>
-          {category.attributes.name}
-        </option>
-      );
-    });
-  }
-
-  disableSubmit() {
-    this.setState({
-      validationState: {
-        ...this.state.validationState,
-        disableSubmit: true
-      }
-    });
-  }
-
-  getCurrency(account) {
-    return account && account.attributes.currency
-      ? account.attributes.currency
-      : null;
-  }
-
-  formValidation() {
-    const from = this.state.profit.from;
-    const to = this.state.profit.to;
-    const date = this.state.profit.date;
-    const amount = this.state.profit.amount;
-
-    if (!from && !to && !date && !amount) {
-      this.setState(
-        {
-          validationState: {
-            ...this.state.validationState,
-            to: "error",
-            from: "error",
-            date: "error",
-            amount: "error"
-          }
-        },
-        () => {
-          this.disableSubmit();
-        }
-      );
-    } else if (!from) {
-      this.setState(
-        {
-          validationState: {
-            ...this.state.validationState,
-            from: "error"
-          }
-        },
-        () => {
-          this.disableSubmit();
-        }
-      );
-    } else if (!to) {
-      this.setState(
-        {
-          validationState: {
-            ...this.state.validationState,
-            to: "error"
-          }
-        },
-        () => {
-          this.disableSubmit();
-        }
-      );
-    } else if (!date) {
-      this.setState(
-        {
-          validationState: {
-            ...this.state.validationState,
-            date: "error"
-          }
-        },
-        () => {
-          this.disableSubmit();
-        }
-      );
-    } else if (!amount || amount <= 0) {
-      this.setState(
-        {
-          validationState: {
-            ...this.state.validationState,
-            amount: "error"
-          }
-        },
-        () => {
-          this.disableSubmit();
-        }
-      );
-    } else {
-      this.setState(
-        {
-          validationState: {
-            ...this.state.validationState,
-            from: null,
-            to: null,
-            date: null,
-            amount: null
-          }
-        },
-        () => {
-          this.setState({
-            validationState: {
-              ...this.state.validationState,
-              disableSubmit: false
-            }
-          });
-        }
-      );
-    }
-  }
-
-  profitAttributes() {
-    return {
-      profit: {
-        from: this.state.profit.from.id,
-        to: this.state.profit.to.id,
-        amount: this.state.profit.amount,
-        date: this.state.profit.date,
-        tag_ids: this.state.profit.tag_ids.map(tag => Number(tag.value)),
-        note: this.state.profit.note
-      }
-    };
-  }
-
-  handleSubmit(event) {
-    event.preventDefault();
-    newTransactionRequest(event.target.action, this.profitAttributes()).then(
-      responce => {
-        if (responce.status === 201) {
-          this.props.newProfit(responce.data);
-          this.props.callback();
-        } else {
-          this.handleShowingError(responce.body);
-          console.log("error", responce);
-        }
-      }
+  formValidation = () =>
+    this.setState(
+      profitValidator(this.state.profit, this.state.validationState)
     );
-    return false;
-  }
 
-  handleShowingError(messages = "") {
-    let pointers = [];
-    let details = [];
-    if (messages !== "") {
-      pointers = messages.map(item => {
-        return item.pointer
-          .split("/")
-          .pop()
-          .split("_")
-          .pop();
-      });
-      details = messages.map(item => {
-        return item.detail;
-      });
-    }
+  handleSubmit = event => {
+    event.preventDefault();
+    newTransactionRequest(
+      event.target.action,
+      profitAttributes(this.state)
+    ).then(responce => {
+      if (responce.status === 201) {
+        this.props.newProfit(responce.data);
+        this.props.callback();
+      } else {
+        this.handleShowingError(responce.body);
+        console.log("error", responce);
+      }
+    });
+    return false;
+  };
+
+  handleShowingError = (messages = "") => {
+    const { pointers, details } = errorPointersAndDetails(messages);
     this.setState({
       showErrorAlert: !this.state.showErrorAlert,
       errorMessages: {
@@ -343,19 +172,23 @@ class NewProfitForm extends Component {
         messages: [...new Set(details)]
       }
     });
-  }
+  };
 
-  handleChangeTags(selectedOption) {
+  handleChangeTags = selectedOption =>
     this.setState({
       profit: {
         ...this.state.profit,
         tag_ids: selectedOption
       }
     });
-  }
 
   render() {
-    const currency = this.getCurrency(this.state.profit.to);
+    const {
+      profit,
+      validationState,
+      showErrorAlert,
+      errorMessages
+    } = this.state;
     return (
       <div>
         <Modal.Header closeButton>
@@ -370,125 +203,31 @@ class NewProfitForm extends Component {
             onSubmit={this.handleSubmit}
           >
             <ErrorModalAlert
-              shouldShown={this.state.showErrorAlert}
-              errors={this.state.errorMessages}
+              shouldShown={showErrorAlert}
+              errors={errorMessages}
               handleDismiss={this.handleShowingError}
             />
-            <FormGroup
-              controlId="newProfitFrom"
-              validationState={this.state.validationState.from}
-            >
-              <Col componentClass={ControlLabel} sm={2}>
-                From:
-              </Col>
-              <Col sm={10}>
-                <FormControl
-                  componentClass="select"
-                  required
-                  onChange={e => this.handleChangeCategory(e)}
-                  defaultValue={this.state.profit.from}
-                >
-                  <option key="0" value="0">
-                    Choose profit category...
-                  </option>
-                  {this.profitsOptionForSelect()}
-                </FormControl>
-              </Col>
-            </FormGroup>
-            <FormGroup
-              controlId="newProfitTo"
-              validationState={this.state.validationState.to}
-            >
-              <Col componentClass={ControlLabel} sm={2}>
-                To:
-              </Col>
-              <Col sm={10}>
-                <FormControl
-                  componentClass="select"
-                  required
-                  onChange={e => this.handleChangeAccount(e)}
-                  defaultValue={this.state.profit.to}
-                >
-                  <option key="0" value="0">
-                    Choose account...
-                  </option>
-                  {this.accountsOptionForSelect()}
-                </FormControl>
-              </Col>
-            </FormGroup>
-            <FormGroup
-              controlId="newProfitDate"
-              validationState={this.state.validationState.date}
-            >
-              <Col componentClass={ControlLabel} sm={2}>
-                Date:
-              </Col>
-              <Col sm={10}>
-                <DayPickerInput
-                  classNames={{
-                    container: "day-picker-modal",
-                    overlay: "day-picker-modal-overlay"
-                  }}
-                  dayPickerProps={{
-                    todayButton: "Today"
-                  }}
-                  selectedDays={this.state.profit.date}
-                  value={this.state.profit.date}
-                  overlayComponent={CustomOverlay}
-                  keepFocus={false}
-                  inputProps={{ required: true }}
-                  onDayChange={this.handleDayChange}
-                />
-              </Col>
-            </FormGroup>
-            <FormGroup
-              controlId="newProfitAmount"
-              validationState={this.state.validationState.amount}
-            >
-              <Col componentClass={ControlLabel} sm={2}>
-                Amount:
-              </Col>
-              <Col sm={10}>
-                <InputGroup>
-                  <InputGroup.Addon>{currency || "$"}</InputGroup.Addon>
-                  <FormControl
-                    type="number"
-                    step="0.01"
-                    min="0.01"
-                    required
-                    placeholder="Enter Profit amount"
-                    onChange={this.handleChangeAmount}
-                  />
-                  <InputGroup.Addon>.00</InputGroup.Addon>
-                </InputGroup>
-              </Col>
-            </FormGroup>
-            <FormGroup controlId="newProfitNote">
-              <Col componentClass={ControlLabel} sm={2}>
-                Note:
-              </Col>
-              <Col sm={10}>
-                <FormControl
-                  type="text"
-                  defaultValue={this.state.profit.note}
-                  placeholder="Enter Profit note"
-                  onChange={this.handleChangeNote}
-                />
-              </Col>
-            </FormGroup>
-            <FormGroup controlId="newProfitTags">
-              <Col componentClass={ControlLabel} sm={2}>
-                Tags:
-              </Col>
-              <Col sm={10}>
-                <Select
-                  name="newProfitTagIds"
-                  options={this.getOptionsForTag()}
-                  onChange={this.handleChangeTags}
-                  isMulti
-                />
-              </Col>
-            </FormGroup>
+            <FromCategory
+              validationState={validationState}
+              handleChangeCategory={this.handleChangeCategory}
+              props={this.props}
+            />
+            <ToAccount
+              validationState={validationState}
+              handleChangeAccount={this.handleChangeAccount}
+              props={this.props}
+            />
+            <DayPicker
+              validationState={validationState}
+              handleDayChange={this.handleDayChange}
+              profit={profit}
+            />
+            <Amount
+              validationState={validationState}
+              handleChangeAmount={this.handleChangeAmount}
+            />
+            <Note handleChangeNote={this.handleChangeNote} />
+            <Tags handleChangeTags={this.handleChangeTags} props={this.props} />
           </Form>
         </Modal.Body>
         <Modal.Footer>
@@ -497,7 +236,7 @@ class NewProfitForm extends Component {
             type="submit"
             bsStyle="primary"
             form="newProfitForm"
-            disabled={this.state.validationState.disableSubmit}
+            disabled={validationState.disableSubmit}
           >
             Create
           </Button>
