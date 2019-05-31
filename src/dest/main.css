@@ -45,6 +45,21 @@
 .margin-top-15 {
   margin-top: 15px; }
 
+.profit {
+  background-color: #7befb2;
+  color: black; }
+
+.charge {
+  background-color: #ec644b;
+  color: white; }
+
+.transfer {
+  background-color: #6bb9f0;
+  color: black; }
+
+.padding-bottom {
+  padding-bottom: 2em; }
+
 .flexContainer {
   margin: 0;
   padding: 0;
@@ -171,6 +186,10 @@
 .transaction-btn-group > .btn-group-justified {
   display: block; }
 
+.empty-timeline {
+  padding: 2em;
+  background-color: #f2784b; }
+
 .datepicker-box {
   z-index: 3;
   position: relative;
@@ -207,7 +226,8 @@
   justify-content: flex-start;
   flex-wrap: wrap;
   align-items: flex-start;
-  overflow: hidden; }
+  overflow: hidden;
+  min-height: 165px; }
 
 .tag-item {
   margin: 0.3em;
@@ -217,9 +237,10 @@
   border-radius: 3px; }
 
 .tagTrash {
-  height: 2em;
+  padding: 0.5em 0;
+  height: 2.5em;
   width: 100%;
-  background-color: #D93A30;
+  background-color: #f1a9a0;
   color: white; }
 
 .approveBox {
@@ -241,7 +262,17 @@
   display: block;
   width: 100%; }
 
+.tag-error {
+  background-color: #eb974e;
+  padding: 3px 0; }
+
+@font-face {
+  font-family: "Instant";
+  font-style: normal;
+  font-weight: 400;
+  src: local("Instant"), url("../fonts/Instant Noodle.ttf") format("truetype"); }
+
 body {
   margin: 0;
   padding: 0;
-  font-family: sans-serif; }
+  font-family: "Instant", sans-serif; }
