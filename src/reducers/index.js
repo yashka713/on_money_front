@@ -10,6 +10,7 @@ import categories from "./categories";
 import tags from "./tags";
 // routing
 import { routerReducer } from "react-router-redux";
+import LSProvider from "../services/session/localStorageProvider";
 
 const appReducer = combineReducers({
   router: routerReducer,
@@ -26,6 +27,7 @@ const appReducer = combineReducers({
 
 const rootReducer = (state, action) => {
   if (action.type === "LOGOUT") {
+    LSProvider.clearLS();
     state = undefined;
   }
 

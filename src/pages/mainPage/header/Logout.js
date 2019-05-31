@@ -20,9 +20,12 @@ class LogoutComponent extends Component {
   }
 }
 
-export default connect(null, dispatch => ({
-  logoutUser: () => {
-    dispatch(userLogout());
-    dispatch(push("/login"));
-  }
-}))(LogoutComponent);
+export default connect(
+  null,
+  dispatch => ({
+    logoutUser: () => {
+      dispatch(userLogout());
+      dispatch(push("/login"));
+    }
+  })
+)(LogoutComponent);

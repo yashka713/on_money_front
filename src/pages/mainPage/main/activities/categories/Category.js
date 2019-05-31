@@ -33,8 +33,6 @@ class Category extends React.Component {
       </Popover>
     );
 
-    const uniqGrName = "category_" + this.props.category.id;
-
     return (
       <li
         className="flexBox text-center hidden-edit"
