@@ -1,15 +1,19 @@
 import React, { Component } from "react";
+import { Button, Form, Modal } from "react-bootstrap";
 import {
-  Button,
-  Col,
-  ControlLabel,
-  Form,
-  FormControl,
-  FormGroup,
-  InputGroup,
-  Modal
-} from "react-bootstrap";
-import Select from "react-select";
+  transferAttributes,
+  findItem,
+  errorPointersAndDetails
+} from "../transactionFormHelpers";
+import {
+  FromAccount,
+  ToAccount,
+  Amount,
+  DayPicker,
+  Tags,
+  DiffAmount,
+  Note
+} from "./transferFormComponents";
 
 import { connect } from "react-redux";
 import newTransaction from "../../../actions/transactions/newTransaction";
@@ -18,78 +22,47 @@ import successAlert from "../../../actions/successAlert";
 import newTransactionRequest from "../../../services/requests/newTransactionRequest";
 import Api from "../../../api/Api";
 
-import DayPickerInput from "react-day-picker/DayPickerInput";
-import CustomOverlay from "../DatePickerOverlay";
 import { ErrorModalAlert } from "../ErrorModalAlert";
+import { transferValidator } from "./transferValidator";
 
 class NewTransferForm extends Component {
-  constructor(props) {
-    super(props);
+  static defaultProps = {
+    tags: [],
+    accounts: []
+  };
 
-    this.state = this.getInitialState();
+  initialState = () => ({
+    validationState: {
+      from: null,
+      to: null,
+      date: null,
+      amount: null,
+      disableSubmit: true
+    },
+    transfer: {
+      from: null,
+      to: null,
+      date: new Date().toISOString().slice(0, 10),
+      amount: null,
+      tag_ids: [],
+      note: ""
+    },
+    rate: {
+      from: 0,
+      to: 0
+    },
+    sameCurrency: true,
+    showErrorAlert: false,
+    errorMessages: {
+      pointers: [],
+      messages: []
+    }
+  });
 
-    this.formValidation = this.formValidation.bind(this);
-    this.handleChangeAccount = this.handleChangeAccount.bind(this);
-    this.handleDayChange = this.handleDayChange.bind(this);
-    this.handleSubmit = this.handleSubmit.bind(this);
-    this.handleChangeAmount = this.handleChangeAmount.bind(this);
-    this.handleChangeNote = this.handleChangeNote.bind(this);
-    this.handleChangeRateFrom = this.handleChangeRateFrom.bind(this);
-    this.handleChangeRateTo = this.handleChangeRateTo.bind(this);
-    this.accountsOptionForSelect = this.accountsOptionForSelect.bind(this);
-    this.findItem = this.findItem.bind(this);
-    this.handleShowingError = this.handleShowingError.bind(this);
-    this.getOptionsForTag = this.getOptionsForTag.bind(this);
-    this.handleChangeTags = this.handleChangeTags.bind(this);
-  }
+  state = this.initialState();
 
-  getInitialState() {
-    return {
-      validationState: {
-        from: null,
-        to: null,
-        date: null,
-        amount: null,
-        disableSubmit: true
-      },
-      transfer: {
-        from: null,
-        to: null,
-        date: new Date().toISOString().slice(0, 10),
-        amount: null,
-        tag_ids: [],
-        note: ""
-      },
-      rate: {
-        from: 0,
-        to: 0
-      },
-      sameCurrency: true,
-      showErrorAlert: false,
-      errorMessages: {
-        pointers: [],
-        messages: []
-      }
-    };
-  }
-
-  getOptionsForTag() {
-    return this.props.tags.map(tag => {
-      return {
-        value: tag.id,
-        label: tag.attributes.name
-      };
-    });
-  }
-
-  findItem(account) {
-    return this.props.accounts.filter(item => {
-      return item.id === account;
-    })[0];
-  }
-
-  handleChangeAccount(event, account) {
-    const item = this.findItem(event.target.value);
+  handleChangeAccount = (event, account) => {
+    const item = findItem(this.props.accounts, event.target.value);
     this.setState(
       {
         transfer: {
@@ -105,9 +78,9 @@ class NewTransferForm extends Component {
         this.formValidation();
       }
     );
-  }
+  };
 
-  handleDayChange(day) {
+  handleDayChange = day =>
     this.setState(
       {
         transfer: {
@@ -123,9 +96,8 @@ class NewTransferForm extends Component {
         this.formValidation();
       }
     );
-  }
 
-  handleChangeAmount(event) {
+  handleChangeAmount = event => {
     const amount = event.target.value;
     this.setState(
       {
@@ -142,30 +114,26 @@ class NewTransferForm extends Component {
         this.formValidation();
       }
     );
-  }
+  };
 
-  handleChangeNote(event) {
+  handleChangeNote = event =>
     this.setState({
       transfer: {
         ...this.state.transfer,
         note: event.target.value
       }
     });
-  }
 
-  handleChangeRateFrom(event) {
+  handleChangeRateFrom = event => {
     const rateFrom = event.target.value;
     const rateTo = this.state.rate.to;
 
-    this.setState({
-      transfer: {
-        ...this.state.transfer,
-        amount: rateFrom && rateTo && rateTo !== 0 ? rateFrom : null
-      }
-    });
-
     this.setState(
       {
+        transfer: {
+          ...this.state.transfer,
+          amount: rateFrom && rateTo && rateTo !== 0 ? rateFrom : null
+        },
         rate: {
           ...this.state.rate,
           from: rateFrom
@@ -179,22 +147,21 @@ class NewTransferForm extends Component {
         this.formValidation();
       }
     );
-  }
+  };
 
-  handleChangeRateTo(event) {
+  handleChangeRateTo = event => {
     const rateTo = event.target.value;
     const rateFrom = this.state.rate.from;
 
-    this.setState({
-      transfer: {
-        ...this.state.transfer,
-        amount:
-          rateFrom && rateTo && rateTo !== 0 && rateFrom !== 0 ? rateFrom : null
-      }
-    });
-
     this.setState(
       {
+        transfer: {
+          ...this.state.transfer,
+          amount:
+            rateFrom && rateTo && rateTo !== 0 && rateFrom !== 0
+              ? rateFrom
+              : null
+        },
         rate: {
           ...this.state.rate,
           to: rateTo
@@ -208,199 +175,33 @@ class NewTransferForm extends Component {
         this.formValidation();
       }
     );
-  }
+  };
 
-  accountsOptionForSelect() {
-    return this.props.accounts.map(account => {
-      return (
-        <option key={account.id} value={account.id}>
-          {account.attributes.name} --- {account.attributes.balance}
-          {account.attributes.currency}
-        </option>
-      );
-    });
-  }
+  formValidation = () =>
+    this.setState(
+      transferValidator(this.state.transfer, this.state.validationState)
+    );
 
-  disableSubmit() {
-    this.setState({
-      validationState: {
-        ...this.state.validationState,
-        disableSubmit: true
-      }
-    });
-  }
-
-  getCurrency(account) {
-    return account && account.attributes.currency
-      ? account.attributes.currency
-      : null;
-  }
-
-  formValidation() {
-    const from = this.state.transfer.from;
-    const to = this.state.transfer.to;
-    const date = this.state.transfer.date;
-    const amount = this.state.transfer.amount;
-    const currencyFrom = this.getCurrency(from);
-    const currencyTo = this.getCurrency(to);
-
-    if (!from && !to && !date && !amount) {
-      this.setState(
-        {
-          validationState: {
-            ...this.state.validationState,
-            to: "error",
-            from: "error",
-            date: "error",
-            amount: "error"
-          }
-        },
-        () => {
-          this.disableSubmit();
-        }
-      );
-    } else if ((!from && !to) || from === to) {
-      this.setState(
-        {
-          validationState: {
-            ...this.state.validationState,
-            to: "error",
-            from: "error"
-          }
-        },
-        () => {
-          this.disableSubmit();
-        }
-      );
-    } else if (!from) {
-      this.setState(
-        {
-          validationState: {
-            ...this.state.validationState,
-            from: "error"
-          }
-        },
-        () => {
-          this.disableSubmit();
-        }
-      );
-    } else if (!to) {
-      this.setState(
-        {
-          validationState: {
-            ...this.state.validationState,
-            to: "error"
-          }
-        },
-        () => {
-          this.disableSubmit();
-        }
-      );
-    } else if (!date) {
-      this.setState(
-        {
-          validationState: {
-            ...this.state.validationState,
-            date: "error"
-          }
-        },
-        () => {
-          this.disableSubmit();
-        }
-      );
-    } else if (!amount || amount < 0) {
-      this.setState(
-        {
-          validationState: {
-            ...this.state.validationState,
-            amount: "error"
-          }
-        },
-        () => {
-          this.disableSubmit();
-        }
-      );
-    } else {
-      this.setState(
-        {
-          validationState: {
-            ...this.state.validationState,
-            from: null,
-            to: null
-          }
-        },
-        () => {
-          this.setState({
-            validationState: {
-              ...this.state.validationState,
-              disableSubmit: false
-            }
-          });
-        }
-      );
-    }
-    if (currencyFrom && currencyTo && currencyFrom !== currencyTo) {
-      this.setState({
-        sameCurrency: false
-      });
-    } else {
-      this.setState({
-        sameCurrency: true
-      });
-    }
-  }
-
-  transferAttributes() {
-    const transfer = {
-      from: this.state.transfer.from.id,
-      to: this.state.transfer.to.id,
-      amount: this.state.transfer.amount,
-      rate: 1,
-      date: this.state.transfer.date,
-      tag_ids: this.state.transfer.tag_ids.map(tag => Number(tag.value)),
-      note: this.state.transfer.note
-    };
-
-    if (!this.state.sameCurrency) {
-      transfer["amount"] = this.state.rate.from;
-      transfer["rate"] = this.state.rate.to / this.state.rate.from;
-    }
-
-    return { transfer: transfer };
-  }
-
-  handleSubmit(event) {
+  handleSubmit = event => {
     event.preventDefault();
 
-    newTransactionRequest(event.target.action, this.transferAttributes()).then(
-      responce => {
-        if (responce.status === 201) {
-          this.props.newTransfer(responce.data);
-          this.props.callback();
-        } else {
-          this.handleShowingError(responce.body);
-          console.log("error", responce);
-        }
+    newTransactionRequest(
+      event.target.action,
+      transferAttributes(this.state)
+    ).then(responce => {
+      if (responce.status === 201) {
+        this.props.newTransfer(responce.data);
+        this.props.callback();
+      } else {
+        this.handleShowingError(responce.body);
+        console.log("error", responce);
       }
-    );
+    });
     return false;
-  }
+  };
 
-  handleShowingError(messages = "") {
-    let pointers = [];
-    let details = [];
-    if (messages !== "") {
-      pointers = messages.map(item => {
-        return item.pointer
-          .split("/")
-          .pop()
-          .split("_")
-          .pop();
-      });
-      details = messages.map(item => {
-        return item.detail;
-      });
-    }
+  handleShowingError = (messages = "") => {
+    const { pointers, details } = errorPointersAndDetails(messages);
     this.setState({
       showErrorAlert: !this.state.showErrorAlert,
       errorMessages: {
@@ -408,20 +209,24 @@ class NewTransferForm extends Component {
         messages: [...new Set(details)]
       }
     });
-  }
+  };
 
-  handleChangeTags(selectedOption) {
+  handleChangeTags = selectedOption =>
     this.setState({
       transfer: {
         ...this.state.transfer,
         tag_ids: selectedOption
       }
     });
-  }
 
   render() {
-    const currencyFrom = this.getCurrency(this.state.transfer.from);
-    const currencyTo = this.getCurrency(this.state.transfer.to);
+    const {
+      transfer,
+      validationState,
+      showErrorAlert,
+      sameCurrency,
+      errorMessages
+    } = this.state;
     return (
       <div>
         <Modal.Header closeButton>
@@ -436,167 +241,41 @@ class NewTransferForm extends Component {
             onSubmit={this.handleSubmit}
           >
             <ErrorModalAlert
-              shouldShown={this.state.showErrorAlert}
-              errors={this.state.errorMessages}
+              shouldShown={showErrorAlert}
+              errors={errorMessages}
               handleDismiss={this.handleShowingError}
             />
-            <FormGroup
-              controlId="newTransferFrom"
-              validationState={this.state.validationState.from}
-            >
-              <Col componentClass={ControlLabel} sm={2}>
-                From:
-              </Col>
-              <Col sm={10}>
-                <FormControl
-                  componentClass="select"
-                  required
-                  onChange={e => this.handleChangeAccount(e, "from")}
-                >
-                  <option key="0" value="0">
-                    Choose account...
-                  </option>
-                  {this.accountsOptionForSelect()}
-                </FormControl>
-              </Col>
-            </FormGroup>
-            <FormGroup
-              controlId="newTransferTo"
-              validationState={this.state.validationState.to}
-            >
-              <Col componentClass={ControlLabel} sm={2}>
-                To:
-              </Col>
-              <Col sm={10}>
-                <FormControl
-                  componentClass="select"
-                  required
-                  onChange={e => this.handleChangeAccount(e, "to")}
-                >
-                  <option key="0" value="0">
-                    Choose account...
-                  </option>
-                  {this.accountsOptionForSelect()}
-                </FormControl>
-              </Col>
-            </FormGroup>
-            <FormGroup
-              controlId="newTransferDate"
-              validationState={this.state.validationState.date}
-            >
-              <Col componentClass={ControlLabel} sm={2}>
-                Date:
-              </Col>
-              <Col sm={10}>
-                <DayPickerInput
-                  classNames={{
-                    container: "day-picker-modal",
-                    overlay: "day-picker-modal-overlay"
-                  }}
-                  dayPickerProps={{
-                    todayButton: "Today"
-                  }}
-                  value={this.state.transfer.date}
-                  overlayComponent={CustomOverlay}
-                  keepFocus={false}
-                  inputProps={{ required: true }}
-                  onDayChange={this.handleDayChange}
-                />
-              </Col>
-            </FormGroup>
-            {this.state.sameCurrency ? (
-              <FormGroup
-                controlId="newTransferAmount"
-                validationState={this.state.validationState.amount}
-              >
-                <Col componentClass={ControlLabel} sm={2}>
-                  Amount:
-                </Col>
-                <Col sm={10}>
-                  <InputGroup>
-                    <InputGroup.Addon>{currencyFrom || "$"}</InputGroup.Addon>
-                    <FormControl
-                      type="number"
-                      step="0.01"
-                      required
-                      placeholder="Enter Transfer amount"
-                      onChange={this.handleChangeAmount}
-                    />
-                    <InputGroup.Addon>.00</InputGroup.Addon>
-                  </InputGroup>
-                </Col>
-              </FormGroup>
+            <FromAccount
+              validationState={validationState}
+              handleChangeAccount={this.handleChangeAccount}
+              props={this.props}
+            />
+            <ToAccount
+              validationState={validationState}
+              handleChangeAccount={this.handleChangeAccount}
+              props={this.props}
+            />
+            <DayPicker
+              validationState={validationState}
+              handleDayChange={this.handleDayChange}
+              transfer={transfer}
+            />
+            {sameCurrency ? (
+              <Amount
+                validationState={validationState}
+                handleChangeAmount={this.handleChangeAmount}
+                transfer={transfer}
+              />
             ) : (
-              <div>
-                <FormGroup
-                  controlId="newTransferFromAmount"
-                  validationState={this.state.validationState.amount}
-                >
-                  <Col componentClass={ControlLabel} sm={3}>
-                    From Amount:
-                  </Col>
-                  <Col sm={9}>
-                    <InputGroup>
-                      <InputGroup.Addon>{currencyFrom || "$"}</InputGroup.Addon>
-                      <FormControl
-                        type="number"
-                        step="0.01"
-                        required
-                        placeholder="Enter Transfer amount"
-                        onChange={this.handleChangeRateFrom}
-                      />
-                      <InputGroup.Addon>.00</InputGroup.Addon>
-                    </InputGroup>
-                  </Col>
-                </FormGroup>
-                <FormGroup
-                  controlId="newTransferToAmount"
-                  validationState={this.state.validationState.amount}
-                >
-                  <Col componentClass={ControlLabel} sm={3}>
-                    To Amount:
-                  </Col>
-                  <Col sm={9}>
-                    <InputGroup>
-                      <InputGroup.Addon>{currencyTo || "$"}</InputGroup.Addon>
-                      <FormControl
-                        type="number"
-                        step="0.01"
-                        required
-                        placeholder="Enter Transfer amount"
-                        onChange={this.handleChangeRateTo}
-                      />
-                      <InputGroup.Addon>.00</InputGroup.Addon>
-                    </InputGroup>
-                  </Col>
-                </FormGroup>
-              </div>
+              <DiffAmount
+                validationState={validationState}
+                handleChangeRateFrom={this.handleChangeRateFrom}
+                handleChangeRateTo={this.handleChangeRateTo}
+                transfer={transfer}
+              />
             )}
-            <FormGroup controlId="newTransferNote">
-              <Col componentClass={ControlLabel} sm={2}>
-                Note:
-              </Col>
-              <Col sm={10}>
-                <FormControl
-                  type="text"
-                  placeholder="Enter Transfer note"
-                  onChange={this.handleChangeNote}
-                />
-              </Col>
-            </FormGroup>
-            <FormGroup controlId="newTransferTags">
-              <Col componentClass={ControlLabel} sm={2}>
-                Tags:
-              </Col>
-              <Col sm={10}>
-                <Select
-                  name="newTransferTags"
-                  options={this.getOptionsForTag()}
-                  onChange={this.handleChangeTags}
-                  isMulti
-                />
-              </Col>
-            </FormGroup>
+            <Note handleChangeNote={this.handleChangeNote} />
+            <Tags handleChangeTags={this.handleChangeTags} props={this.props} />
           </Form>
         </Modal.Body>
         <Modal.Footer>
@@ -605,7 +284,7 @@ class NewTransferForm extends Component {
             type="submit"
             bsStyle="primary"
             form="newTransferForm"
-            disabled={this.state.validationState.disableSubmit}
+            disabled={validationState.disableSubmit}
           >
             Create
           </Button>

@@ -5,7 +5,7 @@ import { Tabs, Tab } from "react-bootstrap";
 
 export function Body() {
   return (
-    <div className="container">
+    <div className="container padding-bottom">
       <Tabs defaultActiveKey={1} id="mainPageTab">
         <Tab eventKey={1} title="Activities">
           <Activities />

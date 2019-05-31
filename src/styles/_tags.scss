@@ -5,6 +5,7 @@
   flex-wrap: wrap;
   align-items: flex-start;
   overflow: hidden;
+  min-height: 165px;
 }
 
 .tag-item {
@@ -16,9 +17,10 @@
 }
 
 .tagTrash {
-  height: 2em;
+  padding: 0.5em 0;
+  height: 2.5em;
   width: 100%;
-  background-color: #D93A30;
+  background-color: #f1a9a0;
   color: white;
 }
 
@@ -44,4 +46,9 @@
 .display-block {
   display: block;
   width: 100%;
+}
+
+.tag-error {
+  background-color: #eb974e;
+  padding: 3px 0;
 }
