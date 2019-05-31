@@ -76,7 +76,6 @@
   width: 11em;
   height: 7.5em;
   border: solid 1px black;
-  color: azure;
   border-radius: 5px;
   cursor: pointer;
   align-self: center; }
@@ -113,7 +112,6 @@
   width: 7em;
   height: 3.5em;
   border: solid 1px black;
-  color: azure;
   border-radius: 5px;
   cursor: pointer; }
   .flexBox:hover .box-settings {
