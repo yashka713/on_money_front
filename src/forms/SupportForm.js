@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import {
+  Form,
   Button,
   FormGroup,
   ControlLabel,
@@ -8,29 +9,23 @@ import {
 } from "react-bootstrap";
 import Api from "../api/Api";
 
+//eslint-disable-next-line
+const EMEIL_REGEXP = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+
 export default class SupportForm extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      blockSubmit: true,
-      validateEmail: null,
-      request: {
-        email: null,
-        description: "",
-        recoverPassword: false
-      }
-    };
+  initialState = () => ({
+    blockSubmit: true,
+    validateEmail: null,
+    request: {
+      email: null,
+      description: "",
+      recoverPassword: false
+    }
+  });
 
-    this.handleChangeEmail = this.handleChangeEmail.bind(this);
-    this.handleChangeRecoverPassword = this.handleChangeRecoverPassword.bind(
-      this
-    );
-    this.handleChangeDescription = this.handleChangeDescription.bind(this);
-    this.formValidation = this.formValidation.bind(this);
-    this.handleSubmit = this.handleSubmit.bind(this);
-  }
+  state = this.initialState();
 
-  handleChangeEmail(event) {
+  handleChangeEmail = event =>
     this.setState(
       {
         request: {
@@ -42,13 +37,11 @@ export default class SupportForm extends Component {
         this.formValidation();
       }
     );
-  }
 
-  formValidation() {
+  formValidation = () => {
     const email = this.state.request.email;
-    const mailformat = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
 
-    if (email && email.match(mailformat)) {
+    if (email && email.match(EMEIL_REGEXP)) {
       this.setState({
         blockSubmit: false,
         validateEmail: "success"
@@ -64,46 +57,42 @@ export default class SupportForm extends Component {
         validateEmail: "error"
       });
     }
-  }
+  };
 
-  handleChangeRecoverPassword(event) {
+  handleChangeRecoverPassword = event =>
     this.setState({
       request: {
         ...this.state.request,
         recoverPassword: event.target.checked
       }
     });
-  }
 
-  handleChangeDescription(event) {
+  handleChangeDescription = event =>
     this.setState({
       request: {
         ...this.state.request,
         description: event.target.value
       }
     });
-  }
 
-  supportAttributes() {
-    return {
-      request: {
-        email: this.state.request.email,
-        description: this.state.request.description,
-        recoverPassword: this.state.request.recoverPassword
-      }
-    };
-  }
+  supportAttributes = () => ({
+    request: {
+      email: this.state.request.email,
+      description: this.state.request.description,
+      recoverPassword: this.state.request.recoverPassword
+    }
+  });
 
-  handleSubmit(event) {
+  handleSubmit = event => {
     event.preventDefault();
     console.log("submitted", this.supportAttributes());
     // TODO: add endpoint for sending SupportRequest
     return false;
-  }
+  };
 
   render() {
     return (
-      <form
+      <Form
         action={Api.supportPath()}
         method="post"
         id="supportForm"
@@ -139,13 +128,14 @@ export default class SupportForm extends Component {
           />
         </FormGroup>
         <Button
+          form="supportForm"
           type="submit"
           bsStyle="primary"
           disabled={this.state.blockSubmit}
         >
           Send request
         </Button>
-      </form>
+      </Form>
     );
   }
 }
