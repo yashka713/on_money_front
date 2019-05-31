@@ -1,2 +1,2 @@
 web: yarn start
-css: yarn watch:css
+styles: yarn css -w

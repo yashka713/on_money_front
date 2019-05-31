@@ -1,0 +1,21 @@
+.control-edit {
+  background-color: rgba(255, 227, 50, 0.5);
+}
+
+.control-destroy {
+  background-color: rgba(241, 111, 92, 0.5);
+}
+
+.transaction-control {
+  border-radius: 6px;
+  margin: 0.5em;
+}
+
+.transaction-btn-group > .btn-group-justified {
+  display: block;
+}
+
+.empty-timeline {
+  padding: 2em;
+  background-color: #f2784b;
+}

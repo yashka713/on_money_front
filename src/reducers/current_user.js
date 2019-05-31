@@ -1,10 +1,9 @@
-import { logged } from "../utils/session/checkUser";
-
-const initialState = {
-  email: logged.current_user.email || "",
-  name: logged.current_user.name || "",
-  nickname: logged.current_user.nickname || "",
-  isAuthenticated: logged.status >= 200 && logged.status < 300
+let initialState = {
+  id: 0,
+  email: "",
+  name: "",
+  nickname: "",
+  isAuthenticated: false
 };
 
 export default function current_user(state = initialState, action) {
@@ -12,14 +11,22 @@ export default function current_user(state = initialState, action) {
     return {
       ...state,
       isAuthenticated: true,
+      id: action.payload.id || 0,
       email: action.payload.email || "",
       name: action.payload.name || "",
       nickname: action.payload.nickname || ""
     };
-  } else if (action.type === "LOGOUT") {
+  } else if (action.type === "UPDATE_PROFILE") {
     return {
       ...state,
-      isAuthenticated: false
+      name: action.payload.name || "",
+      nickname: action.payload.nickname || ""
+    };
+  } else if (action.type === "UPDATE_USER") {
+    return {
+      ...state,
+      name: action.payload.name || "",
+      nickname: action.payload.nickname || ""
     };
   }
   return state;

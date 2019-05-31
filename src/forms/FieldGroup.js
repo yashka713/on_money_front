@@ -1,7 +1,12 @@
 import React from "react";
-import { FormGroup, ControlLabel, FormControl, HelpBlock } from "react-bootstrap";
+import {
+  FormGroup,
+  ControlLabel,
+  FormControl,
+  HelpBlock
+} from "react-bootstrap";
 
-function FieldGroup({ id, label, help, ...props }) {
+export default function FieldGroup({ id, label, help, ...props }) {
   return (
     <FormGroup controlId={id}>
       <ControlLabel>{label}</ControlLabel>
@@ -10,5 +15,3 @@ function FieldGroup({ id, label, help, ...props }) {
     </FormGroup>
   );
 }
-
-export default FieldGroup;

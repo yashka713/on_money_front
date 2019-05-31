@@ -1,3 +1,37 @@
-.cursor-pointer{
+.cursor-pointer {
   cursor: pointer;
+}
+
+.allerts {
+  z-index: 10;
+  width: 70%;
+  margin: auto;
+  text-align: center;
+  position: absolute;
+  top: 7rem;
+  left: 0;
+  right: 0;
+}
+
+.margin-top-15 {
+  margin-top: 15px;
+}
+
+.profit {
+  background-color: #7befb2;
+  color: black;
+}
+
+.charge {
+  background-color: #ec644b;
+  color: white;
+}
+
+.transfer {
+  background-color: #6bb9f0;
+  color: black;
+}
+
+.padding-bottom {
+  padding-bottom: 2em;
 }

@@ -2,9 +2,20 @@
 @import "form";
 @import "header";
 @import "app";
+@import "activities";
+@import "timeLine";
+@import "datepicker";
+@import "tags";
+
+@font-face {
+  font-family: "Instant";
+  font-style: normal;
+  font-weight: 400;
+  src: local("Instant"), url("../fonts/Instant Noodle.ttf") format("truetype");
+}
 
 body {
   margin: 0;
   padding: 0;
-  font-family: sans-serif;
+  font-family: "Instant", sans-serif;
 }

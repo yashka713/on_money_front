@@ -1,23 +1,29 @@
 {
   "name": "on_money_front",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "private": true,
   "dependencies": {
     "@fortawesome/fontawesome": "^1.1.5",
     "@fortawesome/fontawesome-free-solid": "^5.0.9",
     "@fortawesome/react-fontawesome": "^0.0.18",
+    "axios": "^0.18.0",
     "bootstrap": "3",
     "history": "^4.7.2",
+    "lodash": "^4.17.11",
     "node-sass": "^4.8.3",
     "normalize.css": "^7.0.0",
     "react": "^16.2.0",
     "react-bootstrap": "^0.32.1",
+    "react-day-picker": "^7.2.4",
     "react-dom": "^16.2.0",
+    "react-horizontal-timeline": "^1.5.3",
     "react-redux": "^5.0.7",
     "react-router": "^4.2.0",
     "react-router-dom": "^4.2.2",
     "react-router-redux": "^5.0.0-alpha.9",
     "react-scripts": "1.1.1",
+    "react-select": "^2.4.3",
+    "react-swipeable-views": "^0.13.1",
     "redux": "^3.5.2",
     "redux-devtools-extension": "^2.13.2",
     "redux-logger": "^2.6.1",
@@ -25,7 +31,7 @@
     "redux-thunk": "^2.1.0"
   },
   "scripts": {
-    "start": "PORT=3001 react-scripts start",
+    "start": "PORT=3001 react-scripts start css -w",
     "css": "node-sass src/styles/main.scss src/dest/main.css",
     "watch:css": "yarn css -w",
     "build": "react-scripts build",
@@ -33,6 +39,14 @@
     "test:ci": "react-scripts test --env=jsdom --setupFiles `pwd`/tests/config/localStorageConfig.js",
     "eject": "react-scripts eject",
     "lint": "eslint src"
+  },
+  "browserslist": {
+    "production": [
+      "last 15 versions"
+    ],
+    "development": [
+      "last 15 versions"
+    ]
   },
   "devDependencies": {
     "babel-eslint": "^8.0.1",

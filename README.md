@@ -18,6 +18,8 @@ A description of the features will be added during the development process.
 
 Deployment instructions will be here as soon as possible.
 
+For recompiling stylees use `yarn run sass`
+
 ### Authors
 
 * [Yaroslav Liakh](https://github.com/yashka713)

@@ -16,6 +16,12 @@ export default function auth(state = initialState, action) {
       email: state.email,
       password: action.payload
     };
+  } else if (action.type === "CLEAR_SIGN_FIELDS") {
+    return {
+      ...state,
+      email: "",
+      password: ""
+    };
   }
   return state;
 }

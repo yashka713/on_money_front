@@ -1,0 +1,137 @@
+.flexContainer {
+  margin: 0;
+  padding: 0;
+  display: flex;
+  list-style: none;
+  justify-content: center;
+  flex-wrap: wrap;
+  align-items: center;
+  align-content: center;
+}
+
+.accountBox {
+  margin: 10px;
+  padding: 5px;
+  width: 11em;
+  height: 7.5em;
+  border: solid 1px black;
+  border-radius: 5px;
+  cursor: pointer;
+  align-self: center;
+  &:hover .box-settings {
+    visibility: visible;
+  }
+}
+
+.DayPicker-TodayButton {
+  font-size: 1.875em;
+  width: 100%;
+}
+
+.day-picker-modal {
+  input {
+    width: 100%;
+    height: 34px;
+    padding: 6px 12px;
+    font-size: 14px;
+    line-height: 1.42857143;
+    color: #555;
+    background-color: #fff;
+    background-image: none;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    text-align: center;
+  }
+}
+
+.day-picker-modal-overlay {
+  position: absolute;
+  left: 0;
+  z-index: 10;
+
+  background: white;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
+}
+
+.flexBox {
+  margin: 5px;
+  padding: 5px;
+  width: 7em;
+  height: 3.5em;
+  border: solid 1px black;
+  border-radius: 5px;
+  cursor: pointer;
+  &:hover .box-settings {
+    visibility: visible;
+  }
+}
+
+.centralize {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  span {
+    margin: 0;
+  }
+}
+
+.addAccount {
+  font-size: 40px;
+  font-weight: bold;
+  line-height: 1;
+  color: black;
+}
+
+.addCategory {
+  font-size: 25px;
+  font-weight: bold;
+  line-height: 1;
+  color: black;
+}
+
+.informationPopover {
+  vertical-align: super;
+}
+
+.box-info {
+  width: 85%;
+  float: left;
+
+  p {
+    -webkit-line-clamp: 2;
+    display: -webkit-box;
+    overflow: hidden;
+    /* autoprefixer: off */
+    -webkit-box-orient: vertical;
+  }
+}
+
+.box-settings {
+  width: 15%;
+  float: right;
+  visibility: hidden;
+}
+
+.margin-left-5 {
+  margin-left: 5px;
+}
+
+.activityBox {
+  position: relative;
+  margin-top: 15px;
+
+  .invisibleTrash {
+    visibility: hidden;
+    width: 0;
+  }
+}
+
+.trash {
+  z-index: 1000;
+  font-size: 75px;
+  position: fixed;
+  top: 3.3em;
+  right: 4em;
+}
+
