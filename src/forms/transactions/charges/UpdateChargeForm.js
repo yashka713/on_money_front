@@ -1,68 +1,48 @@
 import React, { Component } from "react";
+import { Button, Form, Modal } from "react-bootstrap";
 import {
-  Button,
-  Col,
-  ControlLabel,
-  Form,
-  FormControl,
-  FormGroup,
-  InputGroup,
-  Modal
-} from "react-bootstrap";
-import Select from "react-select";
+  chargeAttributes,
+  getOptionsForTag,
+  findItem,
+  errorPointersAndDetails
+} from "../transactionFormHelpers";
+import {
+  FromAccount,
+  ToCategory,
+  Amount,
+  Note,
+  Tags,
+  DayPicker
+} from "./chargeFormComponents";
 
 import { connect } from "react-redux";
 import Api from "../../../api/Api";
 
-import DayPickerInput from "react-day-picker/DayPickerInput";
-import CustomOverlay from "../DatePickerOverlay";
 import updateAccount from "../../../actions/accounts/updateAccount";
 import patchTransactionRequest from "../../../services/requests/patchTransactionRequest";
 import updateTransaction from "../../../actions/transactions/updateTransaction";
 import successAlert from "../../../actions/successAlert";
 import { ErrorModalAlert } from "../ErrorModalAlert";
+import { chargeValidator } from "./chargeValidator";
 
 class UpdateChargeForm extends Component {
-  constructor(props) {
-    super(props);
+  static defaultProps = {
+    charges: [],
+    tags: [],
+    accounts: [],
+    transaction: {}
+  };
 
-    this.state = this.getInitialState();
-
-    this.formValidation = this.formValidation.bind(this);
-    this.handleChangeAccount = this.handleChangeAccount.bind(this);
-    this.handleDayChange = this.handleDayChange.bind(this);
-    this.handleSubmit = this.handleSubmit.bind(this);
-    this.handleChangeAmount = this.handleChangeAmount.bind(this);
-    this.handleChangeNote = this.handleChangeNote.bind(this);
-    this.accountsOptionForSelect = this.accountsOptionForSelect.bind(this);
-    this.chargeOptionForSelect = this.chargeOptionForSelect.bind(this);
-    this.chargeAttributes = this.chargeAttributes.bind(this);
-    this.findItem = this.findItem.bind(this);
-    this.handleShowingError = this.handleShowingError.bind(this);
-    this.handleChangeTags = this.handleChangeTags.bind(this);
-    this.getOptionsForTag = this.getOptionsForTag.bind(this);
-  }
-
-  findItem(account) {
-    return this.props.accounts.filter(item => {
-      return item.id === account;
-    })[0];
-  }
-
-  getInitialState() {
-    const from = this.findItem(
-      this.props.transaction.relationships.chargeable.data.id
-    );
-    const to = this.props.charges.filter(item => {
-      return (
-        item.id === this.props.transaction.relationships.profitable.data.id
-      );
+  initialState = () => {
+    const { accounts, transaction, charges } = this.props;
+    const { relationships } = transaction;
+    const from = findItem(accounts, relationships.chargeable.data.id);
+    const to = charges.filter(item => {
+      return item.id === relationships.profitable.data.id;
     })[0];
 
-    const transactionTags = this.props.transaction.relationships.tags.data.map(
-      tag => tag.id
-    );
-    const tagOptions = this.getOptionsForTag().filter(tag =>
+    const transactionTags = relationships.tags.data.map(tag => tag.id);
+    const tagOptions = getOptionsForTag(this.props).filter(tag =>
       transactionTags.includes(tag["value"])
     );
 
@@ -77,27 +57,18 @@ class UpdateChargeForm extends Component {
       charge: {
         from: from,
         to: to,
-        date: new Date(this.props.transaction.attributes.date)
-          .toISOString()
-          .slice(0, 10),
-        amount: this.props.transaction.attributes.from_amount,
+        date: new Date(transaction.attributes.date).toISOString().slice(0, 10),
+        amount: transaction.attributes.from_amount,
         tag_ids: tagOptions,
-        note: this.props.transaction.attributes.note
+        note: transaction.attributes.note
       }
     };
-  }
+  };
 
-  getOptionsForTag() {
-    return this.props.tags.map(tag => {
-      return {
-        value: tag.id,
-        label: tag.attributes.name
-      };
-    });
-  }
+  state = this.initialState();
 
-  handleChangeAccount(event) {
-    const item = this.findItem(event.target.value);
+  handleChangeAccount = event => {
+    const item = findItem(this.props.accounts, event.target.value);
     this.setState(
       {
         charge: {
@@ -113,9 +84,9 @@ class UpdateChargeForm extends Component {
         this.formValidation();
       }
     );
-  }
+  };
 
-  handleChangeCategory(event) {
+  handleChangeCategory = event => {
     const item = this.props.charges.filter(item => {
       return item.id === event.target.value;
     })[0];
@@ -134,9 +105,9 @@ class UpdateChargeForm extends Component {
         this.formValidation();
       }
     );
-  }
+  };
 
-  handleDayChange(day) {
+  handleDayChange = day =>
     this.setState(
       {
         charge: {
@@ -152,9 +123,8 @@ class UpdateChargeForm extends Component {
         this.formValidation();
       }
     );
-  }
 
-  handleChangeAmount(event) {
+  handleChangeAmount = event => {
     const amount = event.target.value;
     this.setState(
       {
@@ -171,190 +141,41 @@ class UpdateChargeForm extends Component {
         this.formValidation();
       }
     );
-  }
+  };
 
-  handleChangeNote(event) {
+  handleChangeNote = event =>
     this.setState({
       charge: {
         ...this.state.charge,
         note: event.target.value
       }
     });
-  }
 
-  accountsOptionForSelect() {
-    return this.props.accounts.map(account => {
-      return (
-        <option key={account.id} value={account.id}>
-          {account.attributes.name} --- {account.attributes.balance}
-          {account.attributes.currency}
-        </option>
-      );
-    });
-  }
+  formValidation = () =>
+    this.setState(
+      chargeValidator(this.state.charge, this.state.validationState)
+    );
 
-  chargeOptionForSelect() {
-    return this.props.charges.map(category => {
-      return (
-        <option key={category.id} value={category.id}>
-          {category.attributes.name}
-        </option>
-      );
-    });
-  }
-
-  disableSubmit() {
-    this.setState({
-      validationState: {
-        ...this.state.validationState,
-        disableSubmit: true
-      }
-    });
-  }
-
-  getCurrency(account) {
-    return account && account.attributes.currency
-      ? account.attributes.currency
-      : null;
-  }
-
-  formValidation() {
-    const from = this.state.charge.from;
-    const to = this.state.charge.to;
-    const date = this.state.charge.date;
-    const amount = this.state.charge.amount;
-
-    if (!from && !to && !date && !amount) {
-      this.setState(
-        {
-          validationState: {
-            ...this.state.validationState,
-            to: "error",
-            from: "error",
-            date: "error",
-            amount: "error"
-          }
-        },
-        () => {
-          this.disableSubmit();
-        }
-      );
-    } else if (!from) {
-      this.setState(
-        {
-          validationState: {
-            ...this.state.validationState,
-            from: "error"
-          }
-        },
-        () => {
-          this.disableSubmit();
-        }
-      );
-    } else if (!to) {
-      this.setState(
-        {
-          validationState: {
-            ...this.state.validationState,
-            to: "error"
-          }
-        },
-        () => {
-          this.disableSubmit();
-        }
-      );
-    } else if (!date) {
-      this.setState(
-        {
-          validationState: {
-            ...this.state.validationState,
-            date: "error"
-          }
-        },
-        () => {
-          this.disableSubmit();
-        }
-      );
-    } else if (!amount || amount <= 0) {
-      this.setState(
-        {
-          validationState: {
-            ...this.state.validationState,
-            amount: "error"
-          }
-        },
-        () => {
-          this.disableSubmit();
-        }
-      );
-    } else {
-      this.setState(
-        {
-          validationState: {
-            ...this.state.validationState,
-            from: null,
-            to: null,
-            date: null,
-            amount: null
-          }
-        },
-        () => {
-          this.setState({
-            validationState: {
-              ...this.state.validationState,
-              disableSubmit: false
-            }
-          });
-        }
-      );
-    }
-  }
-
-  chargeAttributes() {
-    return {
-      charge: {
-        from: this.state.charge.from.id,
-        to: this.state.charge.to.id,
-        amount: this.state.charge.amount,
-        date: this.state.charge.date,
-        tag_ids: this.state.charge.tag_ids.map(tag => Number(tag.value)),
-        note: this.state.charge.note
-      }
-    };
-  }
-
-  handleSubmit(event) {
+  handleSubmit = event => {
     event.preventDefault();
 
-    patchTransactionRequest(event.target.action, this.chargeAttributes()).then(
-      responce => {
-        if (responce.status === 200) {
-          this.props.updateCharge(responce.data);
-          this.props.callback();
-        } else {
-          this.handleShowingError(responce.body);
-          console.log("error", responce);
-        }
+    patchTransactionRequest(
+      event.target.action,
+      chargeAttributes(this.state)
+    ).then(responce => {
+      if (responce.status === 200) {
+        this.props.updateCharge(responce.data);
+        this.props.callback();
+      } else {
+        this.handleShowingError(responce.body);
+        console.log("error", responce);
       }
-    );
+    });
     return false;
-  }
+  };
 
-  handleShowingError(messages = "") {
-    let pointers = [];
-    let details = [];
-    if (messages !== "") {
-      pointers = messages.map(item => {
-        return item.pointer
-          .split("/")
-          .pop()
-          .split("_")
-          .pop();
-      });
-      details = messages.map(item => {
-        return item.detail;
-      });
-    }
+  handleShowingError = (messages = "") => {
+    const { pointers, details } = errorPointersAndDetails(messages);
     this.setState({
       showErrorAlert: !this.state.showErrorAlert,
       errorMessages: {
@@ -362,20 +183,24 @@ class UpdateChargeForm extends Component {
         messages: [...new Set(details)]
       }
     });
-  }
+  };
 
-  handleChangeTags(selectedOption) {
+  handleChangeTags = selectedOption =>
     this.setState({
       charge: {
         ...this.state.charge,
         tag_ids: selectedOption
       }
     });
-  }
 
   render() {
-    const currency = this.getCurrency(this.state.charge.from);
-    const selectedTags = this.state.charge.tag_ids;
+    const {
+      charge,
+      validationState,
+      showErrorAlert,
+      errorMessages
+    } = this.state;
+
     return (
       <div>
         <Modal.Header closeButton>
@@ -393,126 +218,38 @@ class UpdateChargeForm extends Component {
             onSubmit={this.handleSubmit}
           >
             <ErrorModalAlert
-              shouldShown={this.state.showErrorAlert}
-              errors={this.state.errorMessages}
+              shouldShown={showErrorAlert}
+              errors={errorMessages}
               handleDismiss={this.handleShowingError}
             />
-            <FormGroup
-              controlId="updateChargeFrom"
-              validationState={this.state.validationState.from}
-            >
-              <Col componentClass={ControlLabel} sm={2}>
-                From:
-              </Col>
-              <Col sm={10}>
-                <FormControl
-                  componentClass="select"
-                  required
-                  onChange={e => this.handleChangeAccount(e)}
-                  defaultValue={this.state.charge.from.id}
-                >
-                  <option key="0" value="0">
-                    Choose account...
-                  </option>
-                  {this.accountsOptionForSelect()}
-                </FormControl>
-              </Col>
-            </FormGroup>
-            <FormGroup
-              controlId="updateChargeTo"
-              validationState={this.state.validationState.to}
-            >
-              <Col componentClass={ControlLabel} sm={2}>
-                To:
-              </Col>
-              <Col sm={10}>
-                <FormControl
-                  componentClass="select"
-                  required
-                  onChange={e => this.handleChangeCategory(e)}
-                  defaultValue={this.state.charge.to.id}
-                >
-                  <option key="0" value="0">
-                    Choose charge category...
-                  </option>
-                  {this.chargeOptionForSelect()}
-                </FormControl>
-              </Col>
-            </FormGroup>
-            <FormGroup
-              controlId="updateChargeDate"
-              validationState={this.state.validationState.date}
-            >
-              <Col componentClass={ControlLabel} sm={2}>
-                Date:
-              </Col>
-              <Col sm={10}>
-                <DayPickerInput
-                  classNames={{
-                    container: "day-picker-modal",
-                    overlay: "day-picker-modal-overlay"
-                  }}
-                  dayPickerProps={{
-                    todayButton: "Today"
-                  }}
-                  selectedDays={this.state.charge.date}
-                  value={this.state.charge.date}
-                  overlayComponent={CustomOverlay}
-                  keepFocus={false}
-                  inputProps={{ required: true }}
-                  onDayChange={this.handleDayChange}
-                />
-              </Col>
-            </FormGroup>
-            <FormGroup
-              controlId="updateChargeAmount"
-              validationState={this.state.validationState.amount}
-            >
-              <Col componentClass={ControlLabel} sm={2}>
-                Amount:
-              </Col>
-              <Col sm={10}>
-                <InputGroup>
-                  <InputGroup.Addon>{currency || "$"}</InputGroup.Addon>
-                  <FormControl
-                    type="number"
-                    step="0.01"
-                    required
-                    defaultValue={this.state.charge.amount}
-                    placeholder="Enter Charge amount"
-                    onChange={this.handleChangeAmount}
-                  />
-                  <InputGroup.Addon>.00</InputGroup.Addon>
-                </InputGroup>
-              </Col>
-            </FormGroup>
-            <FormGroup controlId="updateChargeNote">
-              <Col componentClass={ControlLabel} sm={2}>
-                Note:
-              </Col>
-              <Col sm={10}>
-                <FormControl
-                  type="text"
-                  defaultValue={this.state.charge.note}
-                  placeholder="Enter Charge note"
-                  onChange={this.handleChangeNote}
-                />
-              </Col>
-            </FormGroup>
-            <FormGroup controlId="updateChargeTagIds">
-              <Col componentClass={ControlLabel} sm={2}>
-                Tags:
-              </Col>
-              <Col sm={10}>
-                <Select
-                  name="updateChargeTagIds"
-                  value={selectedTags}
-                  options={this.getOptionsForTag()}
-                  onChange={this.handleChangeTags}
-                  isMulti
-                />
-              </Col>
-            </FormGroup>
+            <FromAccount
+              validationState={validationState}
+              handleChangeAccount={this.handleChangeAccount}
+              props={this.props}
+              charge={charge}
+            />
+            <ToCategory
+              validationState={validationState}
+              handleChangeCategory={this.handleChangeCategory}
+              props={this.props}
+              charge={charge}
+            />
+            <DayPicker
+              validationState={validationState}
+              handleDayChange={this.handleDayChange}
+              charge={charge}
+            />
+            <Amount
+              validationState={validationState}
+              handleChangeAmount={this.handleChangeAmount}
+              charge={charge}
+            />
+            <Note handleChangeNote={this.handleChangeNote} charge={charge} />
+            <Tags
+              handleChangeTags={this.handleChangeTags}
+              props={this.props}
+              charge={charge}
+            />
           </Form>
         </Modal.Body>
         <Modal.Footer>
@@ -521,7 +258,7 @@ class UpdateChargeForm extends Component {
             type="submit"
             bsStyle="warning"
             form="updateChargeForm"
-            disabled={this.state.validationState.disableSubmit}
+            disabled={validationState.disableSubmit}
           >
             Update
           </Button>
