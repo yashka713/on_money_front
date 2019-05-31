@@ -8,29 +8,23 @@ import Api from "../../../../../api/Api";
 import { FormGroup, InputGroup, FormControl, Button } from "react-bootstrap";
 
 class TagInput extends Component {
-  constructor(props) {
-    super(props);
+  initialState = () => ({
+    tag: {
+      id: 0,
+      name: ""
+    },
+    validationState: {
+      tagInput: null
+    },
+    showErrorAlert: false,
+    pointers: [],
+    messages: [],
+    buttonDisabled: true
+  });
 
-    this.state = this.getInitialState();
+  state = this.initialState();
 
-    this.resetState = this.resetState.bind(this);
-    this.handleTagClick = this.handleTagClick.bind(this);
-    this.handleTagChange = this.handleTagChange.bind(this);
-    this.findOrCreateTag = this.findOrCreateTag.bind(this);
-    this.updateTag = this.updateTag.bind(this);
-  }
-
-  getInitialState() {
-    return {
-      tag: {
-        id: 0,
-        name: ""
-      },
-      buttonDisabled: true
-    };
-  }
-
-  componentWillReceiveProps(props) {
+  componentWillReceiveProps = props =>
     this.setState({
       tag: {
         id: props.id,
@@ -38,13 +32,10 @@ class TagInput extends Component {
       },
       buttonDisabled: false
     });
-  }
 
-  resetState() {
-    this.setState(this.getInitialState());
-  }
+  resetState = () => this.setState(this.initialState());
 
-  handleTagChange(event) {
+  handleTagChange = event =>
     this.setState(
       {
         tag: {
@@ -60,57 +51,80 @@ class TagInput extends Component {
         }
       }
     );
+
+  incorrectInput(messages = "") {
+    let pointers = [];
+    let details = [];
+    if (messages !== "") {
+      pointers = messages.map(item => {
+        return item.pointer
+          .split("/")
+          .pop()
+          .split("_")
+          .pop();
+      });
+      details = messages.map(item => {
+        return item.detail;
+      });
+    }
+    this.setState({
+      pointers: [...new Set(pointers)],
+      messages: [...new Set(details)],
+      validationState: { tagInput: "error" }
+    });
   }
 
-  sendData() {
-    return {
-      tag: {
-        name: this.state.tag.name
-      }
-    };
-  }
+  sendData = () => ({ tag: { name: this.state.tag.name } });
 
-  findOrCreateTag() {
+  findOrCreateTag = () =>
     postRequest(Api.tagsPath(), this.sendData()).then(responce => {
       if (responce.status === 200) {
         this.props.checkTag(responce.data);
         this.resetState();
       } else {
+        this.incorrectInput(responce.body);
         console.log("error", responce);
       }
     });
-  }
 
-  updateTag() {
+  updateTag = () =>
     updateRequest(Api.tagPath(this.state.tag.id), this.sendData()).then(
       responce => {
         if (responce.status === 200) {
           this.props.updateTag(responce.data);
           this.resetState();
         } else {
+          this.incorrectInput(responce.body);
           console.log("error", responce);
         }
       }
     );
-  }
 
-  handleTagClick() {
+  handleTagClick = () => {
     if (this.state.tag.id > 0) {
       this.updateTag();
     } else {
       this.findOrCreateTag();
     }
     return false;
-  }
+  };
 
   render() {
     return (
-      <FormGroup>
+      <FormGroup validationState={this.state.validationState.tagInput}>
+        {this.state.pointers.map((item, index) => {
+          return (
+            <p className="tag-error" onClick={this.resetState} key={index}>
+              <strong>{item}</strong> {this.state.messages[index]}
+            </p>
+          );
+        })}
         <InputGroup>
           <FormControl
             type="text"
             value={this.state.tag.name}
             onChange={this.handleTagChange}
+            placeholder="Maximum is 25 symbols"
           />
           <InputGroup.Button>
             <Button href="#" bsStyle="warning" onClick={this.resetState}>

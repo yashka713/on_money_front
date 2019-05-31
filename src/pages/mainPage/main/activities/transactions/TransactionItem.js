@@ -75,6 +75,7 @@ class TransactionItem extends Component {
         return from + " -> " + to;
       }
     };
+    const operation = this.props.transaction.attributes.operation_type;
     return !this.state.from.attributes ? (
       ""
     ) : (
@@ -94,7 +95,8 @@ class TransactionItem extends Component {
           >
             <FontAwesomeIcon icon={faTimes} className="transaction-destroy" />
           </div>
-          <div className="col-md-12">
+          <div
+            className={`col-md-12 ${operation}`}>
             <p className="timeline-date">
               {this.props.transaction.attributes.date}
             </p>

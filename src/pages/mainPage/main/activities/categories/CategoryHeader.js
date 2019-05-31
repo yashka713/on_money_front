@@ -10,7 +10,7 @@ export const CategoryHeader = ({ categoryType }) => {
     <Popover id="popover">
       <p>
         For creating <strong>{operation} operation</strong> choose{" "}
-        <strong>Category</strong> & <strong>Account</strong>.
+        <strong>{operation} category</strong> & <strong>Account</strong>.
       </p>
     </Popover>
   );

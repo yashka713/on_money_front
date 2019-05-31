@@ -10,19 +10,23 @@ export const NewTransactionBtnGroup = ({
       <ButtonGroup justified>
         <Button
           href="#"
-          bsStyle="primary"
+          bsClass="btn transfer"
           onClick={() => handleNewTransactionType("transfer")}
         >
           New Transfer
         </Button>
         <Button
           href="#"
-          bsStyle="info"
+          bsClass="btn profit"
           onClick={() => handleNewTransactionType("profit")}
         >
           New Profit
         </Button>
-        <Button href="#" onClick={() => handleNewTransactionType("charge")}>
+        <Button
+          href="#"
+          bsClass="btn charge"
+          onClick={() => handleNewTransactionType("charge")}
+        >
           New Charge
         </Button>
         <Button href="#" bsStyle="warning" onClick={resetState}>

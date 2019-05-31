@@ -62,7 +62,7 @@ class ScrolledTimeline extends Component {
         />
       </HorizontalTimelineContent>
     ) : (
-      <div className="text-center col-md-12 margin-top-15">
+      <div className="text-center col-md-12 margin-top-15 empty-timeline">
         <strong>Nothing to show</strong>
       </div>
     );
