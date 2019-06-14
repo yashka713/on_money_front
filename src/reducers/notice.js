@@ -1,9 +1,15 @@
 import Token from "../services/session/localStorageProvider";
 
+const DEFAULT_MESSAGE = [
+  {
+    detail: "Something going wrong... Please contact with support"
+  }
+];
+
 let logged = Token.getToken();
 
 const initialState = {
-  showSignInAlert: false,
+  showSignInErrorAlert: false,
   showSuccessAlert: !logged,
   showErrorAlert: !logged,
   errorMessages: "",
@@ -11,11 +17,13 @@ const initialState = {
 };
 
 export default function notice(state = initialState, action) {
-  if (action.type === "SHOW_ERROR_ALERT") {
+  if (action.type === "SHOW_SIGNIN_ERROR_ALERT") {
     return {
       ...state,
-      showSignInAlert: action.payload,
-      errorMessages: action.payload.body
+      showSignInErrorAlert: action.payload,
+      showSignInSuccessAlert: false,
+      showSuccessAlert: false,
+      errorMessages: action.payload.body || DEFAULT_MESSAGE
     };
   } else if (action.type === "SHOW_SUCCESS_ALERT") {
     return {
@@ -23,12 +31,14 @@ export default function notice(state = initialState, action) {
       showSuccessAlert: action.payload.status,
       noticeMessage: action.payload.message
     };
-  } else if (action.type === "SHOW_ERROR_ALERT") {
+  } else if (action.type === "SHOW_SIGNIN_SUCCESS_ALERT") {
     return {
       ...state,
-      showErrorAlert: action.payload.status,
-      noticeMessage: action.payload.message
+      showSignInSuccessAlert: action.payload,
+      noticeMessage: action.payload,
+      showSignInErrorAlert: false
     };
   }
+
   return state;
 }
