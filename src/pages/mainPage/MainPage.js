@@ -8,7 +8,7 @@ import Notices from "./Notices";
 class MainPage extends Component {
   render() {
     return (
-      <div>
+      <div className="main-page">
         <HeaderComponent />
         <Notices />
         <Body />
