@@ -2,7 +2,7 @@ import LSProvider from "../session/localStorageProvider";
 import errorParser from "../errors/errorParser";
 import axios from "axios";
 
-export default function updateCategoryRequest(url, formData) {
+export default function updateRequest(url, formData) {
   let token = LSProvider.getToken();
   return axios
     .patch(url, formData, {

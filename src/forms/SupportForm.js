@@ -8,18 +8,30 @@ import {
   Checkbox
 } from "react-bootstrap";
 import Api from "../api/Api";
+import postRequest from "../services/requests/postRequest";
+import { connect } from "react-redux";
+import showErrorAlert from "../actions/signForm/errorAlert";
+import showSuccessAlert from "../actions/signForm/successAlert";
 
 //eslint-disable-next-line
 const EMEIL_REGEXP = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+const DEFAULT_ERROR_MESSAGE = [
+  {
+    detail:
+      "Your request cannot be processed in this moment. Please, try it later. Thank you :)"
+  }
+];
 
-export default class SupportForm extends Component {
+const DEFAULT_SUCCESS_MESSAGE = "Your request was registered. Check e-mail :)";
+
+class SupportForm extends Component {
   initialState = () => ({
     blockSubmit: true,
     validateEmail: null,
     request: {
       email: null,
       description: "",
-      recoverPassword: false
+      recoverPassword: 0
     }
   });
 
@@ -63,7 +75,7 @@ export default class SupportForm extends Component {
     this.setState({
       request: {
         ...this.state.request,
-        recoverPassword: event.target.checked
+        recoverPassword: event.target.checked ? 1 : 0
       }
     });
 
@@ -85,8 +97,13 @@ export default class SupportForm extends Component {
 
   handleSubmit = event => {
     event.preventDefault();
-    console.log("submitted", this.supportAttributes());
-    // TODO: add endpoint for sending SupportRequest
+    postRequest(Api.requestPath(), this.supportAttributes()).then(responce => {
+      if (responce.status === 201) {
+        this.props.handleSuccess();
+      } else {
+        this.props.handleError(responce);
+      }
+    });
     return false;
   };
 
@@ -123,8 +140,8 @@ export default class SupportForm extends Component {
             componentClass="textarea"
             placeholder="Type your request hire"
             rows="4"
+            value={this.state.request.description}
             onChange={this.handleChangeDescription}
-            disabled={this.state.request.recoverPassword}
           />
         </FormGroup>
         <Button
@@ -139,3 +156,18 @@ export default class SupportForm extends Component {
     );
   }
 }
+
+export default connect(
+  state => ({
+    notice: state.notice
+  }),
+  dispatch => ({
+    handleError: result => {
+      result.body = DEFAULT_ERROR_MESSAGE;
+      dispatch(showErrorAlert(result));
+    },
+    handleSuccess: () => {
+      dispatch(showSuccessAlert(DEFAULT_SUCCESS_MESSAGE));
+    }
+  })
+)(SupportForm);

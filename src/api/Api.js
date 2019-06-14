@@ -83,4 +83,10 @@ export default {
   tagPath(id) {
     return process.env.REACT_APP_API_HOST + "tags/" + id;
   },
+  requestPath() {
+    return process.env.REACT_APP_API_HOST + "requests";
+  },
+  passwordsPath() {
+    return process.env.REACT_APP_API_HOST + "passwords";
+  }
 };
