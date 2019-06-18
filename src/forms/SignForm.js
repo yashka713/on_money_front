@@ -3,80 +3,64 @@ import { Button } from "react-bootstrap";
 import FieldGroup from "./FieldGroup";
 import { connect } from "react-redux";
 import { push } from "react-router-redux";
-// utils
-import startSession from "../utils/session/startSession";
+// services
+import startSessionRequest from "../services/requests/startSessionRequest";
 // actions
 import changeEmail from "../actions/signForm/changeEmail";
 import changePassword from "../actions/signForm/changePassword";
-import showErrorAlert from "../actions/signForm/errorAlert";
+import clearSignFields from "../actions/signForm/clearSignFields";
 import successAuth from "../actions/successAuth";
 import showSuccessAlert from "../actions/successAlert";
+import showErrorAlert from "../actions/signForm/errorAlert";
 
 class SignForm extends Component {
-  constructor(props) {
-    super(props);
+  handleChangeEmail = event => this.props.handleChangeEmail(event.target.value);
 
-    this.handleChangeEmail = this.handleChangeEmail.bind(this);
-    this.handleChangePassword = this.handleChangePassword.bind(this);
-    this.handleSubmit = this.handleSubmit.bind(this);
-  }
-
-  handleChangeEmail(event) {
-    this.props.handleChangeEmail(event.target.value);
-  }
-  handleChangePassword(event) {
+  handleChangePassword = event =>
     this.props.handleChangePassword(event.target.value);
-  }
 
-  handleSubmit(event) {
+  handleSubmit = event => {
     event.preventDefault();
     const url = event.target.action;
-    const answer = startSession(url, this.props.auth);
-    answer.then(result => {
-      if (result.status >= 200 && result.status < 300) {
-        this.props.login(result.current_user);
+    startSessionRequest(url, this.props.auth).then(responce => {
+      if (responce.status === 200 || responce.status === 201) {
+        this.props.login(responce.current_user, "We are glad to see you.");
       } else {
-        this.props.errorAlert(true);
+        this.props.handleError(responce);
       }
     });
     return false;
-  }
+  };
 
   render() {
     return (
-      <div>
-        <br />
-        <p className="text-center">example@example.com</p>
-        <p className="text-center">onioni@example.com</p>
-        <p className="text-center">password</p>
-        <form
-          action={this.props.action}
-          method="post"
-          id={this.props.id}
-          className="custom-form"
-          onSubmit={this.handleSubmit}
-        >
-          <FieldGroup
-            id={`${this.props.id}Email`}
-            type="email"
-            label="Email address:"
-            required
-            placeholder="Enter email"
-            onChange={this.handleChangeEmail}
-          />
-          <FieldGroup
-            id={`${this.props.id}Password`}
-            label="Password:"
-            type="password"
-            required
-            placeholder="password"
-            onChange={this.handleChangePassword}
-          />
-          <Button type="submit" bsStyle="primary">
-            Submit
-          </Button>
-        </form>
-      </div>
+      <form
+        action={this.props.action}
+        method="post"
+        id={this.props.id}
+        className="login-form"
+        onSubmit={this.handleSubmit}
+      >
+        <FieldGroup
+          id={`${this.props.id}Email`}
+          type="email"
+          label="Email address:"
+          required
+          placeholder="Enter email"
+          onChange={this.handleChangeEmail}
+        />
+        <FieldGroup
+          id={`${this.props.id}Password`}
+          label="Password:"
+          type="password"
+          required
+          placeholder="password"
+          onChange={this.handleChangePassword}
+        />
+        <Button type="submit" bsStyle="primary">
+          Submit
+        </Button>
+      </form>
     );
   }
 }
@@ -93,13 +77,14 @@ export default connect(
     handleChangePassword: inputValue => {
       dispatch(changePassword(inputValue));
     },
-    errorAlert: status => {
-      dispatch(showErrorAlert(status));
+    handleError: result => {
+      dispatch(showErrorAlert(result));
     },
-    login: user => {
+    login: (user, message) => {
       dispatch(successAuth(user));
+      dispatch(clearSignFields());
       dispatch(push("/"));
-      dispatch(showSuccessAlert(true));
+      dispatch(showSuccessAlert(true, message));
     }
   })
 )(SignForm);

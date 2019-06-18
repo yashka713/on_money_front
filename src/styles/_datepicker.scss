@@ -1,0 +1,38 @@
+.datepicker-box {
+  z-index: 3;
+  position: relative;
+  display: flex;
+  padding: 2em 3em;
+  background-image: linear-gradient(to top, #fbc2eb 0%, #a6c1ee 100%);
+}
+
+.datepicker-item-selected {
+  width: 25%;
+}
+
+.datepicker-item-selector {
+  width: 75%;
+}
+
+.btn-block {
+  button {
+    margin-top: 1em;
+    width: 80%;
+  }
+}
+
+.DayPicker-Month > .DayPicker-Caption > div {
+  font-size: 1.5em;
+}
+
+.DayPicker-Day {
+  font-size: 1.1em;
+}
+
+.Range .DayPicker-Day--selected:not(.DayPicker-Day--start):not(.DayPicker-Day--end):not(.DayPicker-Day--outside) {
+  background-color: #f0f8ff !important;
+  color: #4a90e2;
+}
+.Range .DayPicker-Day {
+  border-radius: 0 !important;
+}

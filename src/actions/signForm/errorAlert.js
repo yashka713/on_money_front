@@ -1,6 +1,6 @@
-export default function showErrorAlert(status) {
+export default function showErrorAlert(message) {
   return {
-    type: "SHOW_ERROR_ALERT",
-    payload: status
+    type: "SHOW_SIGNIN_ERROR_ALERT",
+    payload: message
   };
 }

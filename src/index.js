@@ -4,11 +4,12 @@ import ReactDOM from "react-dom";
 import "bootstrap/dist/css/bootstrap.css";
 import "bootstrap/dist/css/bootstrap-theme.css";
 //
+
 import registerServiceWorker from "./registerServiceWorker";
 // app styles
 import "./dest/main.css";
 //
-import App from "./containers/App";
+import App from "./pages/App";
 
 ReactDOM.render(<App />, document.getElementById("root"));
 
