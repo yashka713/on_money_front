@@ -302,8 +302,9 @@ export default connect(
   dispatch => ({
     newTransfer: transfer => {
       dispatch(newTransaction(transfer.data));
-      dispatch(updateAccount(transfer.included.pop()));
-      dispatch(updateAccount(transfer.included.pop()));
+      transfer.included.forEach(item => {
+        if (item.type === "accounts") dispatch(updateAccount(item));
+      });
       dispatch(successAlert(true, "New Transfer Transaction was created"));
     }
   })
