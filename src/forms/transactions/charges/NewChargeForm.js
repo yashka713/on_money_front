@@ -257,7 +257,9 @@ export default connect(
   dispatch => ({
     newCharge: charge => {
       dispatch(newTransaction(charge.data));
-      dispatch(updateAccount(charge.included.shift()));
+      charge.included.forEach(item => {
+        if (item.type === "accounts") dispatch(updateAccount(item));
+      });
       dispatch(successAlert(true, "New Charge Transaction was created"));
     }
   })
