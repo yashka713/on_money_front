@@ -153,6 +153,7 @@ class NewProfitForm extends Component {
       profitAttributes(this.state)
     ).then(responce => {
       if (responce.status === 201) {
+        console.log(responce.data)
         this.props.newProfit(responce.data);
         this.props.callback();
       } else {
@@ -255,7 +256,9 @@ export default connect(
   dispatch => ({
     newProfit: profit => {
       dispatch(newTransaction(profit.data));
-      dispatch(updateAccount(profit.included.pop()));
+      profit.included.forEach(item => {
+        if (item.type === "accounts") dispatch(updateAccount(item));
+      });
       dispatch(successAlert(true, "New Profit Transaction was created"));
     }
   })
