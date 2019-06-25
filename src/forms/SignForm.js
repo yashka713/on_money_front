@@ -14,23 +14,12 @@ import showSuccessAlert from "../actions/successAlert";
 import showErrorAlert from "../actions/signForm/errorAlert";
 
 class SignForm extends Component {
-  constructor(props) {
-    super(props);
+  handleChangeEmail = event => this.props.handleChangeEmail(event.target.value);
 
-    this.handleChangeEmail = this.handleChangeEmail.bind(this);
-    this.handleChangePassword = this.handleChangePassword.bind(this);
-    this.handleSubmit = this.handleSubmit.bind(this);
-  }
-
-  handleChangeEmail(event) {
-    this.props.handleChangeEmail(event.target.value);
-  }
-
-  handleChangePassword(event) {
+  handleChangePassword = event =>
     this.props.handleChangePassword(event.target.value);
-  }
 
-  handleSubmit(event) {
+  handleSubmit = event => {
     event.preventDefault();
     const url = event.target.action;
     startSessionRequest(url, this.props.auth).then(responce => {
@@ -41,7 +30,7 @@ class SignForm extends Component {
       }
     });
     return false;
-  }
+  };
 
   render() {
     return (

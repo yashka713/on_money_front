@@ -20,56 +20,52 @@ export const ToAccount = ({
   transfer = {},
   handleChangeAccount,
   props
-}) => {
-  return (
-    <FormGroup validationState={validationState.to}>
-      <Col componentClass={ControlLabel} sm={2}>
-        From:
-      </Col>
-      <Col sm={10}>
-        <FormControl
-          componentClass="select"
-          required
-          onChange={e => handleChangeAccount(e, "to")}
-          defaultValue={transfer.to && transfer.to.id}
-        >
-          <option key="0" value="0">
-            Choose account...
-          </option>
-          {accountsOptionForSelect(props)}
-        </FormControl>
-      </Col>
-    </FormGroup>
-  );
-};
+}) => (
+  <FormGroup validationState={validationState.to}>
+    <Col componentClass={ControlLabel} sm={2}>
+      From:
+    </Col>
+    <Col sm={10}>
+      <FormControl
+        componentClass="select"
+        required
+        onChange={e => handleChangeAccount(e, "to")}
+        defaultValue={transfer.to && transfer.to.id}
+      >
+        <option key="0" value="0">
+          Choose account...
+        </option>
+        {accountsOptionForSelect(props)}
+      </FormControl>
+    </Col>
+  </FormGroup>
+);
 
 export const FromAccount = ({
   validationState,
   transfer = {},
   handleChangeAccount,
   props
-}) => {
-  return (
-    <FormGroup validationState={validationState.from}>
-      <Col componentClass={ControlLabel} sm={2}>
-        From:
-      </Col>
-      <Col sm={10}>
-        <FormControl
-          componentClass="select"
-          required
-          onChange={e => handleChangeAccount(e, "from")}
-          defaultValue={transfer.from && transfer.from.id}
-        >
-          <option key="0" value="0">
-            Choose account...
-          </option>
-          {accountsOptionForSelect(props)}
-        </FormControl>
-      </Col>
-    </FormGroup>
-  );
-};
+}) => (
+  <FormGroup validationState={validationState.from}>
+    <Col componentClass={ControlLabel} sm={2}>
+      From:
+    </Col>
+    <Col sm={10}>
+      <FormControl
+        componentClass="select"
+        required
+        onChange={e => handleChangeAccount(e, "from")}
+        defaultValue={transfer.from && transfer.from.id}
+      >
+        <option key="0" value="0">
+          Choose account...
+        </option>
+        {accountsOptionForSelect(props)}
+      </FormControl>
+    </Col>
+  </FormGroup>
+);
 
 export const Amount = ({
   validationState,
@@ -151,70 +147,64 @@ export const DiffAmount = ({
   );
 };
 
-export const Note = ({ transfer = {}, handleChangeNote }) => {
-  return (
-    <FormGroup>
-      <Col componentClass={ControlLabel} sm={2}>
-        Note:
-      </Col>
-      <Col sm={10}>
-        <FormControl
-          type="text"
-          defaultValue={transfer.note}
-          placeholder="Enter Profit note"
-          onChange={handleChangeNote}
-        />
-      </Col>
-    </FormGroup>
-  );
-};
+export const Note = ({ transfer = {}, handleChangeNote }) => (
+  <FormGroup>
+    <Col componentClass={ControlLabel} sm={2}>
+      Note:
+    </Col>
+    <Col sm={10}>
+      <FormControl
+        type="text"
+        defaultValue={transfer.note}
+        placeholder="Enter Profit note"
+        onChange={handleChangeNote}
+      />
+    </Col>
+  </FormGroup>
+);
 
-export const Tags = ({ transfer = {}, handleChangeTags, props }) => {
-  return (
-    <FormGroup>
-      <Col componentClass={ControlLabel} sm={2}>
-        Tags:
-      </Col>
-      <Col sm={10}>
-        <Select
-          name="updateChargeTagIds"
-          value={transfer.tag_ids}
-          options={getOptionsForTag(props)}
-          onChange={handleChangeTags}
-          isMulti
-        />
-      </Col>
-    </FormGroup>
-  );
-};
+export const Tags = ({ transfer = {}, handleChangeTags, props }) => (
+  <FormGroup>
+    <Col componentClass={ControlLabel} sm={2}>
+      Tags:
+    </Col>
+    <Col sm={10}>
+      <Select
+        name="updateChargeTagIds"
+        value={transfer.tag_ids}
+        options={getOptionsForTag(props)}
+        onChange={handleChangeTags}
+        isMulti
+      />
+    </Col>
+  </FormGroup>
+);
 
 export const DayPicker = ({
   validationState,
   transfer = {},
   handleDayChange
-}) => {
-  return (
-    <FormGroup validationState={validationState.date}>
-      <Col componentClass={ControlLabel} sm={2}>
-        Date:
-      </Col>
-      <Col sm={10}>
-        <DayPickerInput
-          classNames={{
-            container: "day-picker-modal",
-            overlay: "day-picker-modal-overlay"
-          }}
-          dayPickerProps={{
-            todayButton: "Today"
-          }}
-          selectedDays={transfer.date}
-          value={transfer.date}
-          overlayComponent={CustomOverlay}
-          keepFocus={false}
-          inputProps={{ required: true }}
-          onDayChange={handleDayChange}
-        />
-      </Col>
-    </FormGroup>
-  );
-};
+}) => (
+  <FormGroup validationState={validationState.date}>
+    <Col componentClass={ControlLabel} sm={2}>
+      Date:
+    </Col>
+    <Col sm={10}>
+      <DayPickerInput
+        classNames={{
+          container: "day-picker-modal",
+          overlay: "day-picker-modal-overlay"
+        }}
+        dayPickerProps={{
+          todayButton: "Today"
+        }}
+        selectedDays={transfer.date}
+        value={transfer.date}
+        overlayComponent={CustomOverlay}
+        keepFocus={false}
+        inputProps={{ required: true }}
+        onDayChange={handleDayChange}
+      />
+    </Col>
+  </FormGroup>
+);
