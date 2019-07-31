@@ -77,8 +77,7 @@ export default {
     }
   },
   tagsPath(pageNumber = 1) {
-    return process.env.REACT_APP_API_HOST + "tags" +
-      "?page[number]=" + pageNumber;
+    return process.env.REACT_APP_API_HOST + "tags?page[number]=" + pageNumber;
   },
   tagPath(id) {
     return process.env.REACT_APP_API_HOST + "tags/" + id;
