@@ -16,10 +16,6 @@ class AccountsList extends React.Component {
       modalType: "",
       item: {}
     };
-    this.accountList = this.accountList.bind(this);
-    this.newAccountModal = this.newAccountModal.bind(this);
-    this.updateAccountModal = this.updateAccountModal.bind(this);
-    this.handleShowModal = this.handleShowModal.bind(this);
   }
 
   componentDidMount() {
@@ -28,29 +24,30 @@ class AccountsList extends React.Component {
     });
   }
 
-  handleShowModal() {
+  handleShowModal = () =>
     this.setState({
       showModal: !this.state.showModal
     });
-  }
 
-  newAccountModal() {
-    this.setState({
-      modalType: "new"
-    });
-    this.handleShowModal();
-  }
+  newAccountModal = () =>
+    this.setState(
+      {
+        modalType: "new"
+      },
+      () => this.handleShowModal()
+    );
 
-  updateAccountModal(account) {
-    this.setState({
-      modalType: "update",
-      item: account
-    });
-    this.handleShowModal();
-  }
+  updateAccountModal = account =>
+    this.setState(
+      {
+        modalType: "update",
+        item: account
+      },
+      () => this.handleShowModal()
+    );
 
-  accountList() {
-    return this.props.accounts.map(account => {
+  accountList = () =>
+    this.props.accounts.map(account => {
       return (
         <Account
           account={account}
@@ -61,7 +58,6 @@ class AccountsList extends React.Component {
         />
       );
     });
-  }
 
   render() {
     return (
