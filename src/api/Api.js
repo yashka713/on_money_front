@@ -77,8 +77,7 @@ export default {
     }
   },
   tagsPath(pageNumber = 1) {
-    return process.env.REACT_APP_API_HOST + "tags" +
-      "?page[number]=" + pageNumber;
+    return process.env.REACT_APP_API_HOST + "tags?page[number]=" + pageNumber;
   },
   tagPath(id) {
     return process.env.REACT_APP_API_HOST + "tags/" + id;
@@ -88,5 +87,11 @@ export default {
   },
   passwordsPath() {
     return process.env.REACT_APP_API_HOST + "passwords";
+  },
+  graphqlPath() {
+    return process.env.REACT_APP_GRAPHQL_HOST;
+  },
+  transactionMonthsPath() {
+    return process.env.REACT_APP_API_HOST + "transactions/months_list";
   }
 };
