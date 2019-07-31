@@ -88,5 +88,11 @@ export default {
   },
   passwordsPath() {
     return process.env.REACT_APP_API_HOST + "passwords";
+  },
+  graphqlPath() {
+    return process.env.REACT_APP_GRAPHQL_HOST;
+  },
+  transactionMonthsPath() {
+    return process.env.REACT_APP_API_HOST + "transactions/months_list";
   }
 };
