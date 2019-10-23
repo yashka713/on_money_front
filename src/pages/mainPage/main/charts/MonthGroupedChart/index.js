@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import Provider from "../../../../../services/Provider";
-import MonthTotalQuery from "../../../../../services/queries/MonthTotalQuery";
+import MonthTotalQuery from "../../../../../services/queries/MonthTotalChargesQuery";
 import AccountsList from "./AccountsList";
 import MonthSelect from "./MonthSelect";
 

@@ -10,7 +10,7 @@ function getRandomColor() {
   return color;
 }
 
-export default class MonthTotal extends Component {
+export default class MonthTotalCharges extends Component {
   static defaultProps = {
     data: {}
   };
