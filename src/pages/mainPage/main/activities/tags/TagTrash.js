@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, {Component, Fragment} from "react";
 import { connect } from "react-redux";
 import destroyTag from "../../../../../actions/tags/destroyTag";
 import destroyRequest from "../../../../../services/requests/destroyRequest";
@@ -59,7 +59,7 @@ class TagTrash extends Component {
     );
     return (
       <OverlayTrigger placement="top" overlay={trashTooltip}>
-        <div>
+        <Fragment>
           <div className="text-center approveBox hidden">
             <div
               onClick={this.destroyTag}
@@ -81,7 +81,7 @@ class TagTrash extends Component {
           >
             Remove Tag
           </div>
-        </div>
+        </Fragment>
       </OverlayTrigger>
     );
   }

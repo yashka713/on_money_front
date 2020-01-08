@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { Component, Fragment } from "react";
 import SignInAlerts from "./SignInAlerts";
 import { connect } from "react-redux";
 import { push } from "react-router-redux";
@@ -11,12 +11,12 @@ class SignInPage extends Component {
 
   render() {
     return (
-      <div>
+      <Fragment>
         <SignInAlerts />
         <div className="App">
           <SignTabs />
         </div>
-      </div>
+      </Fragment>
     );
   }
 }

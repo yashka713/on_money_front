@@ -1,10 +1,10 @@
-import React from "react";
+import React, {Fragment} from "react";
 import FontAwesomeIcon from "@fortawesome/react-fontawesome";
 import faEdit from "@fortawesome/fontawesome-free-solid/faEdit";
 
 const UserInfo = ({ current_user, callback }) => {
   return (
-    <div>
+    <Fragment>
       <FontAwesomeIcon
         icon={faEdit}
         className="cursor-pointer close"
@@ -13,7 +13,7 @@ const UserInfo = ({ current_user, callback }) => {
       <p>Email: {current_user.email}</p>
       <p>Name: {current_user.name || ""}</p>
       <p>Nickname: {current_user.nickname || ""}</p>
-    </div>
+    </Fragment>
   );
 };
 

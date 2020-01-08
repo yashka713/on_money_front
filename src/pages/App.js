@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { Component, Fragment } from "react";
 // reducers
 import allReducers from "../reducers/index";
 // routing
@@ -26,12 +26,12 @@ class App extends Component {
     return (
       <Provider store={store}>
         <ConnectedRouter history={history}>
-          <div>
+          <Fragment>
             <Main />
             {/*Here should be all Routes*/}
             <Route path="/login" component={SignInPage} />
             {/*Here should be all Routes*/}
-          </div>
+          </Fragment>
         </ConnectedRouter>
       </Provider>
     );

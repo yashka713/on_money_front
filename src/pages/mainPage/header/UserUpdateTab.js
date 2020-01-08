@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, {Component, Fragment} from "react";
 
 import { errorPointersAndDetails } from "../../../forms/transactions/transactionFormHelpers";
 import { ErrorModalAlert } from "../../../forms/transactions/ErrorModalAlert";
@@ -30,7 +30,7 @@ export default class UserUpdateTab extends Component {
   render() {
     const { showErrorAlert, errorMessages } = this.state;
     return (
-      <div>
+      <Fragment>
         <ErrorModalAlert
           shouldShown={showErrorAlert}
           errors={errorMessages}
@@ -44,7 +44,7 @@ export default class UserUpdateTab extends Component {
           showModal={this.props.showModal}
           handleShowingError={this.handleShowingError}
         />
-      </div>
+      </Fragment>
     );
   }
 }

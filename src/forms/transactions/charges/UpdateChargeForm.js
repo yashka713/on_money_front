@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, {Component, Fragment} from "react";
 import { Button, Form, Modal } from "react-bootstrap";
 import {
   chargeAttributes,
@@ -202,7 +202,7 @@ class UpdateChargeForm extends Component {
     } = this.state;
 
     return (
-      <div>
+      <Fragment>
         <Modal.Header closeButton>
           <Modal.Title>Update Charge Operation</Modal.Title>
         </Modal.Header>
@@ -263,7 +263,7 @@ class UpdateChargeForm extends Component {
             Update
           </Button>
         </Modal.Footer>
-      </div>
+      </Fragment>
     );
   }
 }

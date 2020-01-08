@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, {Component, Fragment} from "react";
 import { Button, Form, Modal } from "react-bootstrap";
 import {
   transferAttributes,
@@ -228,7 +228,7 @@ class NewTransferForm extends Component {
       errorMessages
     } = this.state;
     return (
-      <div>
+      <Fragment>
         <Modal.Header closeButton>
           <Modal.Title>New Transfer Operation</Modal.Title>
         </Modal.Header>
@@ -289,7 +289,7 @@ class NewTransferForm extends Component {
             Create
           </Button>
         </Modal.Footer>
-      </div>
+      </Fragment>
     );
   }
 }

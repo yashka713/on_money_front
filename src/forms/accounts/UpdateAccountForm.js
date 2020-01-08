@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { Component, Fragment } from "react";
 import { connect } from "react-redux";
 import updateAccount from "../../actions/accounts/updateAccount";
 import updateAccountRequest from "../../services/requests/updateAccountRequest";
@@ -87,7 +87,7 @@ class UpdateAccountForm extends Component {
 
   render() {
     return (
-      <div>
+      <Fragment>
         <Modal.Header closeButton>
           <Modal.Title>Update Account</Modal.Title>
         </Modal.Header>
@@ -168,7 +168,7 @@ class UpdateAccountForm extends Component {
             Update
           </Button>
         </Modal.Footer>
-      </div>
+      </Fragment>
     );
   }
 }

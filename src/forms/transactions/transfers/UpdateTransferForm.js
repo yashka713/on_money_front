@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, {Component, Fragment} from "react";
 import { Button, Form, Modal } from "react-bootstrap";
 import {
   FromAccount,
@@ -246,7 +246,7 @@ class UpdateTransferForm extends Component {
       errorMessages
     } = this.state;
     return (
-      <div>
+      <Fragment>
         <Modal.Header closeButton>
           <Modal.Title>Update Transfer Operation</Modal.Title>
         </Modal.Header>
@@ -319,7 +319,7 @@ class UpdateTransferForm extends Component {
             Update
           </Button>
         </Modal.Footer>
-      </div>
+      </Fragment>
     );
   }
 }
