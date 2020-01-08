@@ -1,12 +1,14 @@
-import React, { Component } from "react";
-import MonthGroupedChart from "./MonthGroupedChart";
+import React, { Component, Fragment } from "react";
+import MonthGroupedChart from "./MonthGroupedCharges";
+import ProfitFromYearStart from "./ProfitFromYearStart";
 
 export default class Charts extends Component {
   render() {
     return (
-      <div>
+      <Fragment>
         <MonthGroupedChart />
-      </div>
+        <ProfitFromYearStart />
+      </Fragment>
     );
   }
 }

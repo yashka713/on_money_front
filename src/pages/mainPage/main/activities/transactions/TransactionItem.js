@@ -95,8 +95,7 @@ class TransactionItem extends Component {
           >
             <FontAwesomeIcon icon={faTimes} className="transaction-destroy" />
           </div>
-          <div
-            className={`col-md-12 ${operation}`}>
+          <div className={`col-md-12 ${operation}`}>
             <p className="timeline-date">
               {this.props.transaction.attributes.date}
             </p>

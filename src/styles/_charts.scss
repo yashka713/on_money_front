@@ -1,0 +1,13 @@
+.flex-chart {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+
+  .flex-chart__month-profit-pie {
+    align-self: center;
+    position: relative;
+    height: 50vh;
+    width: 100vw;
+  }
+}

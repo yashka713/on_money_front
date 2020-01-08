@@ -1,7 +1,7 @@
 import React from "react";
 import gql from "graphql-tag";
 import { Query } from "react-apollo";
-import MonthTotalCharges from "../../pages/mainPage/main/charts/MonthGroupedChart/MonthTotalCharges";
+import MonthTotalCharges from "../../pages/mainPage/main/charts/MonthGroupedCharges/MonthTotalCharges";
 
 const MonthTotalChargesQuery = gql`
   query MonthTotalCharges($month: String!, $accountIds: [String!]) {
