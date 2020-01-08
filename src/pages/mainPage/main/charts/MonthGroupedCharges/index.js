@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { Component, Fragment } from "react";
 import Provider from "../../../../../services/Provider";
 import MonthTotalQuery from "../../../../../services/queries/MonthTotalChargesQuery";
 import AccountsList from "./AccountsList";
@@ -24,7 +24,7 @@ export default class MonthGroupedChart extends Component {
 
   render() {
     return (
-      <div>
+      <Fragment>
         <AccountsList chosenAccounts={this.chosenAccounts} />
         <MonthSelect chosenMonth={this.chosenMonth} />
         <Provider>
@@ -33,7 +33,7 @@ export default class MonthGroupedChart extends Component {
             accountIds={this.state.chosenAccounts}
           />
         </Provider>
-      </div>
+      </Fragment>
     );
   }
 }
