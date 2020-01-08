@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, {Component, Fragment} from "react";
 import { connect } from "react-redux";
 import updateCategory from "../../actions/categories/updateCategory";
 import updateCategoryRequest from "../../services/requests/updateCategoryRequest";
@@ -65,7 +65,7 @@ class UpdateCategoryForm extends Component {
 
   render() {
     return (
-      <div>
+      <Fragment>
         <Modal.Header closeButton>
           <Modal.Title>
             Update <strong>{capitalize(this.props.type)}</strong> Category
@@ -122,7 +122,7 @@ class UpdateCategoryForm extends Component {
             Update
           </Button>
         </Modal.Footer>
-      </div>
+      </Fragment>
     );
   }
 }

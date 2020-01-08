@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, {Component, Fragment} from "react";
 import { connect } from "react-redux";
 import downloadTags from "../../../../../actions/tags/downloadTags";
 import getRequest from "../../../../../services/requests/getRequest";
@@ -50,7 +50,7 @@ class TagList extends Component {
     return (
       <div className="col-md-5">
         <TagInput id={this.state.tag.id} name={this.state.tag.name} />
-        <div>
+        <Fragment>
           <div className="tagsContainer">
             {tags.length > 0 ? (
               tags
@@ -61,7 +61,7 @@ class TagList extends Component {
             )}
           </div>
           <TagTrash />
-        </div>
+        </Fragment>
       </div>
     );
   }

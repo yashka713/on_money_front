@@ -22,7 +22,7 @@ class UserProfile extends Component {
   }
   render() {
     return (
-      <div>
+      <Fragment>
         <span onClick={this.handleShowModal}>User profile</span>
         <Modal show={this.state.showModal} onHide={this.handleShowModal}>
           <Modal.Header closeButton>
@@ -49,7 +49,7 @@ class UserProfile extends Component {
             <Button onClick={this.handleShowModal}>Close</Button>
           </Modal.Footer>
         </Modal>
-      </div>
+      </Fragment>
     );
   }
 }

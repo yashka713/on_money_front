@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, {Component, Fragment} from "react";
 import { Button, Form, Modal } from "react-bootstrap";
 import {
   ToAccount,
@@ -191,7 +191,7 @@ class NewProfitForm extends Component {
       errorMessages
     } = this.state;
     return (
-      <div>
+      <Fragment>
         <Modal.Header closeButton>
           <Modal.Title>New Profit Operation</Modal.Title>
         </Modal.Header>
@@ -242,7 +242,7 @@ class NewProfitForm extends Component {
             Create
           </Button>
         </Modal.Footer>
-      </div>
+      </Fragment>
     );
   }
 }

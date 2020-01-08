@@ -1,17 +1,17 @@
-import React from "react";
+import React, {Fragment} from "react";
 import FontAwesomeIcon from "@fortawesome/react-fontawesome";
 import faBackward from "@fortawesome/fontawesome-free-solid/faBackward";
 import UserUpdateForm from "./UserUpdateTab";
 
 const RenderUserForm = ({ callback, showModal }) => (
-  <div>
+  <Fragment>
     <FontAwesomeIcon
       icon={faBackward}
       className="cursor-pointer close"
       onClick={callback}
     />
     <UserUpdateForm showModal={showModal} />
-  </div>
+  </Fragment>
 );
 
 export default RenderUserForm;
