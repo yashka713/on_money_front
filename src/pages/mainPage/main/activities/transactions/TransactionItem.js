@@ -4,6 +4,7 @@ import FontAwesomeIcon from "@fortawesome/react-fontawesome";
 import faPencilAlt from "@fortawesome/fontawesome-free-solid/faPencilAlt";
 import faTimes from "@fortawesome/fontawesome-free-solid/faTimes";
 import TagList from "./tags/TagList";
+import find from "lodash/find";
 
 class TransactionItem extends Component {
   constructor(props) {
@@ -16,22 +17,25 @@ class TransactionItem extends Component {
     this.handleDeleteTransaction = this.handleDeleteTransaction.bind(this);
   }
 
+  itemChargeable = (item, chargeable) =>
+    item.id === chargeable.data.id && item.type === chargeable.data.type;
+
+  itemProfitable = (item, profitable) =>
+    item.id === profitable.data.id && item.type === profitable.data.type;
+
   setRelationships(props) {
-    const relationships = props.transaction.relationships;
+    const { profitable, chargeable } = props.transaction.relationships;
 
-    const from = props.related.filter(item => {
-      return (
-        item.id === relationships.chargeable.data.id &&
-        item.type === relationships.chargeable.data.type
-      );
-    })[0];
+    const result = props.related.filter(
+      item =>
+        this.itemChargeable(item, chargeable) ||
+        this.itemProfitable(item, profitable)
+    );
 
-    const to = props.related.filter(item => {
-      return (
-        item.id === relationships.profitable.data.id &&
-        item.type === relationships.profitable.data.type
-      );
-    })[0];
+    const [from, to] = result;
+
+    // console.log(from);
+    // console.log(to);
 
     this.setState({
       from: from,
