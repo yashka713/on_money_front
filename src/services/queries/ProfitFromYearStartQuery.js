@@ -16,7 +16,9 @@ export default ({ year }) => (
   <Query query={ProfitFromYearStartQuery} variables={{ year }}>
     {({ data }) => {
       if (data && data.profitFromYearStart) {
-        return <ProfitFromYearStartChart chartData={data.profitFromYearStart} />;
+        return (
+          <ProfitFromYearStartChart chartData={data.profitFromYearStart} />
+        );
       } else {
         return "Loading...";
       }
