@@ -1,14 +1,6 @@
 import React, { Component } from "react";
 import { Bar } from "react-chartjs-2";
-
-function getRandomColor() {
-  let letters = "0123456789ABCDEF";
-  let color = "#";
-  for (let i = 0; i < 6; i++) {
-    color += letters[Math.floor(Math.random() * 16)];
-  }
-  return color;
-}
+import { randomColor } from "../../../../../services/utils/randomColor";
 
 export default class MonthTotalCharges extends Component {
   static defaultProps = {
@@ -37,7 +29,7 @@ export default class MonthTotalCharges extends Component {
 
       return {
         label: item.label,
-        backgroundColor: getRandomColor(),
+        backgroundColor: randomColor(),
         borderWidth: 5,
         data: data
       };
