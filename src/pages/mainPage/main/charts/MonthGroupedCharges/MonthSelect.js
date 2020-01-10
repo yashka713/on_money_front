@@ -13,15 +13,20 @@ export default class MonthSelect extends Component {
 
   componentWillMount() {
     getRequest(Api.transactionMonthsPath()).then(responce => {
-      const mounths = responce.map(item => ({
+      const months = responce.map(item => ({
         value: item.id,
         label: item.attributes.label
       }));
 
-      this.setState({
-        months: mounths,
-        currentMonth: mounths[mounths.length - 1]
-      });
+      let currentMonth = months[months.length - 1];
+
+      this.setState(
+        {
+          months: months,
+          currentMonth: currentMonth
+        },
+        () => this.props.chosenMonth(currentMonth.value)
+      );
     });
   }
 

@@ -16,22 +16,22 @@ class TransactionItem extends Component {
     this.handleDeleteTransaction = this.handleDeleteTransaction.bind(this);
   }
 
+  itemChargeable = (item, chargeable) =>
+    item.id === chargeable.data.id && item.type === chargeable.data.type;
+
+  itemProfitable = (item, profitable) =>
+    item.id === profitable.data.id && item.type === profitable.data.type;
+
   setRelationships(props) {
-    const relationships = props.transaction.relationships;
+    const { profitable, chargeable } = props.transaction.relationships;
 
-    const from = props.related.filter(item => {
-      return (
-        item.id === relationships.chargeable.data.id &&
-        item.type === relationships.chargeable.data.type
-      );
-    })[0];
+    const result = props.related.filter(
+      item =>
+        this.itemChargeable(item, chargeable) ||
+        this.itemProfitable(item, profitable)
+    );
 
-    const to = props.related.filter(item => {
-      return (
-        item.id === relationships.profitable.data.id &&
-        item.type === relationships.profitable.data.type
-      );
-    })[0];
+    const [from, to] = result;
 
     this.setState({
       from: from,
@@ -76,7 +76,7 @@ class TransactionItem extends Component {
       }
     };
     const operation = this.props.transaction.attributes.operation_type;
-    return !this.state.from.attributes ? (
+    return !this.state.from.attributes && !this.state.to.attributes ? (
       ""
     ) : (
       <div key={this.props.transaction.id} className="col-md-12">
