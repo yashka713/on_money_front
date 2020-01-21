@@ -4,7 +4,6 @@ import FontAwesomeIcon from "@fortawesome/react-fontawesome";
 import faPencilAlt from "@fortawesome/fontawesome-free-solid/faPencilAlt";
 import faTimes from "@fortawesome/fontawesome-free-solid/faTimes";
 import TagList from "./tags/TagList";
-import find from "lodash/find";
 
 class TransactionItem extends Component {
   constructor(props) {
@@ -33,9 +32,6 @@ class TransactionItem extends Component {
     );
 
     const [from, to] = result;
-
-    // console.log(from);
-    // console.log(to);
 
     this.setState({
       from: from,
@@ -80,7 +76,7 @@ class TransactionItem extends Component {
       }
     };
     const operation = this.props.transaction.attributes.operation_type;
-    return !this.state.from.attributes ? (
+    return !this.state.from.attributes && !this.state.to.attributes ? (
       ""
     ) : (
       <div key={this.props.transaction.id} className="col-md-12">
