@@ -9,11 +9,12 @@ class TransactionItem extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      from: {},
-      to: {}
+      from: null,
+      to: null
     };
 
     this.handleDeleteTransaction = this.handleDeleteTransaction.bind(this);
+    this.handleUpdateTransaction = this.handleUpdateTransaction.bind(this);
   }
 
   itemChargeable = (item, chargeable) =>
@@ -54,67 +55,78 @@ class TransactionItem extends Component {
     );
   }
 
-  render() {
-    const amount = transaction => {
-      if (this.props.transaction.attributes.operation_type !== "transfer") {
-        return (
-          "" +
-          transaction.attributes.from_amount +
-          " " +
-          transaction.attributes.from_symbol
-        );
-      } else {
-        const from =
-          transaction.attributes.from_amount +
-          " " +
-          transaction.attributes.from_symbol;
-        const to =
-          transaction.attributes.to_amount +
-          " " +
-          transaction.attributes.to_symbol;
-        return from + " -> " + to;
-      }
-    };
-    const operation = this.props.transaction.attributes.operation_type;
-    return !this.state.from.attributes && !this.state.to.attributes ? (
-      ""
-    ) : (
-      <div key={this.props.transaction.id} className="col-md-12">
-        <div className="col-md-6">
-          <div
-            className="col-md-5 col-md-offset-1 transaction-control control-edit cursor-pointer"
-            onClick={() =>
-              this.props.updateTransactionCallback(this.props.transaction)
-            }
-          >
-            <FontAwesomeIcon icon={faPencilAlt} className="transaction-edit" />
-          </div>
-          <div
-            className="col-md-5 transaction-control control-destroy cursor-pointer"
-            onClick={this.handleDeleteTransaction}
-          >
-            <FontAwesomeIcon icon={faTimes} className="transaction-destroy" />
-          </div>
-          <div className={`col-md-12 ${operation}`}>
-            <p className="timeline-date">
-              {this.props.transaction.attributes.date}
-            </p>
-            <p>
-              From <strong>{this.state.from.attributes.name}</strong>
-            </p>
-            <p>
-              To <strong>{this.state.to.attributes.name}</strong>
-            </p>
-            <p>Amount: {amount(this.props.transaction)}</p>
-            <p>Note: {this.props.transaction.attributes.note}</p>
-          </div>
+  handleUpdateTransaction() {
+    this.props.updateTransactionCallback(this.props.transaction);
+  }
+
+  transactionItem = (transaction, fromName, toName) => (
+    <div key={transaction.id} className="col-md-12">
+      <div className="col-md-6">
+        <div
+          className="col-md-5 col-md-offset-1 transaction-control control-edit cursor-pointer"
+          onClick={this.handleUpdateTransaction}
+        >
+          <FontAwesomeIcon icon={faPencilAlt} className="transaction-edit" />
         </div>
-        <div className="col-md-6">
-          <p>Tags:</p>
-          <TagList transaction={this.props.transaction} />
+        <div
+          className="col-md-5 transaction-control control-destroy cursor-pointer"
+          onClick={this.handleDeleteTransaction}
+        >
+          <FontAwesomeIcon icon={faTimes} className="transaction-destroy" />
+        </div>
+        <div className={`col-md-12 ${transaction.attributes.operation_type}`}>
+          <p className="timeline-date">{transaction.attributes.date}</p>
+          <p>
+            From <strong>{fromName}</strong>
+          </p>
+          <p>
+            To <strong>{toName}</strong>
+          </p>
+          <p>Amount: {this.setAmount(transaction)}</p>
+          <p>Note: {transaction.attributes.note}</p>
         </div>
       </div>
-    );
+      <div className="col-md-6">
+        <p>Tags:</p>
+        <TagList transaction={transaction} />
+      </div>
+    </div>
+  );
+
+  setAmount = transaction => {
+    if (transaction.attributes.operation_type !== "transfer") {
+      return (
+        "" +
+        transaction.attributes.from_amount +
+        " " +
+        transaction.attributes.from_symbol
+      );
+    } else {
+      const from =
+        transaction.attributes.from_amount +
+        " " +
+        transaction.attributes.from_symbol;
+      const to =
+        transaction.attributes.to_amount +
+        " " +
+        transaction.attributes.to_symbol;
+      return from + " -> " + to;
+    }
+  };
+
+  render() {
+    const transaction = this.props.transaction;
+    const { from, to } = this.state;
+    let transactionTemplate = "";
+
+    if (from && to) {
+      const fromName = from.attributes.name;
+      const toName = to.attributes.name;
+
+      transactionTemplate = this.transactionItem(transaction, fromName, toName);
+    }
+
+    return transactionTemplate;
   }
 }
 

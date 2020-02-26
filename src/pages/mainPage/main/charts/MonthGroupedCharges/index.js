@@ -3,8 +3,9 @@ import Provider from "../../../../../services/Provider";
 import MonthTotalQuery from "../../../../../services/queries/MonthTotalChargesQuery";
 import AccountsList from "./AccountsList";
 import MonthSelect from "./MonthSelect";
+import { connect } from "react-redux";
 
-export default class MonthGroupedChart extends Component {
+class MonthGroupedChart extends Component {
   initialState = () => ({
     chosenMonth: "",
     chosenAccounts: []
@@ -22,18 +23,27 @@ export default class MonthGroupedChart extends Component {
       chosenAccounts: accounts
     });
 
+  activityTab = () => (
+    <Fragment>
+      <AccountsList chosenAccounts={this.chosenAccounts} />
+      <MonthSelect chosenMonth={this.chosenMonth} />
+      <Provider>
+        <MonthTotalQuery
+          month={this.state.chosenMonth}
+          accountIds={this.state.chosenAccounts}
+        />
+      </Provider>
+    </Fragment>
+  );
+
   render() {
-    return (
-      <Fragment>
-        <AccountsList chosenAccounts={this.chosenAccounts} />
-        <MonthSelect chosenMonth={this.chosenMonth} />
-        <Provider>
-          <MonthTotalQuery
-            month={this.state.chosenMonth}
-            accountIds={this.state.chosenAccounts}
-          />
-        </Provider>
-      </Fragment>
-    );
+    return this.props.userPresent ? this.activityTab() : "";
   }
 }
+
+export default connect(
+  state => ({
+    userPresent: state.current_user.isAuthenticated
+  }),
+  null
+)(MonthGroupedChart);

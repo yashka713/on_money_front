@@ -15,11 +15,10 @@ export const createCache = () => {
   return cache;
 };
 // getToken from meta tags
-const token = LSProvider.getToken();
 const setTokenForOperation = async operation =>
   operation.setContext({
     headers: {
-      Authorization: "Bearer " + token,
+      Authorization: "Bearer " + LSProvider.getToken(),
       Accept: "application/json",
       "Content-Type": "application/json"
     }
