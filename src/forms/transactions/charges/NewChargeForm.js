@@ -1,4 +1,4 @@
-import React, {Component, Fragment} from "react";
+import React, { Component, Fragment } from "react";
 import { Button, Form, Modal } from "react-bootstrap";
 import {
   chargeAttributes,
@@ -23,6 +23,7 @@ import newTransactionRequest from "../../../services/requests/newTransactionRequ
 import newTransaction from "../../../actions/transactions/newTransaction";
 import updateAccount from "../../../actions/accounts/updateAccount";
 import successAlert from "../../../actions/successAlert";
+import { FileUploaderComponent } from "../fileUploaderComponent";
 
 class NewChargeForm extends Component {
   static defaultProps = {
@@ -45,7 +46,8 @@ class NewChargeForm extends Component {
       date: new Date().toISOString().slice(0, 10),
       amount: null,
       tag_ids: [],
-      note: ""
+      note: "",
+      file: null
     },
     showErrorAlert: false,
     errorMessages: {
@@ -147,6 +149,14 @@ class NewChargeForm extends Component {
       chargeValidator(this.state.charge, this.state.validationState)
     );
 
+  handleChangeFile = event =>
+    this.setState({
+      charge: {
+        ...this.state.charge,
+        file: event.target.files[0]
+      }
+    });
+
   handleSubmit = event => {
     event.preventDefault();
 
@@ -230,6 +240,10 @@ class NewChargeForm extends Component {
             />
             <Note handleChangeNote={this.handleChangeNote} />
             <Tags handleChangeTags={this.handleChangeTags} props={this.props} />
+            <FileUploaderComponent
+              handleChangeFile={this.handleChangeFile}
+              props={this.props}
+            />
           </Form>
         </Modal.Body>
         <Modal.Footer>

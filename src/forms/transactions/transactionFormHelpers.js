@@ -1,33 +1,44 @@
 import React from "react";
+import jsonToFormData from "../../services/utils/jsonToFormData";
 
 export const chargeAttributes = ({
-  charge: { from, to, amount, date, tag_ids, note }
-}) => ({
-  charge: {
-    from: from.id,
-    to: to.id,
-    amount: amount,
-    date: date,
-    tag_ids: tag_ids.map(tag => Number(tag.value)),
-    note: note
-  }
-});
+  charge: { from, to, amount, date, tag_ids, note, file }
+}) => {
+  const charge = {
+    charge: {
+      from: from.id,
+      to: to.id,
+      amount: amount,
+      date: date,
+      tag_ids: setTags(tag_ids),
+      note: note,
+      receipt_attributes: setReceipt(file)
+    }
+  };
+
+  return jsonToFormData(charge);
+};
 
 export const profitAttributes = ({
-  profit: { from, to, amount, date, tag_ids, note }
-}) => ({
-  profit: {
-    from: from.id,
-    to: to.id,
-    amount: amount,
-    date: date,
-    tag_ids: tag_ids.map(tag => Number(tag.value)),
-    note: note
-  }
-});
+  profit: { from, to, amount, date, tag_ids, note, file }
+}) => {
+  const profit = {
+    profit: {
+      from: from.id,
+      to: to.id,
+      amount: amount,
+      date: date,
+      tag_ids: setTags(tag_ids),
+      note: note,
+      receipt_attributes: setReceipt(file)
+    }
+  };
+
+  return jsonToFormData(profit);
+};
 
 export const transferAttributes = ({
-  transfer: { from, to, amount, date, tag_ids, note },
+  transfer: { from, to, amount, date, tag_ids, note, file },
   sameCurrency,
   rate
 }) => {
@@ -37,8 +48,9 @@ export const transferAttributes = ({
     amount: amount,
     rate: 1,
     date: date,
-    tag_ids: tag_ids.map(tag => Number(tag.value)),
-    note: note
+    tag_ids: setTags(tag_ids),
+    note: note,
+    receipt_attributes: setReceipt(file)
   };
 
   if (!sameCurrency) {
@@ -46,7 +58,7 @@ export const transferAttributes = ({
     transfer["rate"] = rate.to / rate.from;
   }
 
-  return { transfer: transfer };
+  return jsonToFormData({ transfer: transfer });
 };
 
 export const getOptionsForTag = ({ tags }) =>
@@ -102,3 +114,8 @@ export const errorPointersAndDetails = messages => {
     details: details
   };
 };
+
+const setTags = tag_ids =>
+  tag_ids ? tag_ids.map(tag => Number(tag.value)) : [];
+
+const setReceipt = file => file ? { receipt: file } : null;

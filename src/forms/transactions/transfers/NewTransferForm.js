@@ -1,4 +1,4 @@
-import React, {Component, Fragment} from "react";
+import React, { Component, Fragment } from "react";
 import { Button, Form, Modal } from "react-bootstrap";
 import {
   transferAttributes,
@@ -24,6 +24,7 @@ import Api from "../../../api/Api";
 
 import { ErrorModalAlert } from "../ErrorModalAlert";
 import { transferValidator } from "./transferValidator";
+import { FileUploaderComponent } from "../fileUploaderComponent";
 
 class NewTransferForm extends Component {
   static defaultProps = {
@@ -45,7 +46,8 @@ class NewTransferForm extends Component {
       date: new Date().toISOString().slice(0, 10),
       amount: null,
       tag_ids: [],
-      note: ""
+      note: "",
+      file: null
     },
     rate: {
       from: 0,
@@ -182,6 +184,14 @@ class NewTransferForm extends Component {
       transferValidator(this.state.transfer, this.state.validationState)
     );
 
+  handleChangeFile = event =>
+    this.setState({
+      transfer: {
+        ...this.state.transfer,
+        file: event.target.files[0]
+      }
+    });
+
   handleSubmit = event => {
     event.preventDefault();
 
@@ -276,6 +286,10 @@ class NewTransferForm extends Component {
             )}
             <Note handleChangeNote={this.handleChangeNote} />
             <Tags handleChangeTags={this.handleChangeTags} props={this.props} />
+            <FileUploaderComponent
+              handleChangeFile={this.handleChangeFile}
+              props={this.props}
+            />
           </Form>
         </Modal.Body>
         <Modal.Footer>
