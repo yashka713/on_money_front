@@ -25,6 +25,7 @@ import {
   getOptionsForTag,
   transferAttributes
 } from "../transactionFormHelpers";
+import { FileUploaderComponent } from "../fileUploaderComponent";
 
 class UpdateTransferForm extends Component {
   static defaultProps = {
@@ -62,7 +63,9 @@ class UpdateTransferForm extends Component {
         date: new Date(transaction.attributes.date).toISOString().slice(0, 10),
         amount: transaction.attributes.from_amount,
         tag_ids: tagOptions,
-        note: transaction.attributes.note
+        note: transaction.attributes.note,
+        file: null,
+        uploadedFile: transaction.attributes.receipt
       },
       rate: {
         from: transaction.attributes.from_amount,
@@ -195,6 +198,14 @@ class UpdateTransferForm extends Component {
     );
   };
 
+  handleChangeFile = event =>
+    this.setState({
+      transfer: {
+        ...this.state.transfer,
+        file: event.target.files[0]
+      }
+    });
+
   formValidation = () =>
     this.setState(
       transferValidator(this.state.transfer, this.state.validationState)
@@ -305,6 +316,11 @@ class UpdateTransferForm extends Component {
               handleChangeTags={this.handleChangeTags}
               props={this.props}
               transfer={transfer}
+            />
+            <FileUploaderComponent
+              handleChangeFile={this.handleChangeFile}
+              file={transfer.file}
+              uploadedFile={transfer.uploadedFile}
             />
           </Form>
         </Modal.Body>

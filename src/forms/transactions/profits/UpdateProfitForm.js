@@ -1,4 +1,4 @@
-import React, {Component, Fragment} from "react";
+import React, { Component, Fragment } from "react";
 import { Button, Form, Modal } from "react-bootstrap";
 import {
   ToAccount,
@@ -24,6 +24,7 @@ import patchTransactionRequest from "../../../services/requests/patchTransaction
 import successAlert from "../../../actions/successAlert";
 import { ErrorModalAlert } from "../ErrorModalAlert";
 import { profitValidator } from "./profitValidator";
+import { FileUploaderComponent } from "../fileUploaderComponent";
 
 class UpdateProfitForm extends Component {
   static defaultProps = {
@@ -60,7 +61,9 @@ class UpdateProfitForm extends Component {
         date: new Date(transaction.attributes.date).toISOString().slice(0, 10),
         amount: transaction.attributes.from_amount,
         tag_ids: tagOptions,
-        note: transaction.attributes.note
+        note: transaction.attributes.note,
+        file: null,
+        uploadedFile: transaction.attributes.receipt
       },
       showErrorAlert: false,
       errorMessages: {
@@ -182,6 +185,14 @@ class UpdateProfitForm extends Component {
       }
     });
 
+  handleChangeFile = event =>
+    this.setState({
+      profit: {
+        ...this.state.profit,
+        file: event.target.files[0]
+      }
+    });
+
   handleSubmit = event => {
     event.preventDefault();
 
@@ -255,6 +266,11 @@ class UpdateProfitForm extends Component {
               handleChangeTags={this.handleChangeTags}
               props={this.props}
               profit={profit}
+            />
+            <FileUploaderComponent
+              handleChangeFile={this.handleChangeFile}
+              file={profit.file}
+              uploadedFile={profit.uploadedFile}
             />
           </Form>
         </Modal.Body>
