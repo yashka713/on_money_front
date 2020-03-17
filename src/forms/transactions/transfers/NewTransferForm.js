@@ -288,7 +288,7 @@ class NewTransferForm extends Component {
             <Tags handleChangeTags={this.handleChangeTags} props={this.props} />
             <FileUploaderComponent
               handleChangeFile={this.handleChangeFile}
-              props={this.props}
+              file={transfer.file}
             />
           </Form>
         </Modal.Body>

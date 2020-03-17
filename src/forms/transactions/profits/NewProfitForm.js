@@ -242,7 +242,7 @@ class NewProfitForm extends Component {
             <Tags handleChangeTags={this.handleChangeTags} props={this.props} />
             <FileUploaderComponent
               handleChangeFile={this.handleChangeFile}
-              props={this.props}
+              file={profit.file}
             />
           </Form>
         </Modal.Body>
