@@ -4,6 +4,7 @@ import FontAwesomeIcon from "@fortawesome/react-fontawesome";
 import faPencilAlt from "@fortawesome/fontawesome-free-solid/faPencilAlt";
 import faTimes from "@fortawesome/fontawesome-free-solid/faTimes";
 import TagList from "./tags/TagList";
+import ReceiptImage from "./ReceiptImage";
 
 class TransactionItem extends Component {
   constructor(props) {
@@ -61,7 +62,10 @@ class TransactionItem extends Component {
 
   transactionItem = (transaction, fromName, toName) => (
     <div key={transaction.id} className="col-md-12">
-      <div className="col-md-6">
+      <div className="col-md-offset-1 col-md-2 margin-top-35">
+        <ReceiptImage transaction={transaction} />
+      </div>
+      <div className="col-md-4">
         <div
           className="col-md-5 col-md-offset-1 transaction-control control-edit cursor-pointer"
           onClick={this.handleUpdateTransaction}
@@ -86,7 +90,7 @@ class TransactionItem extends Component {
           <p>Note: {transaction.attributes.note}</p>
         </div>
       </div>
-      <div className="col-md-6">
+      <div className="col-md-4">
         <p>Tags:</p>
         <TagList transaction={transaction} />
       </div>
