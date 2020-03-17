@@ -3,7 +3,8 @@ function buildFormData(formData, data, parentKey) {
     data &&
     typeof data === "object" &&
     !(data instanceof Date) &&
-    !(data instanceof File)
+    !(data instanceof File) &&
+    !(data instanceof Array)
   ) {
     Object.keys(data).forEach(key => {
       buildFormData(
@@ -12,6 +13,10 @@ function buildFormData(formData, data, parentKey) {
         parentKey ? `${parentKey}[${key}]` : key
       );
     });
+  } else if (data instanceof Array) {
+    for (var i = 0; i < data.length; i++) {
+      formData.append(`${parentKey}[]`, data[i]);
+    }
   } else {
     const value = data == null ? "" : data;
 
