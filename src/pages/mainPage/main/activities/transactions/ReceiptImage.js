@@ -32,7 +32,7 @@ export default class ReceiptImage extends Component {
             <Modal.Header closeButton />
             <Modal.Body>
               <img
-                className="center-block"
+                className="center-block max-width-100"
                 src={receipt.original}
                 alt={imageName}
               />
