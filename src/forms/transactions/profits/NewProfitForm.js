@@ -1,4 +1,4 @@
-import React, {Component, Fragment} from "react";
+import React, { Component, Fragment } from "react";
 import { Button, Form, Modal } from "react-bootstrap";
 import {
   ToAccount,
@@ -22,6 +22,7 @@ import updateAccount from "../../../actions/accounts/updateAccount";
 import successAlert from "../../../actions/successAlert";
 import { ErrorModalAlert } from "../ErrorModalAlert";
 import { profitValidator } from "./profitValidator";
+import { FileUploaderComponent } from "../fileUploaderComponent";
 
 class NewProfitForm extends Component {
   static defaultProps = {
@@ -43,6 +44,7 @@ class NewProfitForm extends Component {
       to: null,
       date: new Date().toISOString().slice(0, 10),
       amount: null,
+      file: null,
       tag_ids: [],
       note: ""
     },
@@ -141,6 +143,22 @@ class NewProfitForm extends Component {
       }
     });
 
+  handleChangeTags = selectedOption =>
+    this.setState({
+      profit: {
+        ...this.state.profit,
+        tag_ids: selectedOption
+      }
+    });
+
+  handleChangeFile = event =>
+    this.setState({
+      profit: {
+        ...this.state.profit,
+        file: event.target.files[0]
+      }
+    });
+
   formValidation = () =>
     this.setState(
       profitValidator(this.state.profit, this.state.validationState)
@@ -148,12 +166,12 @@ class NewProfitForm extends Component {
 
   handleSubmit = event => {
     event.preventDefault();
+
     newTransactionRequest(
       event.target.action,
       profitAttributes(this.state)
     ).then(responce => {
       if (responce.status === 201) {
-        console.log(responce.data)
         this.props.newProfit(responce.data);
         this.props.callback();
       } else {
@@ -175,14 +193,6 @@ class NewProfitForm extends Component {
     });
   };
 
-  handleChangeTags = selectedOption =>
-    this.setState({
-      profit: {
-        ...this.state.profit,
-        tag_ids: selectedOption
-      }
-    });
-
   render() {
     const {
       profit,
@@ -190,6 +200,7 @@ class NewProfitForm extends Component {
       showErrorAlert,
       errorMessages
     } = this.state;
+
     return (
       <Fragment>
         <Modal.Header closeButton>
@@ -229,6 +240,10 @@ class NewProfitForm extends Component {
             />
             <Note handleChangeNote={this.handleChangeNote} />
             <Tags handleChangeTags={this.handleChangeTags} props={this.props} />
+            <FileUploaderComponent
+              handleChangeFile={this.handleChangeFile}
+              props={this.props}
+            />
           </Form>
         </Modal.Body>
         <Modal.Footer>
