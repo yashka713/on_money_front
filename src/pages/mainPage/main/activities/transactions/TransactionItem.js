@@ -62,7 +62,7 @@ class TransactionItem extends Component {
 
   transactionItem = (transaction, fromName, toName) => (
     <div key={transaction.id} className="col-md-12">
-      <div className="col-md-offset-1 col-md-2 margin-top-35">
+      <div className="col-md-offset-1 col-md-2">
         <ReceiptImage transaction={transaction} />
       </div>
       <div className="col-md-4">
