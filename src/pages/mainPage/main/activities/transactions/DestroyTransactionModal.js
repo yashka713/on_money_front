@@ -63,11 +63,14 @@ class DestroyTransactionModal extends Component {
   }
 }
 
-export default connect(null, dispatch => ({
-  deleteTransaction: transaction => {
-    dispatch(deleteTransaction(transaction));
-  },
-  updateAccount: account => {
-    dispatch(updateAccount(account));
-  }
-}))(DestroyTransactionModal);
+export default connect(
+  null,
+  dispatch => ({
+    deleteTransaction: transaction => {
+      dispatch(deleteTransaction(transaction));
+    },
+    updateAccount: account => {
+      dispatch(updateAccount(account));
+    }
+  })
+)(DestroyTransactionModal);
