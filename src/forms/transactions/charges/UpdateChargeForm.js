@@ -24,6 +24,7 @@ import updateTransaction from "../../../actions/transactions/updateTransaction";
 import successAlert from "../../../actions/successAlert";
 import { ErrorModalAlert } from "../ErrorModalAlert";
 import { chargeValidator } from "./chargeValidator";
+import { FileUploaderComponent } from "../fileUploaderComponent";
 
 class UpdateChargeForm extends Component {
   static defaultProps = {
@@ -60,7 +61,9 @@ class UpdateChargeForm extends Component {
         date: new Date(transaction.attributes.date).toISOString().slice(0, 10),
         amount: transaction.attributes.from_amount,
         tag_ids: tagOptions,
-        note: transaction.attributes.note
+        note: transaction.attributes.note,
+        file: null,
+        uploadedFile: transaction.attributes.receipt
       }
     };
   };
@@ -148,6 +151,14 @@ class UpdateChargeForm extends Component {
       charge: {
         ...this.state.charge,
         note: event.target.value
+      }
+    });
+
+  handleChangeFile = event =>
+    this.setState({
+      charge: {
+        ...this.state.charge,
+        file: event.target.files[0]
       }
     });
 
@@ -249,6 +260,11 @@ class UpdateChargeForm extends Component {
               handleChangeTags={this.handleChangeTags}
               props={this.props}
               charge={charge}
+            />
+            <FileUploaderComponent
+              handleChangeFile={this.handleChangeFile}
+              file={charge.file}
+              uploadedFile={charge.uploadedFile}
             />
           </Form>
         </Modal.Body>

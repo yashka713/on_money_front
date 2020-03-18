@@ -93,5 +93,8 @@ export default {
   },
   transactionMonthsPath() {
     return process.env.REACT_APP_API_HOST + "transactions/months_list";
+  },
+  destroyReceiptPath(Id) {
+    return process.env.REACT_APP_API_HOST + `transactions/${Id}/receipts`;
   }
 };

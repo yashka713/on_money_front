@@ -118,4 +118,4 @@ export const errorPointersAndDetails = messages => {
 const setTags = tag_ids =>
   tag_ids ? tag_ids.map(tag => Number(tag.value)) : [];
 
-const setReceipt = file => file ? { receipt: file } : null;
+const setReceipt = file => (file ? { receipt: file } : null);

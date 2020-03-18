@@ -242,7 +242,7 @@ class NewChargeForm extends Component {
             <Tags handleChangeTags={this.handleChangeTags} props={this.props} />
             <FileUploaderComponent
               handleChangeFile={this.handleChangeFile}
-              props={this.props}
+              file={charge.file}
             />
           </Form>
         </Modal.Body>
